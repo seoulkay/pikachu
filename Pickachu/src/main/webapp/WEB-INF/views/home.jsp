@@ -9,8 +9,29 @@
 <h1>
 	Hello world!  
 </h1>
+			<form action="/" id="myForm" class="form-inline" method="GET">
+			<i class="fas fa-search" aria-hidden="true"></i>
+				<input type="text" name="search" value="${search }">
+				<input type="submit" value="검색하기">
+			</form>
+			
+			<c:forEach items="${postList }" var="post" begin="0" >
+		 	  	<div class="row">   
+			 	  	 <div class="col-3 text-center">
+			 	  	 	<small>${post.create }</small>
+			 	  	 </div>
+			 	  	 <div class="col-4 text-center">
+			 	  	 	<small><a>${post.postId }</a></small>
+			 	  	 </div>
+			 	  	 <div class="col-3 text-center">
+			 	  	 	${post.instaId }
+			 	  	 </div>
+			 	  	 <div class="col-2 text-center">
+			 	  	 	${post.description }
+			 	  	 </div>
+				</div>
+				<hr>
+		 	 </c:forEach>
 
-<P>  ${post.postId } </P>
-<P>  ${post.description } </P>
 </body>
 </html>

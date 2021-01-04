@@ -3,7 +3,9 @@ package aaa.bbb.ccc;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 import org.apache.ibatis.io.Resources;
@@ -31,25 +33,46 @@ public class HomeController {
 	 * Simply selects the home view to render by returning its name.
 	 */
 	@RequestMapping(value = "/", method = RequestMethod.GET)
-	public String home(Locale locale, Model model) {
+	public String home(Locale locale, Model model, String search) {
 		
 		
 		String resource = "aaa/bbb/ccc/mybatis_config.xml";
 		InputStream inputStream;
 		try {
+			if(search==null){
 			inputStream = Resources.getResourceAsStream(resource);
 			SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
 			SqlSession session = sqlSessionFactory.openSession();
 			Post post = session.selectOne("aaa.bbb.ccc.BaseMapper.selectPost", 1);
-			System.out.println(post.getPostId());
+			List<Post> postList = session.selectList("aaa.bbb.ccc.BaseMapper.allPost");
+			System.out.println(post.getPostId());		
+			System.out.println(postList);
 			
 			model.addAttribute("post", post );
+			model.addAttribute("postList", postList );
+
+			}else {
+				inputStream = Resources.getResourceAsStream(resource);
+				SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
+				SqlSession session = sqlSessionFactory.openSession();
+				Post post = session.selectOne("aaa.bbb.ccc.BaseMapper.selectPost", 1);
+				List<Post> postList = session.selectList("aaa.bbb.ccc.BaseMapper.searchPost", search);
+				System.out.println(post.getPostId());		
+				System.out.println(postList);
+				
+				model.addAttribute("post", post );
+				model.addAttribute("postList", postList );
+				model.addAttribute("search", search);
+			}
 			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		
+		
 		return "home";
 	}
+	
+	
 	
 }
