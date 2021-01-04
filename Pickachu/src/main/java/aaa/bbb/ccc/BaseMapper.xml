@@ -3,13 +3,17 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="aaa.bbb.ccc.BaseMapper">
-  <select id="selectPost" resultType="aaa.bbb.ccc.entity.Post">
-    select * from Post where postId = #{postId}
-  </select>
+	<select id="selectPost" resultType="aaa.bbb.ccc.entity.Post">
+		select * from Post where postId = #{postId}
+	</select>
   
-  <select id="countAll" resultType="int">
-    select count(*) from Post
-   </select>
+	<select id="countAll" resultType="int">
+		select count(*) from Post
+	</select>
+   
+ 	<select id="searchPost" resultType="aaa.bbb.ccc.entity.Post">
+		select * from Post where instaId = #{instaId} || description = #{description}
+	</select>
   
 </mapper>
 
