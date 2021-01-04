@@ -9,7 +9,7 @@
 <h1>
 	Hello world!  
 </h1>
-			<form action="/" id="myForm" class="form-inline" method="GET">
+			<form action="" id="myForm" class="form-inline" method="GET">
 			<i class="fas fa-search" aria-hidden="true"></i>
 				<input type="text" name="search" value="${search }">
 				<input type="submit" value="검색하기">
