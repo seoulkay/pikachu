@@ -34,33 +34,32 @@ public class HomeController {
 	 * Simply selects the home view to render by returning its name.
 	 */
 	@RequestMapping(value = "/", method = RequestMethod.GET)
-	public String home(Locale locale, Model model) {
+	public String home(Locale locale, Model model, String search) {
 		
 		
 		String resource = "aaa/bbb/ccc/mybatis_config.xml";
 		InputStream inputStream;
 		try {
+
 			inputStream = Resources.getResourceAsStream(resource);
 			SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
 			SqlSession session = sqlSessionFactory.openSession();
 			
-			ArrayList<Post> postAllList = new ArrayList<Post>();
+			List<Post> postList = new ArrayList<Post>();
 			
-			
-			int count = session.selectOne("aaa.bbb.ccc.BaseMapper.countAll");
-			
-			for(int i=1; i<= count ; i++) {
-				Post post = session.selectOne("aaa.bbb.ccc.BaseMapper.selectPost", i);
-				postAllList.add(post);
-			}
-			
-			model.addAttribute("postAllList", postAllList );
-			
-			
-			Post post = session.selectOne("aaa.bbb.ccc.BaseMapper.selectPost", 1);
-			//System.out.println(post.getPostId());
-			//model.addAttribute("post", post );
-			
+			Post post = new Post();
+			if(search==null){
+					postList = session.selectList("aaa.bbb.ccc.BaseMapper.allPost");
+					session.selectOne("aaa.bbb.ccc.BaseMapper.selectPost", post );
+				
+				}else {
+					postList = session.selectList("aaa.bbb.ccc.BaseMapper.searchPost", search);	
+					model.addAttribute("search", search);
+				}
+				
+			model.addAttribute("postList", postList );
+				
+				
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
