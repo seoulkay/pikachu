@@ -12,7 +12,7 @@
 	</select>
    
  	<select id="searchPost" resultType="aaa.bbb.ccc.entity.Post">
-		select * from Post where instaId = #{instaId} || description = #{description}
+		select * from Post where instaId = #{instaId} || description = #{description} ORDER BY SEQ DESC
 	</select>
   
 </mapper>
