@@ -3,6 +3,7 @@ package aaa.bbb.ccc;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
@@ -40,10 +41,19 @@ public class HomeController {
 			inputStream = Resources.getResourceAsStream(resource);
 			SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
 			SqlSession session = sqlSessionFactory.openSession();
-			Post post = session.selectOne("aaa.bbb.ccc.BaseMapper.selectPost", 1);
-			System.out.println(post.getPostId());
 			
-			model.addAttribute("post", post );
+			ArrayList<Post> postAllList = new ArrayList<Post>();
+			
+			for(int i=1; i<= aaa.bbb.ccc.BaseMapper.countAll; i++) {
+				Post post = session.selectOne("aaa.bbb.ccc.BaseMapper.selectPost", i);
+				postAllList.add(post);
+			}
+			model.addAttribute("postAllList", postAllList );
+			
+			
+			//Post post = session.selectOne("aaa.bbb.ccc.BaseMapper.selectPost", 1);
+			//System.out.println(post.getPostId());
+			//model.addAttribute("post", post );
 			
 		} catch (IOException e) {
 			e.printStackTrace();

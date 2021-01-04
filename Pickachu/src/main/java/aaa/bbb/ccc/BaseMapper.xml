@@ -6,4 +6,10 @@
   <select id="selectPost" resultType="aaa.bbb.ccc.entity.Post">
     select * from Post where postId = #{postId}
   </select>
+  
+  <select id="countAll" resultType="int">
+    select count(*) from Post
+   </select>
+  
 </mapper>
+
