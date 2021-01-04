@@ -35,35 +35,27 @@ public class HomeController {
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public String home(Locale locale, Model model, String search) {
 		
-		
+		try {
 		String resource = "aaa/bbb/ccc/mybatis_config.xml";
 		InputStream inputStream;
-		try {
+		inputStream = Resources.getResourceAsStream(resource);
+		SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
+		SqlSession session = sqlSessionFactory.openSession();
+		
+		List<Post> postList = new ArrayList<Post>();
+		
+		Post post = new Post();
 			if(search==null){
-			inputStream = Resources.getResourceAsStream(resource);
-			SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
-			SqlSession session = sqlSessionFactory.openSession();
-			Post post = session.selectOne("aaa.bbb.ccc.BaseMapper.selectPost", 1);
-			List<Post> postList = session.selectList("aaa.bbb.ccc.BaseMapper.allPost");
-			System.out.println(post.getPostId());		
-			System.out.println(postList);
+				postList = session.selectList("aaa.bbb.ccc.BaseMapper.allPost");
+				session.selectOne("aaa.bbb.ccc.BaseMapper.selectPost", post );
 			
-			model.addAttribute("post", post );
-			model.addAttribute("postList", postList );
-
 			}else {
-				inputStream = Resources.getResourceAsStream(resource);
-				SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
-				SqlSession session = sqlSessionFactory.openSession();
-				Post post = session.selectOne("aaa.bbb.ccc.BaseMapper.selectPost", 1);
-				List<Post> postList = session.selectList("aaa.bbb.ccc.BaseMapper.searchPost", search);
-				System.out.println(post.getPostId());		
-				System.out.println(postList);
-				
-				model.addAttribute("post", post );
-				model.addAttribute("postList", postList );
+				postList = session.selectList("aaa.bbb.ccc.BaseMapper.searchPost", search);	
 				model.addAttribute("search", search);
 			}
+			
+		model.addAttribute("postList", postList );
+			
 			
 		} catch (IOException e) {
 			e.printStackTrace();
