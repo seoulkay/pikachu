@@ -5,6 +5,8 @@ import java.io.InputStream;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Locale;
 
 import org.apache.ibatis.io.Resources;
@@ -44,14 +46,18 @@ public class HomeController {
 			
 			ArrayList<Post> postAllList = new ArrayList<Post>();
 			
-			for(int i=1; i<= aaa.bbb.ccc.BaseMapper.countAll; i++) {
+			
+			int count = session.selectOne("aaa.bbb.ccc.BaseMapper.countAll");
+			
+			for(int i=1; i<= count ; i++) {
 				Post post = session.selectOne("aaa.bbb.ccc.BaseMapper.selectPost", i);
 				postAllList.add(post);
 			}
+			
 			model.addAttribute("postAllList", postAllList );
 			
 			
-			//Post post = session.selectOne("aaa.bbb.ccc.BaseMapper.selectPost", 1);
+			Post post = session.selectOne("aaa.bbb.ccc.BaseMapper.selectPost", 1);
 			//System.out.println(post.getPostId());
 			//model.addAttribute("post", post );
 			
