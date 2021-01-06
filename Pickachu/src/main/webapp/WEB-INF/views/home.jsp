@@ -10,10 +10,14 @@
 	Hello world!  
 </h1>
 			<form action="" id="myForm" class="form-inline" method="GET">
-			<i class="fas fa-search" aria-hidden="true"></i>
+				<i class="fas fa-search" aria-hidden="true"></i>
 				<input type="text" name="search" value="${search }">
 				<input type="submit" value="검색하기">
 			</form>
+			<form action="postForm" id="myForm" class="form-inline" method="GET">
+				<i class="fas fa-search" aria-hidden="true"></i>
+				<input type="submit" value="새글쓰기">
+			</form>		
 			
 			<c:forEach items="${postList }" var="post" begin="0" >
 		 	  	<div class="row">   
@@ -27,7 +31,7 @@
 			 	  	 	${post.instaId }
 			 	  	 </div>
 			 	  	 <div class="col-2 text-center">
-			 	  	 	${post.description }
+			 	  	 	<a href="http://localhost:8080/ccc/post?postId=${post.postId}">${post.description }</a>
 			 	  	 </div>
 				</div>
 				<hr>

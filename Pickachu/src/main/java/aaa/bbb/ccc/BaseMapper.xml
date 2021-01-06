@@ -12,4 +12,13 @@
   <select id="searchPost" resultType="aaa.bbb.ccc.entity.Post">
     select * from MyPost where instaId like #{search} or description like #{search}
   </select>
+  <insert id="insertPost" parameterType="aaa.bbb.ccc.entity.Post">
+    insert into MyPost (create,picture,instaId,description) values (now(),#{picture},#{instaId},#{description})
+  </insert>
+  <update id="updatePost" parameterType="aaa.bbb.ccc.entity.Post">
+    update MyPost set instaId=#{instaId} , picture=#{picture}, description=#{description} where postId=#{postId}
+  </update>
+  <delete id="deletePost" parameterType="String">
+    delete from MyPost where postId=#{postId}
+  </delete>
 </mapper>

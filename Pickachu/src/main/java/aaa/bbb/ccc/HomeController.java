@@ -18,8 +18,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.view.RedirectView;
 
 import aaa.bbb.ccc.entity.Post;
+import www.gesi.com.MySql;
 
 /**
  * Handles requests for the application home page.
@@ -39,40 +41,148 @@ public class HomeController {
 		String resource = "aaa/bbb/ccc/mybatis_config.xml";
 		InputStream inputStream;
 		try {
-			if(search==null){
 			inputStream = Resources.getResourceAsStream(resource);
 			SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
 			SqlSession session = sqlSessionFactory.openSession();
-			Post post = session.selectOne("aaa.bbb.ccc.BaseMapper.selectPost", 1);
-			List<Post> postList = session.selectList("aaa.bbb.ccc.BaseMapper.allPost");
-			System.out.println(post.getPostId());		
-			System.out.println(postList);
 			
-			model.addAttribute("post", post );
+			if(search==null){
+			List<Post> postList = session.selectList("aaa.bbb.ccc.BaseMapper.allPost");
 			model.addAttribute("postList", postList );
-
 			}else {
-				inputStream = Resources.getResourceAsStream(resource);
-				SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
-				SqlSession session = sqlSessionFactory.openSession();
-				Post post = session.selectOne("aaa.bbb.ccc.BaseMapper.selectPost", 1);
-				List<Post> postList = session.selectList("aaa.bbb.ccc.BaseMapper.searchPost", search);
-				System.out.println(post.getPostId());		
-				System.out.println(postList);
-				
-				model.addAttribute("post", post );
-				model.addAttribute("postList", postList );
-				model.addAttribute("search", search);
+			List<Post> postList = session.selectList("aaa.bbb.ccc.BaseMapper.searchPost", search);
+			model.addAttribute("postList", postList );
+			model.addAttribute("search", search);
 			}
 			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		
-		
 		return "home";
 	}
 	
+	@RequestMapping(value = "post", method = RequestMethod.GET)
+	public String postOnePage(Locale locale, Model model, int postId) {
+	
+		String resource = "aaa/bbb/ccc/mybatis_config.xml";
+		InputStream inputStream;
+		
+		try {
+			
+			inputStream = Resources.getResourceAsStream(resource);
+			SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
+			SqlSession session = sqlSessionFactory.openSession();
+			Post postOne = session.selectOne("aaa.bbb.ccc.BaseMapper.selectPost", postId);
+			
+			model.addAttribute("postOne", postOne );
+			
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+			System.out.println("포스트 하나 보여 주다가 에러가 났어요  ");
+		}
+		
+	return "post";
+	}
+	
+	@RequestMapping(value = "postForm", method = RequestMethod.GET)
+	public String postForm(Locale locale, Model model) {
+	
+	return "postForm";
+	}
+	
+	
+	@RequestMapping(value = "postUpdateForm", method = RequestMethod.GET)
+	public String postUpdateForm(Locale locale, Model model, int postId) {
+	
+		String resource = "aaa/bbb/ccc/mybatis_config.xml";
+		InputStream inputStream;
+		
+		try {
+			
+			inputStream = Resources.getResourceAsStream(resource);
+			SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
+			SqlSession session = sqlSessionFactory.openSession();
+			Post postOne = session.selectOne("aaa.bbb.ccc.BaseMapper.selectPost", postId);
+			
+			model.addAttribute("postOne", postOne );
+			
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+			System.out.println("포스트 수정하다가 에러가 났어요  ");
+		}
+		
+	return "postUpdateForm";
+	}
+	
+	@RequestMapping(value = "postFormAction", method = RequestMethod.POST)
+	public RedirectView postFormAction(Locale locale, Model model, String instaId,String picture, String description ) {
+	
+		String resource = "aaa/bbb/ccc/mybatis_config.xml";
+		InputStream inputStream;
+		
+		try {
+			
+			inputStream = Resources.getResourceAsStream(resource);
+			SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
+			SqlSession session = sqlSessionFactory.openSession();
+			session.insert("aaa.bbb.ccc.BaseMapper.insertPost", instaId, picture, description);
+			session.commit();
+			session.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+			System.out.println("포스트 작성하려다가 에러가 났어요  ");
+		}
+		return new RedirectView("home");
+	}
+	
+	@RequestMapping(value = "postUpdateFormAction", method = RequestMethod.POST)
+	public String postUpdateFormAction(Locale locale, Model model, int postId, String instaId, String picture, String description) {
+	
+		String resource = "aaa/bbb/ccc/mybatis_config.xml";
+		InputStream inputStream;
+		
+		try {
+			
+			inputStream = Resources.getResourceAsStream(resource);
+			SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
+			SqlSession session = sqlSessionFactory.openSession();
+			session.update("aaa.bbb.ccc.BaseMapper.updatePost", postId, instaId, picture, description);
+			session.commit();
+			session.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+			System.out.println("포스트 수정하다가 에러가 났어요  ");
+		}
+		
+	return "post";
+	}
+	
+	@RequestMapping(value = "postDeleteAction", method = RequestMethod.GET)
+	public String postUpdateFormAction(Locale locale, Model model, int postId ) {
+	
+		String resource = "aaa/bbb/ccc/mybatis_config.xml";
+		InputStream inputStream;
+		
+		try {
+			
+			inputStream = Resources.getResourceAsStream(resource);
+			SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
+			SqlSession session = sqlSessionFactory.openSession();
+			session.delete("aaa.bbb.ccc.BaseMapper.deletePost", postId);
+
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+			System.out.println("포스트 삭제하다가 에러가 났어요  ");
+		}
+		
+	return "home";
+	}
 	
 	
 }
+
+
+
