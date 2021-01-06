@@ -6,10 +6,13 @@
   <select id="selectPost" resultType="aaa.bbb.ccc.entity.Post" parameterType="aaa.bbb.ccc.entity.Post">
     select * from Post where postId = #{postId}
   </select>
+  
   <select id="allPost" resultType="aaa.bbb.ccc.entity.Post">
     select * from Post order by postId desc
   </select>
-  <select id="searchPost" resultType="aaa.bbb.ccc.entity.Post">
+  
+  <select id="searchPost" resultType="aaa.bbb.ccc.entity.Post" parameterType="String">
+  	<bind name="search" value="'%' + _parameter + '%'" />
     select * from Post where instaId like #{search} or description like #{search} order by postId desc
   </select>
   

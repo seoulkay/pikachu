@@ -51,10 +51,12 @@ public class HomeController {
 			//Post post = new Post();
 			if(search==null){
 				postList = session.selectList("aaa.bbb.ccc.BaseMapper.allPost");
+				System.out.println(postList);
 				//session.selectOne("aaa.bbb.ccc.BaseMapper.selectPost", post );
 				
 			}else {
 				postList = session.selectList("aaa.bbb.ccc.BaseMapper.searchPost", search);	
+				System.out.println(postList);
 				model.addAttribute("search", search);
 				}
 				
