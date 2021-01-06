@@ -4,14 +4,20 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="aaa.bbb.ccc.BaseMapper">
   <select id="selectPost" resultType="aaa.bbb.ccc.entity.Post" parameterType="aaa.bbb.ccc.entity.Post">
-    select * from MyPost where postId = #{postId}
+    select * from Post where postId = #{postId}
   </select>
   <select id="allPost" resultType="aaa.bbb.ccc.entity.Post">
-    select * from MyPost 
+    select * from Post order by postId desc
   </select>
   <select id="searchPost" resultType="aaa.bbb.ccc.entity.Post">
-    select * from MyPost where instaId like #{search} or description like #{search}
+    select * from Post where instaId like #{search} or description like #{search} order by postId desc
   </select>
+  
+  <insert id="writePost" parameterType="aaa.bbb.ccc.entity.Post" useGeneratedKeys="true" keyProperty="postId">
+ 	insert into Post (instaId, description)
+ 	values (#{instaId}, #{description}) 
+  </insert>
+  
   
 </mapper>
 

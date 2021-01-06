@@ -6,9 +6,9 @@
 	<title>Home</title>
 </head>
 <body>
-<h1>
-	인스타그램 게시판이랍니다.  
-</h1>
+<h3>
+	hello stranger!  
+</h3>
 
 <%-- <P>  ${post.postId } </P> --%>
 <%-- <P>  ${post.instaId } </P> --%>
@@ -21,23 +21,34 @@
 				<input type="text" name="search" value="${search }">
 				<input type="submit" value="검색하기">
 </form>
+<form action="writeForm" method="GET">
+				<input type="submit" value="글쓰기">
+</form>		
 			
 <c:forEach items="${postList }" var="post" begin="0" >
 		 	  	<div class="row">   
 			 	  	 <div class="col-3 text-center">
+			 	  	 	<a href="onePostView?postId=${post.postId }" style="text-decoration:none; color:black">
 			 	  	 	<small>${post.create }</small>
+			 	  	 	</a>
 			 	  	 </div>
 			 	  	 <div class="col-4 text-center">
-			 	  	 	<small><a>${post.postId }</a></small>
+			 	  	 	<a href="onePostView?postId=${post.postId }" style="text-decoration:none; color:black">
+			 	  	 	<small>${post.postId }</small>
+			 	  	 	</a>
 			 	  	 </div>
 			 	  	 <div class="col-3 text-center">
+			 	  	 	<a href="onePostView?postId=${post.postId }" style="text-decoration:none; color:black">
 			 	  	 	${post.instaId }
+			 	  	 	</a>
 			 	  	 </div>
 			 	  	 <div class="col-2 text-center">
+			 	  	 	<a href="onePostView?postId=${post.postId }" style="text-decoration:none; color:black">
 			 	  	 	${post.description }
+			 	  	 	</a>
 			 	  	 </div>
 				</div>
-				<hr>
+				<hr color="black" size="1px">
 		 	 </c:forEach>
 
 
