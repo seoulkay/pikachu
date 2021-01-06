@@ -10,7 +10,11 @@
 	Hello world!  
 </h1>
 			<form action="" id="myForm" class="form-inline" method="GET">
+<<<<<<< HEAD
 				<i class="fas fa-search" aria-hidden="true"></i>
+=======
+			<i class="fas fa-search" aria-hidden="true"></i>
+>>>>>>> branch 'SungBranch' of https://github.com/seoulkay/pikachu.git
 				<input type="text" name="search" value="${search }">
 				<input type="submit" value="검색하기">
 			</form>

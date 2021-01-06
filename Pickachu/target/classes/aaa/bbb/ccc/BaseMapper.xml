@@ -3,7 +3,7 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="aaa.bbb.ccc.BaseMapper">
-  <select id="selectPost" resultType="aaa.bbb.ccc.entity.Post">
+  <select id="selectPost" resultType="aaa.bbb.ccc.entity.Post" parameterType="aaa.bbb.ccc.entity.Post">
     select * from MyPost where postId = #{postId}
   </select>
   <select id="allPost" resultType="aaa.bbb.ccc.entity.Post">
@@ -12,6 +12,7 @@
   <select id="searchPost" resultType="aaa.bbb.ccc.entity.Post">
     select * from MyPost where instaId like #{search} or description like #{search}
   </select>
+<<<<<<< HEAD
   <insert id="insertPost" parameterType="aaa.bbb.ccc.entity.Post">
     insert into MyPost (create,picture,instaId,description) values (now(),#{picture},#{instaId},#{description})
   </insert>
@@ -21,4 +22,7 @@
   <delete id="deletePost" parameterType="String">
     delete from MyPost where postId=#{postId}
   </delete>
+=======
+  
+>>>>>>> branch 'SungBranch' of https://github.com/seoulkay/pikachu.git
 </mapper>
