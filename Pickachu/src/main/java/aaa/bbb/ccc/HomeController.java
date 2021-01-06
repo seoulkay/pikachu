@@ -37,46 +37,22 @@ public class HomeController {
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public String home(Locale locale, Model model, String search) {
 		
-		try {
+		
 		String resource = "aaa/bbb/ccc/mybatis_config.xml";
 		InputStream inputStream;
-<<<<<<< HEAD
 		try {
 			inputStream = Resources.getResourceAsStream(resource);
 			SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
 			SqlSession session = sqlSessionFactory.openSession();
-=======
-		inputStream = Resources.getResourceAsStream(resource);
-		SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
-		SqlSession session = sqlSessionFactory.openSession();
-		
-		List<Post> postList = new ArrayList<Post>();
-		
-		Post post = new Post();
-			if(search==null){
-				postList = session.selectList("aaa.bbb.ccc.BaseMapper.allPost");
-				session.selectOne("aaa.bbb.ccc.BaseMapper.selectPost", post );
->>>>>>> branch 'SungBranch' of https://github.com/seoulkay/pikachu.git
 			
-<<<<<<< HEAD
 			if(search==null){
 			List<Post> postList = session.selectList("aaa.bbb.ccc.BaseMapper.allPost");
 			model.addAttribute("postList", postList );
-=======
->>>>>>> branch 'SungBranch' of https://github.com/seoulkay/pikachu.git
 			}else {
-<<<<<<< HEAD
 			List<Post> postList = session.selectList("aaa.bbb.ccc.BaseMapper.searchPost", search);
 			model.addAttribute("postList", postList );
 			model.addAttribute("search", search);
-=======
-				postList = session.selectList("aaa.bbb.ccc.BaseMapper.searchPost", search);	
-				model.addAttribute("search", search);
->>>>>>> branch 'SungBranch' of https://github.com/seoulkay/pikachu.git
 			}
-			
-		model.addAttribute("postList", postList );
-			
 			
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -207,6 +183,3 @@ public class HomeController {
 	
 	
 }
-
-
-
