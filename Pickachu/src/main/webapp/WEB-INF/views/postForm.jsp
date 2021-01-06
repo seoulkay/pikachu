@@ -9,7 +9,7 @@
 <h1>
 	포스트 수정하는 페이지입니다.. 
 </h1>
-	<form action="postUpdateFormAction" id="myForm" class="form-inline" method="post">
+	<form action="postFormAction" id="myForm" class="form-inline" method="post">
  	 	<i class="fas fa-search" aria-hidden="true"></i>
 	 	 	<table style="margin-left: auto; margin-right:auto;">
 		 	 	<tr>

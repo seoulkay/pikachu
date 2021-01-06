@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.view.RedirectView;
 
 import aaa.bbb.ccc.entity.Post;
-import www.gesi.com.MySql;
 
 /**
  * Handles requests for the application home page.
@@ -34,7 +33,7 @@ public class HomeController {
 	/**
 	 * Simply selects the home view to render by returning its name.
 	 */
-	@RequestMapping(value = "/", method = RequestMethod.GET)
+	@RequestMapping(value = "/home", method = RequestMethod.GET)
 	public String home(Locale locale, Model model, String search) {
 		
 		
@@ -50,6 +49,8 @@ public class HomeController {
 			model.addAttribute("postList", postList );
 			}else {
 			List<Post> postList = session.selectList("aaa.bbb.ccc.BaseMapper.searchPost", search);
+			System.out.println(postList);
+			
 			model.addAttribute("postList", postList );
 			model.addAttribute("search", search);
 			}
@@ -62,7 +63,7 @@ public class HomeController {
 	}
 	
 	@RequestMapping(value = "post", method = RequestMethod.GET)
-	public String postOnePage(Locale locale, Model model, int postId) {
+	public String postOnePage(Locale locale, Model model, Integer postId) {
 	
 		String resource = "aaa/bbb/ccc/mybatis_config.xml";
 		InputStream inputStream;
@@ -127,7 +128,14 @@ public class HomeController {
 			inputStream = Resources.getResourceAsStream(resource);
 			SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
 			SqlSession session = sqlSessionFactory.openSession();
-			session.insert("aaa.bbb.ccc.BaseMapper.insertPost", instaId, picture, description);
+			
+			Post post = new Post();
+			post.setInstaId(instaId);
+			post.setPicture(picture);
+			post.setDescription(description);
+			
+			
+			session.insert("aaa.bbb.ccc.BaseMapper.insertPost", post);
 			session.commit();
 			session.close();
 		} catch (IOException e) {
@@ -137,8 +145,8 @@ public class HomeController {
 		return new RedirectView("home");
 	}
 	
-	@RequestMapping(value = "postUpdateFormAction", method = RequestMethod.POST)
-	public String postUpdateFormAction(Locale locale, Model model, int postId, String instaId, String picture, String description) {
+	@RequestMapping(value = "postUpdateAction", method = RequestMethod.POST)
+	public RedirectView postUpdateAction(Locale locale, Model model, Integer postId, String instaId, String picture, String description) {
 	
 		String resource = "aaa/bbb/ccc/mybatis_config.xml";
 		InputStream inputStream;
@@ -148,7 +156,14 @@ public class HomeController {
 			inputStream = Resources.getResourceAsStream(resource);
 			SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
 			SqlSession session = sqlSessionFactory.openSession();
-			session.update("aaa.bbb.ccc.BaseMapper.updatePost", postId, instaId, picture, description);
+			
+			Post post = new Post();
+			post.setPostId(postId);
+			post.setInstaId(instaId);
+			post.setPicture(picture);
+			post.setDescription(description);
+			
+			session.update("aaa.bbb.ccc.BaseMapper.updatePost", post);
 			session.commit();
 			session.close();
 		} catch (IOException e) {
@@ -156,11 +171,11 @@ public class HomeController {
 			System.out.println("포스트 수정하다가 에러가 났어요  ");
 		}
 		
-	return "post";
+		return new RedirectView("post?postId=");
 	}
 	
 	@RequestMapping(value = "postDeleteAction", method = RequestMethod.GET)
-	public String postUpdateFormAction(Locale locale, Model model, int postId ) {
+	public RedirectView postUpdateFormAction(Locale locale, Model model, Integer postId ) {
 	
 		String resource = "aaa/bbb/ccc/mybatis_config.xml";
 		InputStream inputStream;
@@ -171,14 +186,15 @@ public class HomeController {
 			SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
 			SqlSession session = sqlSessionFactory.openSession();
 			session.delete("aaa.bbb.ccc.BaseMapper.deletePost", postId);
-
+			session.commit();
+			session.close();
 			
 		} catch (IOException e) {
 			e.printStackTrace();
 			System.out.println("포스트 삭제하다가 에러가 났어요  ");
 		}
 		
-	return "home";
+		return new RedirectView("home");
 	}
 	
 	

@@ -5,7 +5,7 @@ import java.util.Date;
 
 public class Post {
 	//포스트 아이디
-	private long postId;
+	private Integer postId;
 	//속성 :
 	//사진
 	private String picture;
@@ -48,10 +48,11 @@ public class Post {
 	public void setLikeList(ArrayList<Like> likeList) {
 		this.likeList = likeList;
 	}
-	public long getPostId() {
+	
+	public Integer getPostId() {
 		return postId;
 	}
-	public void setPostId(long postId) {
+	public void setPostId(Integer postId) {
 		this.postId = postId;
 	}
 	public String getLikeInstaId() {

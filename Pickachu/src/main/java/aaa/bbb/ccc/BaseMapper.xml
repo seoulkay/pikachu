@@ -9,16 +9,17 @@
   <select id="allPost" resultType="aaa.bbb.ccc.entity.Post">
     select * from MyPost 
   </select>
-  <select id="searchPost" resultType="aaa.bbb.ccc.entity.Post">
+  <select id="searchPost" resultType="aaa.bbb.ccc.entity.Post" parameterType="String">
+  <bind name="search" value="'%' + _parameter + '%'" />
     select * from MyPost where instaId like #{search} or description like #{search}
   </select>
   <insert id="insertPost" parameterType="aaa.bbb.ccc.entity.Post">
-    insert into MyPost (create,picture,instaId,description) values (now(),#{picture},#{instaId},#{description})
+    insert into MyPost (hong.MyPost.create,picture,instaId,description) values (now(),#{picture},#{instaId},#{description})
   </insert>
   <update id="updatePost" parameterType="aaa.bbb.ccc.entity.Post">
     update MyPost set instaId=#{instaId} , picture=#{picture}, description=#{description} where postId=#{postId}
   </update>
-  <delete id="deletePost" parameterType="String">
+  <delete id="deletePost" parameterType="Integer">
     delete from MyPost where postId=#{postId}
   </delete>
 </mapper>

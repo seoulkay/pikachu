@@ -27,6 +27,7 @@
 	 	 		<tr>
 		 	 		
 		 	 		<td colspan=4>
+		 	 		<input type="hidden" name="postId" value="${postOne.postId }">
 			 	 	<input type="submit" >
 			 	 	<input type="button" onclick="myFunction()" value="재작성 ">
 			 	 	</td>
