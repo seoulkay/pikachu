@@ -14,9 +14,17 @@
   </select>
   
   <insert id="writePost" parameterType="aaa.bbb.ccc.entity.Post" useGeneratedKeys="true" keyProperty="postId">
- 	insert into Post (instaId, description)
- 	values (#{instaId}, #{description}) 
+ 	insert into Post (instaId, description, hw_utf8.Post.create)
+ 	values (#{instaId}, #{description}, now()) 
   </insert>
+  
+  <update id="updatePost" parameterType="aaa.bbb.ccc.entity.Post">
+  	update Post set instaId = #{instaId}, description = #{description}
+  </update>
+  
+  <delete id="deletePost" parameterType="Integer">
+  	delete from from Post where postId = #{postId}
+  </delete>
   
   
 </mapper>

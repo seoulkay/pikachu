@@ -35,7 +35,7 @@ public class HomeController {
 	/**
 	 * Simply selects the home view to render by returning its name.
 	 */
-	@RequestMapping(value = "/", method = RequestMethod.GET)
+	@RequestMapping(value = "/home", method = RequestMethod.GET)
 	public String home(Locale locale, Model model, String search) {
 		
 		String resource = "aaa/bbb/ccc/mybatis_config.xml";
@@ -125,12 +125,12 @@ public class HomeController {
 			e.printStackTrace();
 		}
 			
-		return new RedirectView("/ccc/");
+		return new RedirectView("home");
 	}
 	
 
 	@RequestMapping(value = "/onePostView", method = RequestMethod.GET)
-	public String onePostView(Locale locale, Model model, Long postId) {
+	public String onePostView(Locale locale, Model model, Integer postId) {
 		
 		String resource = "aaa/bbb/ccc/mybatis_config.xml";
 		InputStream inputStream;
@@ -152,5 +152,9 @@ public class HomeController {
 		
 		return "onePostView";
 	}	
+	
+	
+	
+	
 	
 }
