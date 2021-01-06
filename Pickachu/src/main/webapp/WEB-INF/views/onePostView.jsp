@@ -35,6 +35,17 @@
 
 <hr color="black" size="1px">
 
+<form action="updatePostForm" id="myForm" class="form-inline" method="GET">
+	<i class="fas fa-search" aria-hidden="true"></i>
+	<input type="hidden" name="postId" value="${post.postId }">
+	<input type="submit" value="수정">
+</form>	
+<form action="postDeleteAction" id="myForm" class="form-inline" method="GET">
+	<i class="fas fa-search" aria-hidden="true"></i>
+	<input type="hidden" name="postId" value="${post.postId }">
+	<input type="submit" value="삭제">
+</form>	
+
 
 </body>
 </html>

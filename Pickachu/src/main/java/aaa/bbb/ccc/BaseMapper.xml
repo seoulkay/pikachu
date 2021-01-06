@@ -22,11 +22,11 @@
   </insert>
   
   <update id="updatePost" parameterType="aaa.bbb.ccc.entity.Post">
-  	update Post set instaId = #{instaId}, description = #{description}
+  	update Post set instaId = #{instaId}, description = #{description} where postId= #{postId}
   </update>
   
   <delete id="deletePost" parameterType="Integer">
-  	delete from from Post where postId = #{postId}
+  	delete from Post where postId = #{postId}
   </delete>
   
   

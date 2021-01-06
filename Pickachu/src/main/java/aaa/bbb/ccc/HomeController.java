@@ -159,7 +159,79 @@ public class HomeController {
 	}	
 	
 	
+	@RequestMapping(value = "/updatePostForm", method = RequestMethod.GET)
+	public String updatePostForm(Locale locale, Model model, Integer postId) {
+
+		String resource = "aaa/bbb/ccc/mybatis_config.xml";
+		InputStream inputStream;
+		
+		try {
+			inputStream = Resources.getResourceAsStream(resource);
+			SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
+			SqlSession session = sqlSessionFactory.openSession();
+			
+			Post post = new Post(); 
+			post = session.selectOne("aaa.bbb.ccc.BaseMapper.selectPost", postId );
+			model.addAttribute("post", post);
+			
+		}catch (IOException e) {
+			e.printStackTrace();
+		}
 	
+		return "updatePostForm";
+	}
 	
+	@RequestMapping(value = "/updatePostAction", method = RequestMethod.POST)
+	public RedirectView updatePostAction(Locale locale, Model model, Integer postId, String instaId, String description) {
+
+		String resource = "aaa/bbb/ccc/mybatis_config.xml";
+		InputStream inputStream;
+		
+		try {
+			inputStream = Resources.getResourceAsStream(resource);
+			SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
+			SqlSession session = sqlSessionFactory.openSession();
+			
+			Post post = new Post();
+			post.setPostId(postId);
+			post.setInstaId(instaId);
+			post.setDescription(description);
+			
+			session.update("aaa.bbb.ccc.BaseMapper.updatePost", post);
+			session.commit();
+			session.close();
+			
+		}catch (IOException e) {
+			e.printStackTrace();
+			System.out.println("포스트 수정하다가 에러가 났어요.");
+		}
+		
+
+		return new RedirectView("onePostView?postId="+postId);
+	}	
+	
+	@RequestMapping(value = "/postDeleteAction", method = RequestMethod.GET)
+	public RedirectView postDeleteAction(Locale locale, Model model, Integer postId ) {
+	
+		String resource = "aaa/bbb/ccc/mybatis_config.xml";
+		InputStream inputStream;
+		
+		try {
+			
+			inputStream = Resources.getResourceAsStream(resource);
+			SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
+			SqlSession session = sqlSessionFactory.openSession();
+			session.delete("aaa.bbb.ccc.BaseMapper.deletePost", postId);
+			
+			session.commit();
+			session.close();
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+			System.out.println("포스트 삭제하다가 에러가 났어요  ");
+		}
+		
+		return new RedirectView("home");
+	}
 	
 }
