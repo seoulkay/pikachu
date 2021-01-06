@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.view.RedirectView;
 
 import aaa.bbb.ccc.entity.Post;
+import aaa.bbb.ccc.entity.Reply;
 
 
 /**
@@ -149,7 +150,14 @@ public class HomeController {
 
 			post=session.selectOne("aaa.bbb.ccc.BaseMapper.selectPost", postId );
 			model.addAttribute("post", post );
-				
+			
+			List<Reply> replyList = new ArrayList<Reply>();
+			
+			replyList = session.selectList("aaa.bbb.ccc.BaseMapper.repliesForAPost", postId);
+			System.out.println(replyList);
+			model.addAttribute("replyList", replyList );
+			
+			session.close();
 				
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -233,5 +241,39 @@ public class HomeController {
 		
 		return new RedirectView("home");
 	}
+	
+	@RequestMapping(value = "/replyAction", method = RequestMethod.POST)
+	public RedirectView replyAction(Locale locale, Model model, Integer postId, String replyId, String description) {
+		
+		String resource = "aaa/bbb/ccc/mybatis_config.xml";
+		InputStream inputStream;
+		
+		Reply reply = new Reply();
+		reply.setReplyId(replyId);
+		reply.setDescription(description);
+		reply.setPostId(postId);
+		
+		try {
+			inputStream = Resources.getResourceAsStream(resource);
+			SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
+			SqlSession session = sqlSessionFactory.openSession();
+			
+			Post post = new Post();
+			post=session.selectOne("aaa.bbb.ccc.BaseMapper.selectPost", postId );
+			model.addAttribute("post", post );
+			
+			session.insert("aaa.bbb.ccc.BaseMapper.writeReply", reply);
+			model.addAttribute("reply", reply );
+		
+			session.commit();
+			session.close();
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+			
+		return new RedirectView("onePostView?postId="+postId);
+	}	
+
 	
 }

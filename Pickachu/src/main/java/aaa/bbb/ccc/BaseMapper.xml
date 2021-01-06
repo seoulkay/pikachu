@@ -29,6 +29,15 @@
   	delete from Post where postId = #{postId}
   </delete>
   
+	<insert id="writeReply" parameterType="aaa.bbb.ccc.entity.Reply" useGeneratedKeys="true" keyProperty="Id">
+		insert into Reply (replyId, description, Reply.created, postId)
+ 		values (#{replyId}, #{description}, now(), #{postId}) 
+ 	</insert>
+  
+	<select id="repliesForAPost" resultType="aaa.bbb.ccc.entity.Reply" parameterType="Integer">
+		select * from Reply where postId = #{postId} order by Id desc
+	</select>  
+  
   
 </mapper>
 
