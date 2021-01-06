@@ -120,7 +120,10 @@ public class HomeController {
 			
 			session.insert("aaa.bbb.ccc.BaseMapper.writePost", post);
 			model.addAttribute("post", post );
-				
+		
+			session.commit();
+			session.close();
+			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

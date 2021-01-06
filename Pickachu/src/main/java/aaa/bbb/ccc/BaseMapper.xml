@@ -14,7 +14,7 @@
   </select>
   
   <insert id="writePost" parameterType="aaa.bbb.ccc.entity.Post" useGeneratedKeys="true" keyProperty="postId">
- 	insert into Post (instaId, description, hw_utf8.Post.create)
+ 	insert into Post (instaId, description, Post.create)
  	values (#{instaId}, #{description}, now()) 
   </insert>
   
