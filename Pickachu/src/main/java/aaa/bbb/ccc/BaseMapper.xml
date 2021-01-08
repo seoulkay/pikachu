@@ -35,11 +35,11 @@
  	</insert>
   
 	<select id="repliesForAPost" resultType="aaa.bbb.ccc.entity.Reply" parameterType="Integer">
-		select * from Reply where postId = #{postId} order by replyId desc
+		select * from Reply where postId = #{postId} AND reReplyId is null order by replyId desc
 	</select>  
 
 	<select id="selectReply" resultType="aaa.bbb.ccc.entity.Reply" parameterType="aaa.bbb.ccc.entity.Reply">
-    select * from Reply where replyId = #{replyId}
+    select * from Reply where replyId = #{replyId} 
   	</select>
 
   <update id="updateReply" parameterType="aaa.bbb.ccc.entity.Reply">
@@ -50,7 +50,7 @@
   	delete from Reply where replyId = #{replyId}
   </delete>
   
-  	<select id="reReplyList" resultType="aaa.bbb.ccc.entity.Reply" parameterType="Integer">
+  	<select id="reReplyList" resultType="aaa.bbb.ccc.entity.Reply" parameterType="aaa.bbb.ccc.entity.Reply">
 		select * from Reply where reReplyId = #{Id} order by replyId desc
 	</select>  
   

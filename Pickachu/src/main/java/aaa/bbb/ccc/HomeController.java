@@ -114,14 +114,16 @@ public class HomeController {
 		String resource = "aaa/bbb/ccc/mybatis_config.xml";
 		InputStream inputStream;
 		
-		Post post = new Post();
-		post.setInstaId(instaId);
-		post.setDescription(description);
+
 		
 		try {
 			inputStream = Resources.getResourceAsStream(resource);
 			SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
 			SqlSession session = sqlSessionFactory.openSession();
+			
+			Post post = new Post();
+			post.setInstaId(instaId);
+			post.setDescription(description);
 			
 			session.insert("aaa.bbb.ccc.BaseMapper.writePost", post);
 			model.addAttribute("post", post );
@@ -158,6 +160,12 @@ public class HomeController {
 			replyList = session.selectList("aaa.bbb.ccc.BaseMapper.repliesForAPost", postId);
 			System.out.println(replyList);
 			model.addAttribute("replyList", replyList );
+			
+			for(int i=0; i < replyList.size(); i++) {
+				Reply reply = new Reply();
+				List<Reply> reReplyList = new ArrayList<Reply>();
+				reReplyList = session.selectList("aaa.bbb.ccc.BaseMapper.reReplyList", reply);
+			}
 			
 			session.close();
 				
@@ -421,5 +429,28 @@ public class HomeController {
 		return new RedirectView("onePostView?postId="+postId);
 	}
 	
+	@RequestMapping(value = "/replyDeleteAction", method = RequestMethod.GET)
+	public RedirectView replyDeleteAction(Locale locale, Model model, Integer postId, Integer replyId ) {
+	
+		String resource = "aaa/bbb/ccc/mybatis_config.xml";
+		InputStream inputStream;
+		
+		try {
+			
+			inputStream = Resources.getResourceAsStream(resource);
+			SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
+			SqlSession session = sqlSessionFactory.openSession();
+			session.delete("aaa.bbb.ccc.BaseMapper.deleteReply", replyId);
+			
+			session.commit();
+			session.close();
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+			System.out.println("포스트 삭제하다가 에러가 났어요  ");
+		}
+		
+		return new RedirectView("onePostView?postId="+postId);
+	}
 	
 }
