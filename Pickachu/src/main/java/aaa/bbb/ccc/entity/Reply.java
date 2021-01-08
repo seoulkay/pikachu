@@ -2,6 +2,7 @@ package aaa.bbb.ccc.entity;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 
 public class Reply {
@@ -22,7 +23,7 @@ public class Reply {
 	private Integer reReplyId;
 
 	
-	private ArrayList <Reply> reReplyList;
+	private List <Reply> reReplyList;
 	
 	
 	
@@ -34,10 +35,10 @@ public class Reply {
 	public void setReReplyId(Integer reReplyId) {
 		this.reReplyId = reReplyId;
 	}
-	public ArrayList<Reply> getReReplyList() {
+	public List<Reply> getReReplyList() {
 		return reReplyList;
 	}
-	public void setReReplyList(ArrayList<Reply> reReplyList) {
+	public void setReReplyList(List<Reply> reReplyList) {
 		this.reReplyList = reReplyList;
 	}
 	public Date getCreated() {

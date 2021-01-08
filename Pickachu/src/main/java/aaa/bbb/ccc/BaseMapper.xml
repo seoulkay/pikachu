@@ -50,8 +50,8 @@
   	delete from Reply where replyId = #{replyId}
   </delete>
   
-  	<select id="reReplyList" resultType="aaa.bbb.ccc.entity.Reply" parameterType="aaa.bbb.ccc.entity.Reply">
-		select * from Reply where reReplyId = #{Id} order by replyId desc
+  	<select id="reReplyList" resultType="aaa.bbb.ccc.entity.Reply" parameterType="Integer">
+		select * from Reply where reReplyId = #{replyId} order by replyId desc
 	</select>  
   
   

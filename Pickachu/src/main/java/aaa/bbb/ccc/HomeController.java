@@ -162,9 +162,9 @@ public class HomeController {
 			model.addAttribute("replyList", replyList );
 			
 			for(int i=0; i < replyList.size(); i++) {
-				Reply reply = new Reply();
 				List<Reply> reReplyList = new ArrayList<Reply>();
-				reReplyList = session.selectList("aaa.bbb.ccc.BaseMapper.reReplyList", reply);
+				reReplyList = session.selectList("aaa.bbb.ccc.BaseMapper.reReplyList", replyList.get(i).getReplyId());
+				replyList.get(i).setReReplyList(reReplyList);
 			}
 			
 			session.close();

@@ -112,6 +112,19 @@
 			</div>
 		</div>
     
+    		<c:forEach items="${repl.reReplyList}" var="reRepl" begin="0">
+    			<div class="row" >   
+					<div class="col-12 text-center">
+					<a href="oneReplyView?postId=${post.postId }&replyId=${reRepl.replyId }" style="text-decoration:none; color:red">
+						<small>${reRepl.created }</small>
+						<small>${reRepl.replyId }</small>		
+						${reRepl.instaId }
+						${reRepl.description }
+					</a>
+					</div>
+				</div>
+    		</c:forEach>	
+    
 
 		<hr color="#C4C4C4" size="1px">
 		
