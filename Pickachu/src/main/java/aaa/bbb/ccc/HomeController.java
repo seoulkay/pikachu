@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.view.RedirectView;
 
 import aaa.bbb.ccc.entity.Post;
+import aaa.bbb.ccc.entity.Reply;
 
 /**
  * Handles requests for the application home page.
@@ -62,7 +63,7 @@ public class HomeController {
 		return "home";
 	}
 	
-	@RequestMapping(value = "post", method = RequestMethod.GET)
+	@RequestMapping(value = "/post", method = RequestMethod.GET)
 	public String postOnePage(Locale locale, Model model, Integer postId) {
 	
 		String resource = "aaa/bbb/ccc/mybatis_config.xml";
@@ -73,10 +74,18 @@ public class HomeController {
 			inputStream = Resources.getResourceAsStream(resource);
 			SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
 			SqlSession session = sqlSessionFactory.openSession();
+
 			Post postOne = session.selectOne("aaa.bbb.ccc.BaseMapper.selectPost", postId);
-			
+			List<Reply> replyList = session.selectList("aaa.bbb.ccc.BaseMapper.allReply", postId);
+			for (int i=0 ; i<replyList.size(); i++) {
+				List<Reply> reReplyList = session.selectList("aaa.bbb.ccc.BaseMapper.reReply", replyList.get(i).getId());
+				replyList.get(i).setReReplyList(reReplyList);
+				
+			}	
+					
 			model.addAttribute("postOne", postOne );
-			
+			model.addAttribute("replyList", replyList );
+				
 			
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -171,11 +180,11 @@ public class HomeController {
 			System.out.println("포스트 수정하다가 에러가 났어요  ");
 		}
 		
-		return new RedirectView("post?postId=");
+		return new RedirectView("post?postId="+postId);
 	}
 	
 	@RequestMapping(value = "postDeleteAction", method = RequestMethod.GET)
-	public RedirectView postUpdateFormAction(Locale locale, Model model, Integer postId ) {
+	public RedirectView postDeleteAction(Locale locale, Model model, Integer postId ) {
 	
 		String resource = "aaa/bbb/ccc/mybatis_config.xml";
 		InputStream inputStream;
@@ -197,5 +206,132 @@ public class HomeController {
 		return new RedirectView("home");
 	}
 	
+	@RequestMapping(value = "replyFormAction", method = RequestMethod.POST)
+	public RedirectView replyFormAction(Locale locale, Model model, Integer postId, String instaId, String description ) {
 	
+		String resource = "aaa/bbb/ccc/mybatis_config.xml";
+		InputStream inputStream;
+		
+		try {
+			
+			inputStream = Resources.getResourceAsStream(resource);
+			SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
+			SqlSession session = sqlSessionFactory.openSession();
+			
+			Reply reply = new Reply();
+			reply.setInstaId(instaId);
+			reply.setPostId(postId);
+			reply.setDescription(description);
+
+			session.insert("aaa.bbb.ccc.BaseMapper.insertReply", reply);
+			session.commit();
+			session.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+			System.out.println("포스트 작성하려다가 에러가 났어요  ");
+		}
+		return new RedirectView("/ccc/post?postId="+postId);
+	}
+	@RequestMapping(value = "replyUpdateForm", method = RequestMethod.GET)
+	public String replyUpdateForm(Locale locale, Model model, Integer id) {
+	
+		String resource = "aaa/bbb/ccc/mybatis_config.xml";
+		InputStream inputStream;
+		
+		try {
+			
+			inputStream = Resources.getResourceAsStream(resource);
+			SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
+			SqlSession session = sqlSessionFactory.openSession();
+			Reply replyOne = session.selectOne("aaa.bbb.ccc.BaseMapper.selectReply", id);
+			
+			model.addAttribute("replyOne", replyOne );
+			
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+			System.out.println("댓글 수정하다가 에러가 났어요  ");
+		}
+		
+	return "replyUpdateForm" ;
+	}
+	@RequestMapping(value = "replyUpdateAction", method = RequestMethod.POST)
+	public RedirectView replyUpdateAction(Locale locale, Model model, Integer postId, Integer id, String instaId, String description) {
+	
+		String resource = "aaa/bbb/ccc/mybatis_config.xml";
+		InputStream inputStream;
+		
+		try {
+			
+			inputStream = Resources.getResourceAsStream(resource);
+			SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
+			SqlSession session = sqlSessionFactory.openSession();
+			
+			Reply reply = new Reply();
+			reply.setPostId(postId);
+			reply.setId(id);
+			reply.setInstaId(instaId);
+			reply.setDescription(description);
+			
+			session.update("aaa.bbb.ccc.BaseMapper.updateReply", reply);
+			session.commit();
+			session.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+			System.out.println("댓글 수정하다가 에러가 났어요  ");
+		}
+		
+		return new RedirectView("post?postId="+postId);
+	}
+	
+	@RequestMapping(value = "replyDeleteAction", method = RequestMethod.GET)
+	public RedirectView replyDeleteAction(Locale locale, Model model, Integer postId, Integer id) {
+	
+		String resource = "aaa/bbb/ccc/mybatis_config.xml";
+		InputStream inputStream;
+		
+		try {
+			
+			inputStream = Resources.getResourceAsStream(resource);
+			SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
+			SqlSession session = sqlSessionFactory.openSession();
+			session.delete("aaa.bbb.ccc.BaseMapper.deleteReply", id);
+			session.commit();
+			session.close();
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+			System.out.println("댓글 삭제하다가 에러가 났어요  ");
+		}
+		
+		return new RedirectView("/ccc/post?postId="+postId);
+	}
+	
+	@RequestMapping(value = "reReplyFormAction", method = RequestMethod.POST)
+	public RedirectView reReplyFormAction(Locale locale, Model model, Integer postId, Integer id, String instaId, String description ) {
+	
+		String resource = "aaa/bbb/ccc/mybatis_config.xml";
+		InputStream inputStream;
+		
+		try {
+			
+			inputStream = Resources.getResourceAsStream(resource);
+			SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
+			SqlSession session = sqlSessionFactory.openSession();
+			
+			Reply reply = new Reply();
+			reply.setInstaId(instaId);
+			reply.setPostId(postId);
+			reply.setDescription(description);
+			reply.setReplyId(id);
+
+			session.insert("aaa.bbb.ccc.BaseMapper.insertReReply", reply);
+			session.commit();
+			session.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+			System.out.println("대댓글 작성하려다가 에러가 났어요  ");
+		}
+		return new RedirectView("/ccc/post?postId="+postId);
+	}
 }

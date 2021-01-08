@@ -6,8 +6,17 @@
   <select id="selectPost" resultType="aaa.bbb.ccc.entity.Post">
     select * from MyPost where postId = #{postId}
   </select>
+  <select id="selectReply" resultType="aaa.bbb.ccc.entity.Reply">
+    select * from MyPostReply where id = #{id}
+  </select>
   <select id="allPost" resultType="aaa.bbb.ccc.entity.Post">
-    select * from MyPost 
+    select * from MyPost order by postId desc
+  </select>
+   <select id="allReply" resultType="aaa.bbb.ccc.entity.Reply">
+    select * from MyPostReply where postId = #{postId} AND replyId is null order by id desc
+  </select>
+  <select id="reReply" resultType="aaa.bbb.ccc.entity.Reply">
+    select * from MyPostReply where replyId = #{id} order by id desc
   </select>
   <select id="searchPost" resultType="aaa.bbb.ccc.entity.Post" parameterType="String">
   <bind name="search" value="'%' + _parameter + '%'" />
@@ -16,10 +25,22 @@
   <insert id="insertPost" parameterType="aaa.bbb.ccc.entity.Post">
     insert into MyPost (hong.MyPost.create,picture,instaId,description) values (now(),#{picture},#{instaId},#{description})
   </insert>
+  <insert id="insertReply" parameterType="aaa.bbb.ccc.entity.Reply">
+    insert into MyPostReply (hong.MyPostReply.create,instaId,description,postId) values (now(),#{instaId},#{description},#{postId})
+  </insert>
+  <insert id="insertReReply" parameterType="aaa.bbb.ccc.entity.Reply">
+    insert into MyPostReply (hong.MyPostReply.create,instaId,description,postId,replyId) values (now(),#{instaId},#{description},#{postId},#{replyId})
+  </insert>
   <update id="updatePost" parameterType="aaa.bbb.ccc.entity.Post">
     update MyPost set instaId=#{instaId} , picture=#{picture}, description=#{description} where postId=#{postId}
   </update>
+  <update id="updateReply" parameterType="aaa.bbb.ccc.entity.Reply">
+    update MyPostReply set instaId=#{instaId} , description=#{description} where id=#{id}
+  </update>
   <delete id="deletePost" parameterType="Integer">
     delete from MyPost where postId=#{postId}
+  </delete>
+  <delete id="deleteReply" parameterType="Integer">
+    delete from MyPostReply where id=#{id}
   </delete>
 </mapper>

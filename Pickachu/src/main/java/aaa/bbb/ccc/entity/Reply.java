@@ -1,8 +1,15 @@
 package aaa.bbb.ccc.entity;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+
 public class Reply {
+	
+	private Integer id;
 	//속성:
-	private int id;
+	private Integer replyId;
 	//댓글 단사람 아이디
 	private String instaId;
 	//댓글 내용 
@@ -10,21 +17,44 @@ public class Reply {
 	//댓글 라이크
 	private boolean replyLike;
 	//포스트아이디
-	private long postId;
+	private Integer postId;
+	
+	private Date create;
+	
+	private List <Reply> reReplyList;
 	
 	
 	
-	public long getPostId() {
-		return postId;
+	
+	public List<Reply> getReReplyList() {
+		return reReplyList;
 	}
-	public void setPostId(long postId) {
-		this.postId = postId;
+	public void setReReplyList(List<Reply> reReplyList) {
+		this.reReplyList = reReplyList;
 	}
-	public int getId() {
+	public Integer getId() {
 		return id;
 	}
-	public void setId(int id) {
+	public void setId(Integer id) {
 		this.id = id;
+	}
+	public Date getCreate() {
+		return create;
+	}
+	public void setCreate(Date create) {
+		this.create = create;
+	}
+	public Integer getPostId() {
+		return postId;
+	}
+	public void setPostId(Integer postId) {
+		this.postId = postId;
+	}
+	public Integer getReplyId() {
+		return replyId;
+	}
+	public void setReplyId(Integer replyId) {
+		this.replyId = replyId;
 	}
 	public String getInstaId() {
 		return instaId;
