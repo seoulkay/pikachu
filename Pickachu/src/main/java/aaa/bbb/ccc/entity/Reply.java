@@ -1,12 +1,14 @@
 package aaa.bbb.ccc.entity;
 
+import java.util.ArrayList;
 import java.util.Date;
+
 
 public class Reply {
 	//속성:
-	private Integer Id;
+	private Integer replyId;
 	//댓글 단사람 아이디
-	private String replyId;
+	private String instaId;
 	
 	//댓글 내용 
 	private String description;
@@ -17,9 +19,27 @@ public class Reply {
 	
 	private Date created;
 	
+	private Integer reReplyId;
+
+	
+	private ArrayList <Reply> reReplyList;
 	
 	
 	
+	
+
+	public Integer getReReplyId() {
+		return reReplyId;
+	}
+	public void setReReplyId(Integer reReplyId) {
+		this.reReplyId = reReplyId;
+	}
+	public ArrayList<Reply> getReReplyList() {
+		return reReplyList;
+	}
+	public void setReReplyList(ArrayList<Reply> reReplyList) {
+		this.reReplyList = reReplyList;
+	}
 	public Date getCreated() {
 		return created;
 	}
@@ -32,20 +52,19 @@ public class Reply {
 	public void setPostId(Integer postId) {
 		this.postId = postId;
 	}
-	public Integer getId() {
-		return Id;
-	}
-	public void setId(Integer Id) {
-		this.Id = Id;
-	}
-	public String getReplyId() {
+
+
+	public Integer getReplyId() {
 		return replyId;
 	}
-	public void setReplyId(String replyId) {
+	public void setReplyId(Integer replyId) {
 		this.replyId = replyId;
 	}
-	public void setInstaId(String replyId) {
-		this.replyId = replyId;
+	public String getInstaId() {
+		return instaId;
+	}
+	public void setInstaId(String instaId) {
+		this.instaId = instaId;
 	}
 	public String getDescription() {
 		return description;
