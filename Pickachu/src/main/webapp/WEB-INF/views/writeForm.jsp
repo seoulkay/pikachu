@@ -14,7 +14,7 @@
 <form action="writeFormInput" id="writeFormInput" method="POST">
 <!-- 			<i class="fas fa-search" aria-hidden="true"></i>	 -->
 			<div class="col-3 text-center">
-			<input type="text" name="instaId" placeholder="ID">
+			<input type="text" name="instaId" placeholder="ID" autofocus>
 			</div>
 			<div class="col-7 text-center">
 			<input type="text" name="description" placeholder="description">

@@ -277,6 +277,13 @@ public class HomeController {
 			System.out.println(replyList);
 			model.addAttribute("replyList", replyList );
 			
+			for(int i=0; i < replyList.size(); i++) {
+				List<Reply> reReplyList = new ArrayList<Reply>();
+				reReplyList = session.selectList("aaa.bbb.ccc.BaseMapper.reReplyList", replyList.get(i).getReplyId());
+				replyList.get(i).setReReplyList(reReplyList);
+			}
+			
+			
 			session.close();
 				
 		} catch (IOException e) {
@@ -426,7 +433,7 @@ public class HomeController {
 		}
 		
 
-		return new RedirectView("onePostView?postId="+postId);
+		return new RedirectView("onePostView?postId="+postId+"&replyId="+replyId);
 	}
 	
 	@RequestMapping(value = "/replyDeleteAction", method = RequestMethod.GET)
@@ -452,5 +459,132 @@ public class HomeController {
 		
 		return new RedirectView("onePostView?postId="+postId);
 	}
+	
+	
+	@RequestMapping(value = "/reReplyForm", method = RequestMethod.GET)
+	public String reReplyForm(Locale locale, Model model, Integer postId, Integer replyId) {
+		
+		String resource = "aaa/bbb/ccc/mybatis_config.xml";
+		InputStream inputStream;
+		try {
+
+			inputStream = Resources.getResourceAsStream(resource);
+			SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
+			SqlSession session = sqlSessionFactory.openSession();
+			
+			Post post = new Post();
+
+			post=session.selectOne("aaa.bbb.ccc.BaseMapper.selectPost", postId );
+			//System.out.println(post.getPostId());
+			model.addAttribute("post", post );
+			
+			List<Reply> replyList = new ArrayList<Reply>();
+			
+			replyList = session.selectList("aaa.bbb.ccc.BaseMapper.repliesForAPost", postId);
+			System.out.println(replyList);
+			model.addAttribute("replyList", replyList );
+			
+			
+			Reply reply = new Reply();
+
+			reply=session.selectOne("aaa.bbb.ccc.BaseMapper.selectReply", replyId );
+			//System.out.println(reply.getReplyId());
+			
+			model.addAttribute("reply", reply );
+			
+			List<Reply> reReplyList = new ArrayList<Reply>();
+			
+			reReplyList = session.selectList("aaa.bbb.ccc.BaseMapper.reReplyList", replyId);
+			System.out.println(reReplyList);
+			model.addAttribute("reReplyList", reReplyList );
+			
+			//session.close();
+				
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		return "reReplyForm";
+	}	
+	
+	
+	@RequestMapping(value = "/reReplyAction", method = RequestMethod.POST)
+	public RedirectView reReplyAction(Locale locale, Model model, Integer postId, Integer replyId, String instaId, String description) {
+		
+		String resource = "aaa/bbb/ccc/mybatis_config.xml";
+		InputStream inputStream;
+		
+		Reply reply = new Reply();
+		reply.setReReplyId(replyId);
+		reply.setInstaId(instaId);
+		reply.setDescription(description);
+		reply.setPostId(postId);
+		
+		try {
+			inputStream = Resources.getResourceAsStream(resource);
+			SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
+			SqlSession session = sqlSessionFactory.openSession();
+			
+			
+			session.insert("aaa.bbb.ccc.BaseMapper.writeReReply", reply);
+			model.addAttribute("reply", reply );
+		
+			session.commit();
+			session.close();
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+			
+		return new RedirectView("oneReplyView?postId="+postId+"&replyId="+replyId);
+	}	
+
+	
+	@RequestMapping(value = "/oneReReplyView", method = RequestMethod.GET)
+	public String oneReReplyView(Locale locale, Model model, Integer postId, Integer replyId, Integer reReplyId) {
+		
+		String resource = "aaa/bbb/ccc/mybatis_config.xml";
+		InputStream inputStream;
+		try {
+
+			inputStream = Resources.getResourceAsStream(resource);
+			SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
+			SqlSession session = sqlSessionFactory.openSession();
+			
+			Post post = new Post();
+
+			post=session.selectOne("aaa.bbb.ccc.BaseMapper.selectPost", postId );
+			model.addAttribute("post", post );
+			
+			List<Reply> replyList = new ArrayList<Reply>();
+			
+			replyList = session.selectList("aaa.bbb.ccc.BaseMapper.repliesForAPost", postId);
+			System.out.println(replyList);
+			model.addAttribute("replyList", replyList );
+			
+			
+			Reply reply = new Reply();
+
+			reply=session.selectOne("aaa.bbb.ccc.BaseMapper.selectReply", replyId );
+			//System.out.println(reply.getReplyId());
+			
+			model.addAttribute("reply", reply );
+			
+			List<Reply> reReplyList = new ArrayList<Reply>();
+			
+			reReplyList = session.selectList("aaa.bbb.ccc.BaseMapper.reReplyList", replyId);
+			System.out.println(reReplyList);
+			model.addAttribute("reReplyList", reReplyList );
+			
+			//session.close();
+				
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		return "oneReReplyView";
+	}		
+		
+	
 	
 }

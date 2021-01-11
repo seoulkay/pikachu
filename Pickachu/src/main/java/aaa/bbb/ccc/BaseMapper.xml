@@ -54,7 +54,23 @@
 		select * from Reply where reReplyId = #{replyId} order by replyId desc
 	</select>  
   
-  
+  	<insert id="writeReReply" parameterType="aaa.bbb.ccc.entity.Reply" >
+		insert into Reply (instaId, description, Reply.created, postId, reReplyId)
+ 		values (#{instaId}, #{description}, now(), #{postId}, #{reReplyId}) 
+ 	</insert>
+ 	
+ 	
+	<select id="totalSize" resultType="Integer">
+		select count(*) from Post
+	</select>  
+ 	
+ 	<select id="showPostByPage" resultType="aaa.bbb.ccc.entity.Post" parameterType="aaa.bbb.ccc.entity.PageManager">
+		select * from Post order by PostId desc limit #{pageSize} offset #{currentPage}*5
+	</select> 
+  	
+  	<select id="searchPostByPage" resultType="aaa.bbb.ccc.entity.Post" parameterType="map">
+		select * from Post where instaId like #{search} or description like #{search} order by PostId desc limit #{pageSize} offset #{currentPage}*5
+	</select> 
   
 </mapper>
 
