@@ -96,15 +96,15 @@ public class HomeController {
 				System.out.println(postList);
 	
 			}
-//			else {
-//				Map map = new HashMap();
-//				map.put(page, search);
-//				
-//				postList = session.selectList("aaa.bbb.ccc.BaseMapper.searchPostByPage", map);	
-//				System.out.println(postList);
-//				
-//				model.addAttribute("search", search);
-//			}
+			else {
+				Map<PageManager, String> map = new HashMap<PageManager, String>();
+				map.put(page, search);
+				
+				postList = session.selectList("aaa.bbb.ccc.BaseMapper.searchPostByPage", map);	
+				System.out.println(postList);
+				
+				model.addAttribute("search", search);
+			}
 				
 			model.addAttribute("postList", postList );
 			

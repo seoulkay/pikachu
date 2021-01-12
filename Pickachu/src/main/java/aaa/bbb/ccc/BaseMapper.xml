@@ -68,9 +68,9 @@
 		select * from Post order by PostId desc limit #{pageSize} offset #{currentPage} 
 	</select> 
   	
-<!--   	<select id="searchPostByPage" resultType="aaa.bbb.ccc.entity.Post" parameterType="map"> -->
-<!-- 		select * from Post where instaId like #{search} or description like #{search} order by PostId desc limit #{pageSize} offset #{currentPage}  -->
-<!-- 	</select>  -->
+  	<select id="searchPostByPage" resultType="aaa.bbb.ccc.entity.Post" parameterType="hashMap">
+		select * from Post where instaId like #{search} or description like #{search} order by PostId desc limit #{pageSize} offset #{currentPage} 
+	</select> 
   
 </mapper>
 
