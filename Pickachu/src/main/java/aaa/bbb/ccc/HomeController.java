@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.view.RedirectView;
 
+import aaa.bbb.ccc.entity.PageManager;
 import aaa.bbb.ccc.entity.Post;
 import aaa.bbb.ccc.entity.Reply;
 
@@ -31,11 +32,8 @@ public class HomeController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
 	
-	/**
-	 * Simply selects the home view to render by returning its name.
-	 */
 	@RequestMapping(value = "/home", method = RequestMethod.GET)
-	public String home(Locale locale, Model model, String search) {
+	public String home(Locale locale, Model model, String search, Integer pageSize, Integer currentPage, Integer maxPager) {
 		
 		
 		String resource = "aaa/bbb/ccc/mybatis_config.xml";
@@ -44,15 +42,62 @@ public class HomeController {
 			inputStream = Resources.getResourceAsStream(resource);
 			SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
 			SqlSession session = sqlSessionFactory.openSession();
+			maxPager=5;
+
+			if(pageSize==null||currentPage==null) {
+				
+				Integer postTotal = session.selectOne("aaa.bbb.ccc.BaseMapper.countPost");			
+				PageManager totalSize = new PageManager();
+				totalSize.setTotalSize(postTotal);
+				totalSize.setCurrentPage(0);
+				totalSize.setPageSize(5);
+				
+				int showPage = postTotal / totalSize.getPageSize();
+				System.out.println(showPage);
+			model.addAttribute("totalSize", totalSize );	
+				pageSize=totalSize.getPageSize();
+				currentPage=0;	
+			}
+
+			if(search==null||search.isEmpty()){
+				
+				Integer postTotal = session.selectOne("aaa.bbb.ccc.BaseMapper.countPost");
+				PageManager totalSize = new PageManager();
+				totalSize.setTotalSize(postTotal);
+				totalSize.setCurrentPage(currentPage);
+				totalSize.setPageSize(pageSize);
+				List<Post> limitPostList = session.selectList("aaa.bbb.ccc.BaseMapper.limitPost", totalSize);
+				int showPage = postTotal / totalSize.getPageSize();
+			model.addAttribute("showPage",showPage );	
+				PageManager postPm = new PageManager();
+				postPm.setCurrentPage(currentPage);
+				postPm.setTotal(totalSize.getTotalSize());
+				postPm.setMaxPager(maxPager);
+				postPm = currentPagerCalculator(postPm);
+			model.addAttribute("pm", postPm );
+			model.addAttribute("totalSize", totalSize );
+			model.addAttribute("postList", limitPostList );
 			
-			if(search==null){
-			List<Post> postList = session.selectList("aaa.bbb.ccc.BaseMapper.allPost");
-			model.addAttribute("postList", postList );
 			}else {
-			List<Post> postList = session.selectList("aaa.bbb.ccc.BaseMapper.searchPost", search);
-			System.out.println(postList);
 			
-			model.addAttribute("postList", postList );
+				Integer searchPostTotal = session.selectOne("aaa.bbb.ccc.BaseMapper.countSearchPost", search);
+				System.out.println("검색어를 집어넣고 전체 게시물의 갯수는 : "+searchPostTotal);
+				PageManager searchTotalSize = new PageManager();
+				searchTotalSize.setSearch(search);
+				searchTotalSize.setTotalSize(searchPostTotal);
+				searchTotalSize.setCurrentPage(currentPage);
+				searchTotalSize.setPageSize(pageSize);
+				int showPage = searchPostTotal / searchTotalSize.getPageSize();
+			model.addAttribute("showPage",showPage );
+				List<Post> limitSearchPostList = session.selectList("aaa.bbb.ccc.BaseMapper.searchLimitPost", searchTotalSize);
+				PageManager postPm = new PageManager();
+				postPm.setCurrentPage(currentPage);
+				postPm.setTotal(searchTotalSize.getTotalSize());
+				postPm.setMaxPager(maxPager);
+				postPm = currentPagerCalculator(postPm);
+			model.addAttribute("pm", postPm );
+			model.addAttribute("postList", limitSearchPostList );
+			model.addAttribute("totalSize", searchTotalSize );
 			model.addAttribute("search", search);
 			}
 			
@@ -334,4 +379,49 @@ public class HomeController {
 		}
 		return new RedirectView("/ccc/post?postId="+postId);
 	}
+	
+	public static PageManager currentPagerCalculator(PageManager pm) {
+		PageManager result = new PageManager();
+	
+		int endPage = 0;
+	
+		endPage = (int) Math.ceil((pm.getCurrentPage()+1)/(double)pm.getMaxPager()) * pm.getMaxPager();
+		
+		
+//		System.out.println("Start page" + (endPage-pm.getMaxPager()));
+		result.setStartPage(endPage-pm.getMaxPager());
+		
+		
+		int realEndPage = (int)Math.ceil(pm.getTotal()/pm.getMaxPager())+1;
+		
+		if(endPage > realEndPage) {
+			endPage = realEndPage;
+		}
+		
+		result.setEndPage(endPage);
+		result.setTotal(pm.getTotal());
+		result.setCurrentPage(pm.getCurrentPage());
+		result.setMaxPager(pm.getMaxPager());
+		
+		return result;
+	}
+	
+//	  public PageManager ts(Integer currentPage) {
+//
+//	    	PageManager ts = new PageManager();
+//	    	try {
+//	    		stmt = con.createStatement();
+//	            rs = stmt.executeQuery("SELECT count(*) as totalSize FROM hong.gesiPost");
+//	            
+//	        while(rs.next()) {
+//      	ts.setTotalSize(rs.getInt("totalSize"));
+//      	ts.setPageSize(5); 
+//      	ts.setCurrentPage(currentPage);
+//	        }
+//	        }catch(Exception e) {
+//	    		e.printStackTrace();
+//	    		System.out.println("포스트 가지고 오다가 디비에서 에러났어요!!");
+//	    	}
+//	       return ts;
+//	    }
 }

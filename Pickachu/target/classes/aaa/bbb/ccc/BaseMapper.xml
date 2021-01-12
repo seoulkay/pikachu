@@ -10,7 +10,10 @@
     select * from MyPostReply where id = #{id}
   </select>
   <select id="allPost" resultType="aaa.bbb.ccc.entity.Post">
-    select * from MyPost order by postId desc
+    select * from MyPost order by postId desc 
+  </select>
+  <select id="limitPost" resultType="aaa.bbb.ccc.entity.Post">
+    select * from MyPost order by postId desc limit #{pageSize} offset #{currentPage}
   </select>
    <select id="allReply" resultType="aaa.bbb.ccc.entity.Reply">
     select * from MyPostReply where postId = #{postId} AND replyId is null order by id desc
@@ -21,6 +24,17 @@
   <select id="searchPost" resultType="aaa.bbb.ccc.entity.Post" parameterType="String">
   <bind name="search" value="'%' + _parameter + '%'" />
     select * from MyPost where instaId like #{search} or description like #{search}
+  </select>
+  <select id="searchLimitPost" resultType="aaa.bbb.ccc.entity.Post" parameterType="aaa.bbb.ccc.entity.PageManager" >
+   <bind name="search1" value="'%' + _parameter.search + '%'" />
+    select * from MyPost where instaId like  #{search1} or description like #{search1} limit #{pageSize} offset #{currentPage}
+  </select>
+  <select id="countPost" resultType="Integer">
+    select count(*) as totalSize from hong.MyPost
+  </select>
+  <select id="countSearchPost" resultType="Integer" parameterType="String">
+  <bind name="search" value="'%' + _parameter + '%'" />
+    select count(*) as totalSize from hong.MyPost where instaId like #{search} or description like #{search}
   </select>
   <insert id="insertPost" parameterType="aaa.bbb.ccc.entity.Post">
     insert into MyPost (hong.MyPost.create,picture,instaId,description) values (now(),#{picture},#{instaId},#{description})
