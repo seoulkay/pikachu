@@ -64,13 +64,13 @@
 		select count(*) from Post
 	</select>  
  	
- 	<select id="showPostByPage" resultType="aaa.bbb.ccc.entity.Post" parameterType="aaa.bbb.ccc.entity.PageManager">
-		select * from Post order by PostId desc limit #{pageSize} offset #{currentPage}*5
+ 	<select id="showPostByPage" resultType="aaa.bbb.ccc.entity.Post" parameterType="aaa.bbb.ccc.entity.PageManager" >
+		select * from Post order by PostId desc limit #{pageSize} offset #{currentPage} 
 	</select> 
   	
-  	<select id="searchPostByPage" resultType="aaa.bbb.ccc.entity.Post" parameterType="map">
-		select * from Post where instaId like #{search} or description like #{search} order by PostId desc limit #{pageSize} offset #{currentPage}*5
-	</select> 
+<!--   	<select id="searchPostByPage" resultType="aaa.bbb.ccc.entity.Post" parameterType="map"> -->
+<!-- 		select * from Post where instaId like #{search} or description like #{search} order by PostId desc limit #{pageSize} offset #{currentPage}  -->
+<!-- 	</select>  -->
   
 </mapper>
 

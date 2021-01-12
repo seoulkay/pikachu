@@ -5,9 +5,11 @@ import java.io.InputStream;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
@@ -21,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.view.RedirectView;
 
+import aaa.bbb.ccc.entity.PageManager;
 import aaa.bbb.ccc.entity.Post;
 import aaa.bbb.ccc.entity.Reply;
 
@@ -37,29 +40,69 @@ public class HomeController {
 	 * Simply selects the home view to render by returning its name.
 	 */
 	@RequestMapping(value = "/home", method = RequestMethod.GET)
-	public String home(Locale locale, Model model, String search) {
+	public String home(Locale locale, Model model, String search,Integer pageSize, Integer currentPage, Integer maxPager) {
+		
+
 		
 		String resource = "aaa/bbb/ccc/mybatis_config.xml";
 		InputStream inputStream;
+		
+		
 		try {
 
 			inputStream = Resources.getResourceAsStream(resource);
 			SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
 			SqlSession session = sqlSessionFactory.openSession();
 			
+			PageManager page = new PageManager();
+			Integer total = session.selectOne("aaa.bbb.ccc.BaseMapper.totalSize");
+			Integer offset = 5;
+			
+			page.setTotalSize(total);
+			page.setPageSize(pageSize);
+			page.setCurrentPage(currentPage*offset);
+	
+			
+			System.out.println(page.getPageSize());
+			System.out.println(page.getCurrentPage());
+			
+			model.addAttribute("page", page);
+			
+			PageManager postPm = new PageManager();
+			
+			postPm.setCurrentPage(currentPage);
+			postPm.setTotalSize(page.getTotalSize());
+			postPm.setPageSize(page.getPageSize());
+			postPm.setMaxPager(5);
+			
+			System.out.println(postPm.getPageSize());
+			System.out.println(postPm.getCurrentPage());
+			
+			postPm = currentPagerCalculatorIH(postPm);
+			model.addAttribute("pm", postPm);
+			
 			List<Post> postList = new ArrayList<Post>();
+			
+			
+			if(pageSize==null || currentPage==null) {
+				pageSize =5; currentPage=0;
+			}
 			
 			//Post post = new Post();
 			if(search==null){
-				postList = session.selectList("aaa.bbb.ccc.BaseMapper.allPost");
+				postList = session.selectList("aaa.bbb.ccc.BaseMapper.showPostByPage", page);
 				System.out.println(postList);
-				//session.selectOne("aaa.bbb.ccc.BaseMapper.selectPost", post );
-				
-			}else {
-				postList = session.selectList("aaa.bbb.ccc.BaseMapper.searchPost", search);	
-				System.out.println(postList);
-				model.addAttribute("search", search);
-				}
+	
+			}
+//			else {
+//				Map map = new HashMap();
+//				map.put(page, search);
+//				
+//				postList = session.selectList("aaa.bbb.ccc.BaseMapper.searchPostByPage", map);	
+//				System.out.println(postList);
+//				
+//				model.addAttribute("search", search);
+//			}
 				
 			model.addAttribute("postList", postList );
 			
@@ -585,6 +628,33 @@ public class HomeController {
 		return "oneReReplyView";
 	}		
 		
+	
+	
+    public static PageManager currentPagerCalculatorIH(PageManager postPm) {
+    	PageManager result = new PageManager();
+    
+    	int endPage = 0;
+    	
+    	endPage = (int) Math.ceil((postPm.getCurrentPage()+1) / (double) postPm.getMaxPager()) * postPm.getMaxPager();
+    	    	
+    	//System.out.println("Start page"+ (endPage-maxPager));
+    	result.setStartPage(endPage-postPm.getMaxPager());
+    	
+    	int realEndPage = (int)Math.ceil(postPm.getTotalSize()/postPm.getMaxPager())+1;
+    	
+    	if(endPage > realEndPage) {
+    		endPage = realEndPage;
+    	}
+    	
+    	//System.out.println("End page" + (endPage));
+    	result.setEndPage(endPage);
+    	result.setTotalSize(postPm.getTotalSize());
+    	result.setCurrentPage(postPm.getCurrentPage());
+    	result.setMaxPager(postPm.getMaxPager());
+    	
+    	return result;
+    }
+    	
 	
 	
 }

@@ -17,7 +17,7 @@
 
 	
 <form action="home" id="myForm" class="form-inline" method="GET">
-			<i class="fas fa-search" aria-hidden="true"></i>
+<!-- 			<i class="fas fa-search" aria-hidden="true"></i> -->
 				<input type="text" name="search" value="${search }">
 <!-- 				<input type="submit" value="검색하기"> -->
 				<button>
@@ -62,7 +62,51 @@
 			 	  	 </div>
 				</div>
 				<hr color="black" size="1px">
-		 	 </c:forEach>
+</c:forEach>
+
+
+		<nav aria-label="Page navigation example">
+			  <ul class="pagination">
+			  
+			    <li class="page-item">
+			 	  <c:if test="${pm.currentPage !=0}">
+			      <a class="page-link" href="home?pageSize=${page.pageSize }&currentPage=${pm.currentPage - 1}" aria-label="Previous">
+			        <span aria-hidden="true">&laquo;</span>
+			        <span class="sr-only">Previous</span>
+			      </a>
+			  	  </c:if>
+			    </li>
+			    
+			    <c:forEach var="pi" begin="${pm.startPage }" end="${pm.endPage -1}">
+			    	<c:choose>
+			    		<c:when test="${pi == pm.currentPage }">	
+			    			<li class="page-item active">
+					    	<a class="page-link" href="home?pageSize=${page.pageSize }&currentPage=${pi}">${pi +1} 
+<!-- 					    	<span class="sr-only">(current)</span> -->
+					    	</a></li>
+			    		</c:when>
+			    		
+			    		<c:otherwise>
+					    	<li class="page-item">
+					    	<a class="page-link" href="home?pageSize=${page.pageSize }&currentPage=${pi}">${pi +1} 
+					    	</a></li>
+						</c:otherwise>    
+			    	</c:choose>
+			    
+			    </c:forEach>
+			  
+			    
+			    <li class="page-item">
+			      <a class="page-link" href="home?pageSize=${page.pageSize }&currentPage=${pm.currentPage + 1}" aria-label="Next">
+			        <span aria-hidden="true">&raquo;</span>
+			        <span class="sr-only">Next</span>
+			      </a>
+			    </li>
+			    
+			  </ul>
+			  
+		</nav>
+	
 
 
 
