@@ -58,6 +58,10 @@ public class HomeController {
 			Integer total = session.selectOne("aaa.bbb.ccc.BaseMapper.totalSize");
 			Integer offset = 5;
 			
+			if(pageSize==null || currentPage==null) {
+				pageSize =5; currentPage=0;
+			}
+			
 			page.setTotalSize(total);
 			page.setPageSize(pageSize);
 			page.setCurrentPage(currentPage*offset);
@@ -84,9 +88,7 @@ public class HomeController {
 			List<Post> postList = new ArrayList<Post>();
 			
 			
-			if(pageSize==null || currentPage==null) {
-				pageSize =5; currentPage=0;
-			}
+
 			
 			//Post post = new Post();
 			if(search==null){
