@@ -55,57 +55,84 @@ public class HomeController {
 			SqlSession session = sqlSessionFactory.openSession();
 			
 			PageManager page = new PageManager();
-			Integer total = session.selectOne("aaa.bbb.ccc.BaseMapper.totalSize");
+			
 			Integer offset = 5;
 			
 			if(pageSize==null || currentPage==null) {
-				pageSize =5; currentPage=0;
+				pageSize =10; currentPage=0;
 			}
 			
-			page.setTotalSize(total);
 			page.setPageSize(pageSize);
 			page.setCurrentPage(currentPage*offset);
-	
+			page.setSearch(search);
 			
 			System.out.println(page.getPageSize());
 			System.out.println(page.getCurrentPage());
 			
 			model.addAttribute("page", page);
 			
-			PageManager postPm = new PageManager();
-			
-			postPm.setCurrentPage(currentPage);
-			postPm.setTotalSize(page.getTotalSize());
-			postPm.setPageSize(page.getPageSize());
-			postPm.setMaxPager(5);
-			
-			System.out.println(postPm.getPageSize());
-			System.out.println(postPm.getCurrentPage());
-			
-			postPm = currentPagerCalculatorIH(postPm);
-			model.addAttribute("pm", postPm);
-			
 			List<Post> postList = new ArrayList<Post>();
-			
-			
-
+					
+			Integer total = 0;
 			
 			//Post post = new Post();
 			if(search==null){
+				total= session.selectOne("aaa.bbb.ccc.BaseMapper.totalSize");
+				
 				postList = session.selectList("aaa.bbb.ccc.BaseMapper.showPostByPage", page);
 				System.out.println(postList);
 	
 			}
 			else {
-				Map<PageManager, String> map = new HashMap<PageManager, String>();
-				map.put(page, search);
+				total= session.selectOne("aaa.bbb.ccc.BaseMapper.totalSizeSearched", search);
 				
-				postList = session.selectList("aaa.bbb.ccc.BaseMapper.searchPostByPage", map);	
+				postList = session.selectList("aaa.bbb.ccc.BaseMapper.searchPostByPage", page);	
 				System.out.println(postList);
-				
+					
 				model.addAttribute("search", search);
 			}
-				
+			
+			
+			
+			PageManager postPm = new PageManager();
+			
+			postPm.setCurrentPage(currentPage);
+			postPm.setTotalSize(total);
+			postPm.setPageSize(page.getPageSize());
+			postPm.setMaxPager(5);
+			
+			System.out.println("토탈"+postPm.getTotalSize());
+			System.out.println("맥스페이져"+postPm.getMaxPager());
+			System.out.println("커런트"+postPm.getCurrentPage());
+			System.out.println("페이지사이즈"+postPm.getPageSize());
+			
+			
+			postPm = currentPagerCalculatorIH(postPm);
+			postPm.setPageSize(page.getPageSize());
+			
+			
+			
+			System.out.println("페이지계산 후");
+			System.out.println("토탈"+postPm.getTotalSize());
+			System.out.println("맥스페이져"+postPm.getMaxPager());
+			System.out.println("커런트"+postPm.getCurrentPage());
+			System.out.println("페이지사이즈"+postPm.getPageSize());
+			
+			System.out.println("스타트"+postPm.getStartPage());
+			System.out.println("앤드"+postPm.getEndPage());
+			
+			model.addAttribute("pm", postPm);
+			
+			
+			int totalEndPage = total/postPm.getPageSize();
+			System.out.println("막페이지"+totalEndPage);
+			
+		
+			model.addAttribute("endPage", totalEndPage);
+			
+			
+			
+			
 			model.addAttribute("postList", postList );
 			
 			session.close();
@@ -638,7 +665,8 @@ public class HomeController {
     	int endPage = 0;
     	
     	endPage = (int) Math.ceil((postPm.getCurrentPage()+1) / (double) postPm.getMaxPager()) * postPm.getMaxPager();
-    	    	
+    	//ok
+    	
     	//System.out.println("Start page"+ (endPage-maxPager));
     	result.setStartPage(endPage-postPm.getMaxPager());
     	

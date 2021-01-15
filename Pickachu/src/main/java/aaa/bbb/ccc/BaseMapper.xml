@@ -64,12 +64,18 @@
 		select count(*) from Post
 	</select>  
  	
+ 	<select id="totalSizeSearched" resultType="Integer" parameterType="String">
+	<bind name="search1" value="'%' + _parameter + '%'" />
+		select count(*) from Post where instaId like #{search1} or description like #{search1}
+	</select>  
+ 	
  	<select id="showPostByPage" resultType="aaa.bbb.ccc.entity.Post" parameterType="aaa.bbb.ccc.entity.PageManager" >
 		select * from Post order by PostId desc limit #{pageSize} offset #{currentPage} 
 	</select> 
   	
-  	<select id="searchPostByPage" resultType="aaa.bbb.ccc.entity.Post" parameterType="hashMap">
-		select * from Post where instaId like #{search} or description like #{search} order by PostId desc limit #{pageSize} offset #{currentPage} 
+  	<select id="searchPostByPage" resultType="aaa.bbb.ccc.entity.Post" parameterType="aaa.bbb.ccc.entity.PageManager">
+		<bind name="search1" value="'%' + _parameter.search + '%'" />
+		select * from Post where instaId like #{search1} or description like #{search1} order by PostId desc limit #{pageSize} offset #{currentPage} 
 	</select> 
   
 </mapper>

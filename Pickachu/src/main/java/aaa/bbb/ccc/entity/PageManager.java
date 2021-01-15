@@ -10,10 +10,17 @@ public class PageManager {
 	private Integer currentPage;
 	private Integer totalSize;
 	
+	private String search;
 	
 	
 	
 	
+	public String getSearch() {
+		return search;
+	}
+	public void setSearch(String search) {
+		this.search = search;
+	}
 	public Integer getStartPage() {
 		return startPage;
 	}
