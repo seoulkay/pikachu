@@ -23,6 +23,6 @@
 	
 	<context:component-scan base-package="aaa.bbb.ccc" />
 	
-	
+	 <annotation-driven />
 	
 </beans:beans>

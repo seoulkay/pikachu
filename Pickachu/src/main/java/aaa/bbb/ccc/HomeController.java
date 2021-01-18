@@ -17,10 +17,13 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.view.RedirectView;
 
 import aaa.bbb.ccc.entity.PageManager;
@@ -684,7 +687,44 @@ public class HomeController {
     	
     	return result;
     }
+    
+    
+    
+    @RequestMapping(value = "onePostViewAjax", method = {RequestMethod.GET}, produces = "application/json")
+	public @ResponseBody Post onePost(@RequestParam("postId") Integer postId){
     	
+    	String resource = "aaa/bbb/ccc/mybatis_config.xml";
+		InputStream inputStream;
+		
+		Post onePost = new Post();
+		
+		try {
+
+			inputStream = Resources.getResourceAsStream(resource);
+			SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
+			SqlSession session = sqlSessionFactory.openSession();
+			
+			Post post = new Post();
+
+			post=session.selectOne("aaa.bbb.ccc.BaseMapper.selectPost", postId );
+			
+			session.close();
+		
+			onePost=post;
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		System.out.println("여기 오냐??"); 
+		
+		return onePost;
+    	
+    	
+    	
+    	//return null;
+    			
+//    			onePost(postId);
+	}
 	
 	
 }
