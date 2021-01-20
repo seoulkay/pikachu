@@ -22,7 +22,6 @@
 	</beans:bean>
 	
 	<context:component-scan base-package="aaa.bbb.ccc" />
-	
-	
+
 	
 </beans:beans>
