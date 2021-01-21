@@ -387,7 +387,7 @@ function clickOnePostButton() {
 					    $('#modalDesc').html(data.description);
 					    $('#modalInsId').html(data.instaId);
 					    // Display Modal
-					    $('#onePostModal').modal('show'); 
+					    //$('#onePostModal').modal('show'); 
 				});
 				
 			}

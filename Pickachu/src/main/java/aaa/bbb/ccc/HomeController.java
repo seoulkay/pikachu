@@ -718,13 +718,45 @@ public class HomeController {
 		System.out.println("네가 여기 도착했다는건 지금 "+postId+"번 글을 보고 있다는 뜻이지."); 
 		
 		return onePost;
-    	
-    	
-    	
-    	//return null;
-    			
-//    			onePost(postId);
+
 	}
-	
+
+
+    @RequestMapping(value = "updatePostAjax", method = {RequestMethod.GET}, produces = "application/json")
+	public @ResponseBody Post updatePost(@RequestParam("postId") Integer postId, String instaId, String description){
+    	
+    	String resource = "aaa/bbb/ccc/mybatis_config.xml";
+		InputStream inputStream;
+		
+		Post onePost = new Post();
+		
+		try {
+
+			inputStream = Resources.getResourceAsStream(resource);
+			SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
+			SqlSession session = sqlSessionFactory.openSession();
+			
+			Post post = new Post();
+			post.setPostId(postId);
+            post.setInstaId(instaId);
+            post.setDescription(description);	
+            
+            session.update("aaa.bbb.ccc.BaseMapper.updatePost", post);
+            session.commit();
+			session.close();
+		
+			onePost=post;
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+			System.out.println("포스트 수정하다가 에러가 났어요.");
+		}
+		System.out.println("네가 여기 도착했다는건 지금 "+postId+"번 글을 수정 성공했다는 뜻이지."); 
+		
+		return onePost;
+
+	}
+    
+    
 	
 }
