@@ -190,7 +190,7 @@ public class HomeController {
 //	Modal post reading 
 	
 
-	@RequestMapping(value = "postOneView", method = {RequestMethod.GET}, produces ="application/jason")
+	@RequestMapping(value = "postOneView", method = {RequestMethod.GET})
 	public @ResponseBody Post postOneView(@RequestParam("postId") Integer postId){
 		
 		
