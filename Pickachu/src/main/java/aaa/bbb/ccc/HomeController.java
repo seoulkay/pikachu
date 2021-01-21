@@ -715,7 +715,7 @@ public class HomeController {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		System.out.println("여기 오냐??"); 
+		System.out.println("네가 여기 도착했다는건 지금 "+postId+"번 글을 보고 있다는 뜻이지."); 
 		
 		return onePost;
     	

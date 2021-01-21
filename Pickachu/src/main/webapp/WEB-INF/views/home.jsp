@@ -93,30 +93,36 @@
 	<div class="row" data-masonry='{"percentPosition": true }' >
 		<c:forEach items="${postList }" var="post" begin="0" >
 			<div class="col-sm-6 col-lg-4 mb-4">
- 				<a href="onePostView?postId=${post.postId }" style="text-decoration:none; color:blue"> 
-<!-- 				<a href="#" onclick='clickOnePostButton(); return false;' style="text-decoration:none; color:blue"> -->
-				<div class="card text-center p-3">
-					<figure class="p-3 mb-0">
-						<blockquote class="blockquote">
-							<p>
-							
-				 	  	 	<h3>${post.description }</h3>
-				 	  	 	
-							</p>
-						</blockquote>
-						<figcaption class="blockquote-footer mb-1 text-muted">
-							
-				 	  	 	${post.instaId }
-				 	  	 	
-						</figcaption>
-					</figure>
-				</div>
+				<a href="#" data-toggle="modal" data-target="#onePostModal" style="text-decoration:none; color:blue">
+<!-- 				<a href="#" onclick='clickOnePostButton(); return false;' style="text-decoration:none; color:blue">  -->
+					<div class="card text-center p-3">
+						<figure class="p-3 mb-0">
+							<blockquote class="blockquote">
+								<p>
+								
+					 	  	 	<h3>${post.description }</h3>
+					 	  	 	
+								</p>
+							</blockquote>
+							<figcaption class="blockquote-footer mb-1 text-muted">
+								
+					 	  	 	${post.instaId }
+					 	  	 	
+							</figcaption>
+						</figure>
+						
+						<button id="onePostButton" type="button" onclick="onePost(${post.postId})" class="btn btn-light" data-mdb-ripple-color="dark" data-bs-toggle="modal" data-bs-target="#onePostModal"  >
+			  				
+						</button>
+						
+					</div>
 				</a>
+			
+				
+				
 			</div>
 			
-			<button id="onePostButton" type="button" onclick="onePost(${post.postId})" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#onePostModal"  >
-			  update
-			</button>
+			
 			
 			
 			
@@ -277,24 +283,38 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">your select</h5>
+        <h5 class="modal-title" id="modalInsId"></h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       
 <!-- 		<form action="updatePostAction" id="updateInput" method="POST"> -->
     	  <div class="modal-body">
       
-        	<div class="form-group">
-			${post.description }
-			</div>
-			<div class="form-group">
-			${post.instaId }
+        	<h4 class="form-group" id="modalDesc" style="color:blue">
+			
+			</h4>
+			<div class="form-group" >
+			
 			</div>
      	 </div>
       
       	<div class="modal-footer">
 <!--         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button> -->
 <!--         <button  class="btn btn-primary">publish</button> -->
+			<button
+			  type="button"
+			  class="btn btn-outline-success btn-floating"
+			  data-mdb-ripple-color="dark"
+			>
+			  <i class="fas fa-star"></i>
+			</button>
+			<button type="button" class="btn btn-danger btn-floating">
+			  <i class="fas fa-magic"></i>
+			</button>
+			<button type="button" class="btn btn-dark btn-floating">
+			  <i class="fab fa-apple"></i>
+			</button>
+
       	</div>
     
 <!--     </form> -->
@@ -363,6 +383,11 @@ function clickOnePostButton() {
 					    <!--alert( "success" );-->
 					    console.log(data.instaId);
 					    console.log(data.description);
+					    // Add data in Modal body
+					    $('#modalDesc').html(data.description);
+					    $('#modalInsId').html(data.instaId);
+					    // Display Modal
+					    $('#onePostModal').modal('show'); 
 				});
 				
 			}
