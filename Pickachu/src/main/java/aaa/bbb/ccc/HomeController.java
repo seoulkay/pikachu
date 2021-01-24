@@ -722,8 +722,8 @@ public class HomeController {
 	}
 
 
-    @RequestMapping(value = "updatePostAjax", method = {RequestMethod.GET}, produces = "application/json")
-	public @ResponseBody Post updatePost(@RequestParam("postId") Integer postId, String instaId, String description){
+    @RequestMapping(value = "updatePostAjax", method = {RequestMethod.POST}, produces = "application/json")
+	public @ResponseBody Post updatePostAjax(@RequestParam("postId") Integer postId, String instaId, String description){
     	
     	String resource = "aaa/bbb/ccc/mybatis_config.xml";
 		InputStream inputStream;

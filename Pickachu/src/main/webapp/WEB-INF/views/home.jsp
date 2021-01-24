@@ -11,16 +11,12 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <!-- Bootstrap core CSS -->
-<link href="/docs/5.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
 
-    <!-- Favicons -->
-<link rel="apple-touch-icon" href="/docs/5.0/assets/img/favicons/apple-touch-icon.png" sizes="180x180">
-<link rel="icon" href="/docs/5.0/assets/img/favicons/favicon-32x32.png" sizes="32x32" type="image/png">
-<link rel="icon" href="/docs/5.0/assets/img/favicons/favicon-16x16.png" sizes="16x16" type="image/png">
-<link rel="manifest" href="/docs/5.0/assets/img/favicons/manifest.json">
-<link rel="mask-icon" href="/docs/5.0/assets/img/favicons/safari-pinned-tab.svg" color="#7952b3">
-<link rel="icon" href="/docs/5.0/assets/img/favicons/favicon.ico">
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"> 
+
+
 <meta name="theme-color" content="#7952b3">
 
     <style>
@@ -50,6 +46,9 @@
 	    }
 		})
       
+
+
+      
     </style>
     
     
@@ -57,7 +56,7 @@
     <!-- Custom styles for this template -->
     <link href="https://fonts.googleapis.com/css?family=Playfair+Display:700,900" rel="stylesheet">
     <!-- Custom styles for this template -->
-    <link href="resources/blog.css" rel="stylesheet">
+<!--     <link href="resources/blog.css" rel="stylesheet"> -->
 
 
 </head>
@@ -90,11 +89,13 @@
 
 	<hr class="my-5" >
 
+
+<!-- 포스트리스트 -->
 	<div class="row" data-masonry='{"percentPosition": true }' >
 		<c:forEach items="${postList }" var="post" begin="0" >
 			<div class="col-sm-6 col-lg-4 mb-4">
-				<a href="#" data-toggle="modal" data-target="#onePostModal" style="text-decoration:none; color:blue">
-<!-- 				<a href="#" onclick='clickOnePostButton(); return false;' style="text-decoration:none; color:blue">  -->
+<!--  				<a href="#" data-toggle="modal" data-target="#onePostModal" style="text-decoration:none; color:blue"> -->
+ 				<a href="#" onclick="onePost(${post.postId})" style="text-decoration:none; color:blue"> 
 					<div class="card text-center p-3">
 						<figure class="p-3 mb-0">
 							<blockquote class="blockquote">
@@ -111,9 +112,9 @@
 							</figcaption>
 						</figure>
 						
-						<button id="onePostButton" type="button" onclick="onePost(${post.postId})" class="btn btn-light" data-mdb-ripple-color="dark" data-bs-toggle="modal" data-bs-target="#onePostModal"  >
+<%-- 						<button id="onePostButton" type="button" onclick="onePost(${post.postId})" class="btn btn-light" data-mdb-ripple-color="dark" style="display:none" > --%>
 			  				
-						</button>
+<!-- 						</button> -->
 						
 					</div>
 				</a>
@@ -201,18 +202,15 @@
 
 
 
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
-<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"> 
-
 <!-- Button trigger modal -->
 <button id="writeButton" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#writeFormModal" style="display: none;">
   write down
 </button>
 
 <!-- Modal -->
-<div class="modal fade" id="writeFormModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="writeFormModalU" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
-    <div class="modal-content">
+    <div class="modal-content" >
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLabel">write down your quote</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -284,11 +282,26 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="modalInsId"></h5>
+        <h5 class="modal-title" id="modalUpdateHeader">update your quotes.</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      
-<!-- 		<form action="updatePostAction" id="updateInput" method="POST"> -->
+      	
+      	
+      	<form action="updatePostAjax" id="updateInput" method="POST"> 
+      		<input id="updatePostId" type="hidden">
+      	
     	  <div class="modal-body">
+      		
+      		
+      		<div class="form-group" >
+			<input class="form-control input-lg" type="text" id="updateDescription" name="description" placeholder="description" autofocus>
+			</div>
+			<div class="form-group" >
+			<input class="form-control input-lg" type="text" id="updateInstaId" name="instaId" placeholder="name" >
+			</div>
+			
+			
+<!--       		<div class="spinner-border text-primary" id="spinner" ></div> -->
       
         	<h4 class="form-group" id="modalDesc" style="color:blue">
 			
@@ -308,15 +321,17 @@
 			>
 			  <i class="fas fa-star"></i>
 			</button>
-			<button type="button" class="btn btn-danger btn-floating">
+			
+			<button type="button" class="btn btn-danger btn-floating" id="updateButton">
 			  <i class="fas fa-magic"></i>
 			</button>
-			<button type="button" class="btn btn-dark btn-floating">
+			
+			<button type="button" onclick="updatePost(description, instaId)" class="btn btn-dark btn-floating" >
 			  <i class="fab fa-apple"></i>
 			</button>
-
+		
       	</div>
-    
+   	 </form>
 <!--     </form> -->
     </div>
   </div>
@@ -330,6 +345,10 @@
 </main>
 
 <script type='text/javascript'>
+
+//업데이트 여부 확인
+var updated = false;
+
 function openModal(){
 	var myModal = document.getElementById('writeFormModal')
 	var myInput = document.getElementById('myInput')
@@ -339,7 +358,7 @@ function openModal(){
 <script>
 // On mouse-over, execute myFunction
 function clickWriteButton() {
-  document.getElementById("writeButton").click(); // Click on the checkbox
+	$('#writeFormModalU').modal('show'); 
 }
 </script>
 
@@ -352,6 +371,9 @@ function clickSearchButton() {
 
 <script>
 // On mouse-over, execute myFunction
+
+
+//파라미터를 받아서 펑션 안에서 모달을 직접 띄워라.
 function clickOnePostButton() {
   document.getElementById("onePostButton").click(); // Click on the checkbox
 }
@@ -369,29 +391,128 @@ function clickOnePostButton() {
   crossorigin="anonymous"></script>
 
 
-<!-- 모달 업데이트  -->
+
+  <script type="text/javascript">
+
+	  	$("#updateButton").click(function(){
+
+	  		$('#modalUpdateHeader').show();
+	  		
+	  		$('#modalInsId').hide();
+	  		$('#modalDesc').hide();
+	  		
+	  		$('#updateDescription').attr("placeholder", $('#modalDesc').text());
+	  		$('#updateInstaId').attr("placeholder", $('#modalInsId').text());
+	  			
+	  		$('#updateDescription').show();
+	  		$('#updateInstaId').show();
+	  		
+	  		
+	  	
+  		})
+
+  </script>
+
+
+
 		<script type="text/javascript">
 			function onePost(param){
+				//기존 모달 내용을 지우는 메소드 실행해라.
+				//$('#onePostModal').empty();
+				
 				 $.ajax({
 			         url: 'onePostViewAjax',
 			 	        
 			    	 method: "GET",
 			 	     data: {'postId': param}
-
+				 
+				 	
+				 	
 			 	})
 				.done(function(data) {
+					
+						$('#modalUpdateHeader').hide();
+						$('#updateDescription').hide();
+						$('#updateInstaId').hide();
+						
+						$('#modalInsId').show();
+				  		$('#modalDesc').show();
 					    <!--alert( "success" );-->
 					    console.log(data.instaId);
 					    console.log(data.description);
+					    console.log(data.postId);
+					    
+					    
+					    // Add data in Modal body
+					    $('#updatePostId').val(data.postId);
+					    $('#modalDesc').html(data.description);
+					    $('#modalInsId').html(data.instaId);
+					    
+					    
+					    // Display Modal
+					    $('#onePostModal').modal('show'); 
+					    
+					    
+					    //console.log(('#updatePostId').val());
+				});
+				
+			}
+		</script>
+		
+		<script type="text/javascript">
+			
+			
+			
+			function updatePost(){
+								
+				var postId = $('#updatePostId').val();
+				var description = $('#updateDescription').val();
+				var instaId = $('#updateInstaId').val();
+				
+				 $.ajax({
+			         url: 'updatePostAjax',
+			 	        
+			    	 method: "POST",
+			 	     data: {'postId': postId, 'instaId' : instaId, 'description' : description}				 	
+				 			//'컨트롤러에서 받는 아이디', 여기에서의 변
+			 	})
+				.done(function(data) {
+					    
+					    console.log(data.instaId);
+					    console.log(data.description);
+					    
+					    
+					    
 					    // Add data in Modal body
 					    $('#modalDesc').html(data.description);
 					    $('#modalInsId').html(data.instaId);
+					    
+					    
+				  		$('#updateDescription').hide();
+				  		$('#updateInstaId').hide();
+
+					    
+					    $('#modalInsId').show();
+				  		$('#modalDesc').show();
+				  		
+				  		updated=true;
 					    // Display Modal
 					    //$('#onePostModal').modal('show'); 
 				});
 				
 			}
+			
+			$('#onePostModal').on('hidden.bs.modal', function () {
+				if(updated){
+					location.reload();
+					console.log("리프레시 페이지");
+				}else{
+					console.log("업데이트가 안됨, 고로 리프레시 안함");
+				}  
+				
+				})
 		</script>
+		
 
 
 
@@ -409,8 +530,6 @@ function clickOnePostButton() {
 <script src="https://cdn.jsdelivr.net/npm/masonry-layout@4.2.2/dist/masonry.pkgd.min.js" integrity="sha384-GNFwBvfVxBkLMJpYMOABq3c+d3KnQxudP/mGPkzpZSTYykLBNsZEnG2D9G/X/+7D" crossorigin="anonymous" async></script>
 
 
-
-<script src="/docs/5.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
 
 <script async src="https://cdn.jsdelivr.net/npm/masonry-layout@4.2.2/dist/masonry.pkgd.min.js" integrity="sha384-GNFwBvfVxBkLMJpYMOABq3c+d3KnQxudP/mGPkzpZSTYykLBNsZEnG2D9G/X/+7D" crossorigin="anonymous"></script>
 
