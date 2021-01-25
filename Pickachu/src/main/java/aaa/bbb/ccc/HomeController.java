@@ -111,82 +111,6 @@ public class HomeController {
 		return "home";
 	}
 	
-	@RequestMapping(value = "/home2", method = RequestMethod.GET)
-	public String home2(Locale locale, Model model, String search, Integer pageSize, Integer currentPage, Integer maxPager) {
-		
-		
-		String resource = "aaa/bbb/ccc/mybatis_config.xml";
-		InputStream inputStream;
-		try {
-			inputStream = Resources.getResourceAsStream(resource);
-			SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
-			SqlSession session = sqlSessionFactory.openSession();
-			maxPager=5;
-
-			if(pageSize==null||currentPage==null) {
-				
-				Integer postTotal = session.selectOne("aaa.bbb.ccc.BaseMapper.countPost");			
-				PageManager totalSize = new PageManager();
-				totalSize.setTotalSize(postTotal);
-				totalSize.setCurrentPage(0);
-				totalSize.setPageSize(5);
-				
-				int showPage = postTotal / totalSize.getPageSize();
-			model.addAttribute("totalSize", totalSize );	
-				pageSize=totalSize.getPageSize();
-				currentPage=0;	
-			}
-
-			if(search==null||search.isEmpty()){
-				
-				Integer postTotal = session.selectOne("aaa.bbb.ccc.BaseMapper.countPost");
-				PageManager totalSize = new PageManager();
-				totalSize.setTotalSize(postTotal);
-				totalSize.setCurrentPage(currentPage);
-				totalSize.setPageSize(pageSize);
-				List<Post> limitPostList = session.selectList("aaa.bbb.ccc.BaseMapper.limitPost", totalSize);
-				int showPage = postTotal / totalSize.getPageSize();
-			model.addAttribute("showPage",showPage );	
-				PageManager postPm = new PageManager();
-				postPm.setCurrentPage(currentPage);
-				postPm.setTotal(totalSize.getTotalSize());
-				postPm.setMaxPager(maxPager);
-				postPm = currentPagerCalculator(postPm);
-			model.addAttribute("pm", postPm );
-			model.addAttribute("totalSize", totalSize );
-			model.addAttribute("postList", limitPostList );
-			
-			}else {
-			
-				Integer searchPostTotal = session.selectOne("aaa.bbb.ccc.BaseMapper.countSearchPost", search);
-				System.out.println("검색어를 집어넣고 전체 게시물의 갯수는 : "+searchPostTotal);
-				PageManager searchTotalSize = new PageManager();
-				searchTotalSize.setSearch(search);
-				searchTotalSize.setTotalSize(searchPostTotal);
-				searchTotalSize.setCurrentPage(currentPage);
-				searchTotalSize.setPageSize(pageSize);
-				int showPage = searchPostTotal / searchTotalSize.getPageSize();
-			model.addAttribute("showPage",showPage );
-				List<Post> limitSearchPostList = session.selectList("aaa.bbb.ccc.BaseMapper.searchLimitPost", searchTotalSize);
-				PageManager postPm = new PageManager();
-				postPm.setCurrentPage(currentPage);
-				postPm.setTotal(searchTotalSize.getTotalSize());
-				postPm.setMaxPager(maxPager);
-				postPm = currentPagerCalculator(postPm);
-			model.addAttribute("pm", postPm );
-			model.addAttribute("postList", limitSearchPostList );
-			model.addAttribute("totalSize", searchTotalSize );
-			model.addAttribute("search", search);
-			}
-			
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-		return "home2";
-	}
-	
-	
 //	Modal post reading 
 	
 
@@ -213,6 +137,45 @@ public class HomeController {
 		} catch (IOException e) {
 			e.printStackTrace();
 			System.out.println("포스트 하나 보여 주다가 에러가 났어요  ");
+			
+		}
+		System.out.println(result.getPostId());
+	 return result;
+	}
+	
+	
+	
+	@RequestMapping(value = "postOneUpdate", method = {RequestMethod.POST})
+	public @ResponseBody Post postOneUpdate(@RequestParam("postId") Integer postId, String instaId, String picture, String description){
+		
+		
+		String resource = "aaa/bbb/ccc/mybatis_config.xml";
+		InputStream inputStream;
+		Post result = new Post() ;
+
+		
+		try {
+			
+			inputStream = Resources.getResourceAsStream(resource);
+			SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
+			SqlSession session = sqlSessionFactory.openSession();
+
+			Post post = new Post();
+			post.setPostId(postId);
+			post.setInstaId(instaId);
+			post.setPicture(picture);
+			post.setDescription(description);
+			
+			session.update("aaa.bbb.ccc.BaseMapper.updatePost", post);
+			session.commit();
+			session.close();
+			
+			result = post ;	
+			
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+			System.out.println("포스트 수정하다가 에러가 났어요  ");
 			
 		}
 		System.out.println(result.getPostId());
@@ -285,7 +248,7 @@ public class HomeController {
 	}
 	
 	@RequestMapping(value = "postFormAction", method = RequestMethod.POST)
-	public RedirectView postFormAction(Locale locale, Model model, String instaId,String picture, String description ) {
+	public RedirectView postFormAction(Locale locale, Model model, String instaId, String picture, String description ) {
 	
 		String resource = "aaa/bbb/ccc/mybatis_config.xml";
 		InputStream inputStream;
@@ -338,7 +301,7 @@ public class HomeController {
 			System.out.println("포스트 수정하다가 에러가 났어요  ");
 		}
 		
-		return new RedirectView("post?postId="+postId);
+		return new RedirectView("/ccc/home");
 	}
 	
 	@RequestMapping(value = "postDeleteAction", method = RequestMethod.GET)

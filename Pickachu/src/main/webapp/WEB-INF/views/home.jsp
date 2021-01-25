@@ -23,7 +23,6 @@
 <link rel="apple-touch-icon" href="/docs/5.0/assets/img/favicons/apple-touch-icon.png" sizes="180x180">
 <link rel="icon" href="/docs/5.0/assets/img/favicons/favicon-32x32.png" sizes="32x32" type="image/png">
 <link rel="icon" href="/docs/5.0/assets/img/favicons/favicon-16x16.png" sizes="16x16" type="image/png">
-<link rel="manifest" href="/docs/5.0/assets/img/favicons/manifest.json">
 <link rel="mask-icon" href="/docs/5.0/assets/img/favicons/safari-pinned-tab.svg" color="#7952b3">
 <link rel="icon" href="/docs/5.0/assets/img/favicons/favicon.ico">
 <meta name="theme-color" content="#7952b3">
@@ -80,8 +79,8 @@
 			 	  	 	<small>${post.create }</small>
 			 	  	 </div>
 			 	  	 <div class="col-6 text-center">
-			 	  	 	<a href="http://localhost:8080/ccc/post?postId=${post.postId}">${post.description }</a>
-			 	  	 	<button  onclick="postOne(${post.postId})">${post.postId} </button>
+			 	  	 	<a href="#" onclick="postOne(${post.postId})">${post.description }</a>
+		
 			 	  	 	
 			 	  	 </div>
 			 	  	 <div class="col-3 text-center">
@@ -152,8 +151,6 @@
   <!-- modal 시작  -->
 		<!-- Button trigger modal -->
 
-		<button  style="display: none;" id="newButton" type="button" class="nav-link" data-bs-toggle="modal" data-bs-target="#newPostModal">새글쓰기 </button>
-
 			<!-- Modal -->
 			<div class="modal fade" id="newPostModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
 			  <div class="modal-dialog">
@@ -162,37 +159,40 @@
 			        <h5 class="modal-title" id="staticBackdropLabel">새글 입력할거에요</h5>
 			        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 			      </div>
-			      <div class="modal-body">
+			      
 			      
 			       <form action="postFormAction" id="myForm" class="form-inline" method="post">
-			 	 	<i class="fas fa-search" aria-hidden="true"></i>
-						 	 	<table>
-					 	 	<tr>
-						 	 	<td colspan=3>
-								<textarea  name="description" rows="13" cols="46" ></textarea>
-								</td>
-					 	 	</tr>
-					 	 	</table>
-					 	 	<div class="mb-3">
-			  					<label for="formFileSm" class="form-label"></label>
-			 					<input class="form-control form-control-sm" id="formFileSm" name="picture" type="file">
-								</div>
-					 	 	<table style="margin-left: auto; margin-right:auto;">
-				 	 		<tr>
-					 	 		<td><input class="form-control form-control-sm" type="text" name="instaId" placeholder="your instaID" aria-label="instaId"></td>
-					 	 		<td colspan=4>
-					 	 		<button type="submit" class="btn btn-secondary">V</button>
-					 	 		 <button type="submit" onclick="reset()" class="btn btn-secondary">X</button>
-					 	 		
-						 	 	</td>
-					 	 	</tr>
-			 	 	</table>
-			 	 </form>
-			
-			      </div>
-			      <div class="modal-footer">
-			        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-			      </div>
+			     	 <div class="modal-body">
+				 	 	<i class="fas fa-search" aria-hidden="true"></i>
+							 <table>
+						 	 	<tr>
+							 	 	<td colspan=3>
+									<textarea  name="description" rows="13" cols="46" ></textarea>
+									</td>
+						 	 	</tr>
+						 	 </table>
+						 	 	<div class="mb-3">
+				  					<label for="formFileSm" class="form-label"></label>
+				 					<input class="form-control form-control-sm" id="formFileSm" name="picture" type="file">
+									</div>
+						 	 	<table style="margin-left: auto; margin-right:auto;">
+					 	 		<tr>
+						 	 		<td><input class="form-control form-control-sm" type="text" name="instaId" placeholder="your instaID" aria-label="instaId"></td>
+						 	 		<td colspan=4>
+					
+							 	 	</td>
+						 	 	</tr>
+				 	 	</table>
+					      <div class="modal-footer">
+					      <button  type="submit" class="btn btn-secondary">V</button>
+					      <button  onclick="reset()" class="btn btn-secondary">X</button>
+					      </div>
+				      
+				     	 </div>
+			      
+			       </form>
+			       
+			       
 			    </div>
 			  </div>
 			</div>
@@ -200,29 +200,71 @@
 		
 <!-- 	모달로 읽어올꺼에 -->
 	
-	<button  style="display: none;" id="rPost" type="button" class="nav-link" data-bs-toggle="modal" data-bs-target="#rPost">포스트읽어오 </button>
-
 			<!-- Modal -->
-			<div class="modal fade" id="postOneModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+			<div class="modal fade" id="postOneModal">
 			  <div class="modal-dialog">
 			    <div class="modal-content">
 			      <div class="modal-header">
 			        <h5 class="modal-title" id="staticBackdropLabel">하나의 포스트를 보여줄거에요</h5>
 			        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 			      </div>
+			      <form action="postOneUpdate" id="myForm" class="form-inline" method="post">
+			      <input type="hidden" name="postId" id="updatePostId">
 			      <div class="modal-body">
-			      
-			     	   <input class="form-control" type="text" placeholder="${postOne.description }" aria-label="readonly input example" readonly>
-  					  <small>${postOne.instaId} :	${postOne.create}   </small><br><br>
-			
+			     	   <input class="form-control" type="text" aria-label="readonly input example" readonly id="postDescription">
+  					  <small id="instaId">   </small><br><br>
+	  					  	
+							<button type="button" onclick="updatePostInput()" class="btn btn-outline-secondary" id="inputUpButton">update</button>
+							
+							
+							
+							
+							
+							
+<!-- 							<form action="postUpdateAction" id="myForm" class="form-inline" method="post"> -->
+<!-- 						 	 	<i class="fas fa-search" aria-hidden="true"></i> -->
+<!-- 						 	 	<textarea  name="description" style="resize: none;" rows="5" cols="40" id="updateDescriptionInput"></textarea> -->
+<!-- 						 	 	<div class="mb-3" id="updateFile"> -->
+<!-- 					  				<label for="formFileSm" class="form-label"></label> -->
+<!-- 					 				<input class="form-control form-control-sm" name="picture" type="file"> -->
+<!-- 								</div> -->
+<!-- 	  					    	<input class="form-control form-control-sm" type="text" name="instaId" aria-label="instaId" id="updateInstaIdInput">	 -->
+<!-- 								<input type="hidden" name="postId" id="updatePostId"> -->
+<!-- 								<button type="submit" class="btn btn-secondary" id="goUpButton">V</button> -->
+<!-- 						 	 </form> -->
+						 	 
+						 	 
+						 	 	<i class="fas fa-search" aria-hidden="true"></i>
+						 	 	<textarea  name="description" style="resize: none;" rows="5" cols="40" id="updateDescriptionInput"></textarea>
+						 	 	<div class="mb-3">
+					  				<label for="formFileSm" class="form-label"></label>
+					 				<input class="form-control form-control-sm" name="picture" type="file" id="updateFile">
+								</div>
+	  					    	<input class="form-control form-control-sm" type="text" name="instaId" aria-label="instaId" id="updateInstaIdInput">	
+								
+								<button type="button" onclick="goPostUpdate(description, instaId)" class="btn btn-secondary" id="goUpButton">V</button>
+						 	 
+							
+							
+							
 			      </div>
-			      <div class="modal-footer">
+			      
+			       <div class="modal-footer">
 			        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
 			      </div>
+			      
+			      </form>
+			      
+			     
 			    </div>
 			  </div>
 			</div>	
 
+
+
+
+
+<div id="loadingSpinner" style="display:none" class="spinner-border"></div>
 
 </main>
 </div>
@@ -249,30 +291,90 @@
 		function reset() {
 			 document.getElementById("myForm").reset();
 			}
+		</script>	
 		
+		<script type="text/javascript">	
 		function newButton() {
-			  document.getElementById("newButton").click(); 
+			$('#loadingSpinner').show();
+			$('#loadingSpinner').hide();
+			$('#newPostModal').modal('show');  
 			}
 	
-</script>
+		</script>
 
-<script type="text/javascript">
+		<script type="text/javascript">
 			function postOne(param){
 				 $.ajax({
 			         url: 'postOneView',
 			 	     contentType: 'application/json',
 			    	 method: "GET",
-			 	     data: {'postId': param}
+			 	     data: {'postId': param},
+			 	     beforeSend: function () {
+			 	    	 console.log("아닌거 같은데");
+			 	    	 //스피너를 돌리면 
+			 	    	 $('#loadingSpinner').show();
+			 	    	$('#inputUpButton').show();
+			 	     },
 			 	})
 				.done(function(data) {
-					    <!--alert( "success" );-->
-					    console.log(data.instaId);
-					    console.log(data.description);
+						$('#updateDescriptionInput').hide(); 
+						
+						$('#postDescription').show(); 
+						$('#instaId').show(); 
+						$('#updateFile').hide(); 
+						$('#updateInstaIdInput').hide(); 
+						$('#goUpButton').hide(); 
+						$('#updatePostId').val(data.postId);
+						
+						$('#updateDescriptionInput').html(data.description);
+						$('#updateInstaIdInput').val(data.instaId);
+						$('#postDescription').attr("placeholder",data.description);
+						$('#instaId').html(data.instaId);
+						$('#loadingSpinner').hide();
+						$('#postOneModal').modal('show');   
+						$('#updatePostId').html(data.postId);
+						
 				});
-				
+
 			}
 		</script>
 
+		<script type="text/javascript">
+			function updatePostInput(){
+				
+				$('#postDescription').hide(); 
+				$('#instaId').hide(); 
+				$('#updateDescriptionInput').show(); 
+				$('#updateFile').show(); 
+				$('#updateInstaIdInput').show(); 
+				$('#inputUpButton').hide(); 
+				$('#goUpButton').show(); 
+				
+			}	
+		</script>
+
+
+		<script type="text/javascript">
+			function goPostUpdate(){
+				
+					var postId = $('#updatePostId');
+					var picture = $('#updateFile').val();
+					var description = $('#updateDescriptionInput').val();
+					var instaId = $('#updateInstaIdInput').val();
+					
+				 $.ajax({
+			         url: 'postOneUpdate',
+			    	 method: "POST",
+			 	     data: {'postId': postId, 'description': description , 'picture' : picture, 'instaId' : instaId}
+
+			 	})
+				.done(function(data) {
+					$('#postOneModal').modal('hide'); 
+					
+				});
+
+			}
+		</script>
 	
 	
 </html>
