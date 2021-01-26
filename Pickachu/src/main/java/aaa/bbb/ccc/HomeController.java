@@ -229,20 +229,20 @@ public class HomeController {
 			
 			
 			
-			
 			Member member = new Member();
 			member.seteMailMember(eMailMember);
 			member.setPenName(penName);
 			member.setPasswordMember(passwordMember);
 			
 			
-			if(member.getPasswordMember() != passwordMemberRepeat) {
-				System.out.println("비밀번호 불일치");
-			}else {
+			if(member.getPasswordMember().equals(passwordMemberRepeat)) {
 				session.insert("aaa.bbb.ccc.BaseMapper.signUp", member);
 				model.addAttribute("member", member );
-			
+				
 				session.commit();
+				
+			}else {
+				System.out.println("비밀번호 불일치");
 			}
 			
 			session.close();
@@ -800,5 +800,64 @@ public class HomeController {
 	}
     
     
-	
+    @RequestMapping(value = "eMailCheckAjax", method = {RequestMethod.POST}, produces = "application/json")
+ 	public @ResponseBody Integer eMailCheckAjax(@RequestParam("eMailMember") String eMailMember){
+     	
+     	String resource = "aaa/bbb/ccc/mybatis_config.xml";
+ 		InputStream inputStream;
+ 		
+ 		Integer count = 0;
+ 		
+ 		try {
+
+ 			inputStream = Resources.getResourceAsStream(resource);
+ 			SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
+ 			SqlSession session = sqlSessionFactory.openSession();
+ 			
+            count = session.selectOne("aaa.bbb.ccc.BaseMapper.eMailMemberCounter", eMailMember);
+            session.commit();
+ 			session.close();
+
+ 			
+ 		} catch (IOException e) {
+ 			e.printStackTrace();
+ 			System.out.println("이메일 중복 갯수 셀 때 디비에서  문제가 발생");
+ 		}
+ 		System.out.println("동일한 이메일이 "+count+"개 있습니다."); 
+ 		
+ 		return count;
+
+ 	}
+    
+    @RequestMapping(value = "penNameCheckAjax", method = {RequestMethod.POST}, produces = "application/json")
+ 	public @ResponseBody Integer penNameCheckAjax(@RequestParam("penName") String penName){
+     	
+     	String resource = "aaa/bbb/ccc/mybatis_config.xml";
+ 		InputStream inputStream;
+ 		
+ 		Integer count = 0;
+ 		
+ 		try {
+
+ 			inputStream = Resources.getResourceAsStream(resource);
+ 			SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
+ 			SqlSession session = sqlSessionFactory.openSession();
+ 			
+            count = session.selectOne("aaa.bbb.ccc.BaseMapper.penNameCounter", penName);
+            session.commit();
+ 			session.close();
+
+ 			
+ 		} catch (IOException e) {
+ 			e.printStackTrace();
+ 			System.out.println("펜네임 중복 갯수 셀 때 디비에서  문제가 발생");
+ 		}
+ 		System.out.println("동일한 펜네임이 "+count+"개 있습니다."); 
+ 		
+ 		return count;
+
+ 	}
+    
+    
+    
 }

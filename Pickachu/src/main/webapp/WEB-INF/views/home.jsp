@@ -47,14 +47,14 @@
 		})
       
 
-		input[type=text], input[type=password] {
-		  width: 100%;
-		  padding: 15px;
-		  margin: 5px 0 22px 0;
-		  display: inline-block;
-		  border: none;
-		  background: #f1f1f1;
-		}
+/* 		input[type=text], input[type=password] { */
+/* 		  width: 100%; */
+/* 		  padding: 15px; */
+/* 		  margin: 5px 0 22px 0; */
+/* 		  display: inline-block; */
+/* 		  border: none; */
+/* 		  background: #f1f1f1; */
+/* 		} */
       
     </style>
     
@@ -314,12 +314,12 @@
       
       	<div class="modal-footer">
 <!--         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button> -->
-        <button  class="btn btn-primary">sign up</button>
+        <button type="button" class="btn btn-primary" onclick="signUpSubmitCheck()">sign up</button>
       	</div>
     	
-    	<c:if test="${member.passwordMember != passwordMemberRepeat}">
-		    alert( "success" );
-		</c:if>
+<%--     	<c:if test="${member.passwordMember != passwordMemberRepeat}"> --%>
+<!-- 		    alert( "success" ); -->
+<%-- 		</c:if> --%>
     	
     </form>
     </div>
@@ -407,7 +407,44 @@ function openModal(){
 	var myModal = document.getElementById('writeFormModal')
 	var myInput = document.getElementById('myInput')
 }
+
+function signUpSubmitCheck(){
+
+	var str = $(#패스워드);
+	var re = "/^(?=.*[a-zA-Z])((?=.*\d)|(?=.*\W)).{6,20}$/";
+	var found = str.match(re);
+	if(found==true){
+		//패스워드 비교 조건문
+			if(패스워드==패스워드리핏){
+				
+				if(idCheckOk){
+					if(penNameCheckOk){
+						//버튼 클릭시 서브밋을 해라.										
+					}else{
+						//.html("펜네임 중복확인을 해주세요.")	
+					}
+				}else{
+					//.html("아이디 중복확인을 해주세요.")	
+				}
+			}else{
+				//경고를 띄우든지, 뭘 해라.
+				//폼 안에 글을 하나 쓰게 html<h3 id="fdaf"></h3>만들어놓고, 여기서 $(#아이디).html(""); 넣어
+			}
+		
+	}else{
+		//경고를 띄우든지, 뭘 해라.
+		//폼 안에 글을 하나 쓰게 html<h3 id="fdaf"></h3>만들어놓고, 여기서 $(#아이디).html(""); 넣어
+	}
+}
+
+console.log(found);
+
+
+
 </script>
+
+
+
 
 <script>
 // On mouse-over, execute myFunction
@@ -475,12 +512,18 @@ function clickOnePostButton() {
 
 
 		<script type="text/javascript">
+			// var idCheckOk = false;
+			// var penNameCheckOk = false;
+			
 			function onePost(param){
 				
 				
 				 $.ajax({
 			         url: 'onePostViewAjax',
 			 	        
+			         //팬네임 체크 
+			         //포스트로 보내는 걸 추천
+			         
 			    	 method: "GET",
 			 	     data: {'postId': param}
 				 
@@ -488,6 +531,14 @@ function clickOnePostButton() {
 				 	
 			 	})
 				.done(function(data) {
+					
+					//펜네임 체크
+					//데이터가 오면 여기서 이프를 걸어라.
+					//if(data=1){
+					//	아이디 중복 .html("아아디 중복입니다.");
+					//	아이디 ok .html("아아디 사용이 가능합니다.");
+					//  idCheckOk = true;
+					
 					
 						$('#modalUpdateHeader').hide();
 						$('#updateDescription').hide();
@@ -515,6 +566,12 @@ function clickOnePostButton() {
 				});
 				
 			}
+				
+				
+				
+				
+				
+				
 		</script>
 		
 		<script type="text/javascript">

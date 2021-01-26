@@ -5,6 +5,7 @@
 <mapper namespace="aaa.bbb.ccc.BaseMapper">
   <select id="selectPost" resultType="aaa.bbb.ccc.entity.Post" parameterType="aaa.bbb.ccc.entity.Post">
     select * from Post where postId = #{postId}
+
   </select>
   
   <select id="allPost" resultType="aaa.bbb.ccc.entity.Post">
@@ -83,6 +84,13 @@
  	values (#{eMailMember}, #{penName}, #{passwordMember}, now()) 
   	</insert>
   
+  	<select id="penNameCounter" parameterType="String" resultType="Integer">
+  	    select count(*) from Member where PenName = #{penName}
+  	</select>
+  
+  	<select id="eMailMemberCounter" parameterType="String" resultType="Integer">
+  	    select count(*) from Member where eMailMember = #{eMailMember}
+  	</select>
   
 </mapper>
 
