@@ -47,7 +47,14 @@
 		})
       
 
-
+		input[type=text], input[type=password] {
+		  width: 100%;
+		  padding: 15px;
+		  margin: 5px 0 22px 0;
+		  display: inline-block;
+		  border: none;
+		  background: #f1f1f1;
+		}
       
     </style>
     
@@ -69,7 +76,7 @@
 	  <div class="container-fluid">
 	    <h2 style="color:black">
 		hello stranger. <a href="#" onclick='clickWriteButton(); return false;' style="text-decoration:none; color:red">write down</a> your wisdom. thanks to you we all might overcome depression and anxiety. you can <a href="#" onclick='clickSearchButton(); return false;'   style="text-decoration:none; color:violet">search</a> other's thoughts.
-		just become our <a href="writeForm?" style="text-decoration:none; color:green">member</a> for more of use.
+		just become our <a href="#" onclick='clickMemberButton(); return false;' style="text-decoration:none; color:green">member</a> for more of use.
 		</h2>
 	
 	  </div>
@@ -271,10 +278,57 @@
 </div>
 
 
-
+<!-- MEMBER -->
 <!-- Button trigger modal -->
-<%-- <button id="onePostButton" type="button" onclick="postUpdate(${post.postId})" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#writeFormModal" style="display: none;"> --%>
+<button id="memberButton" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#signUpFormModal" style="display: none;">
+  sign up
+</button>
 
+<!-- Modal -->
+<div class="modal fade" id="signUpFormModalU" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content" >
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">join us now</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      
+		<form action="signUpFormInput" id="signUpFormInput" method="POST">
+    	  <div class="modal-body">
+      
+        	<div class="form-group">
+        	
+			<input class="form-control input-lg" type="text" name="eMailMember" placeholder="Email" autofocus>
+			</div>
+			<div class="form-group">
+			<input class="form-control input-lg" type="text" name="penName" placeholder="Pen Name" >
+			</div>
+			<div class="form-group">
+			<input class="form-control input-lg" type="password" name="passwordMember" placeholder="Password" >
+			</div>
+			<div class="form-group">
+			<input class="form-control input-lg" type="password" name="passwordMemberRepeat" placeholder="Confirm Password" >
+			</div>
+
+     	 </div>
+      
+      	<div class="modal-footer">
+<!--         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button> -->
+        <button  class="btn btn-primary">sign up</button>
+      	</div>
+    	
+    	<c:if test="${member.passwordMember != passwordMemberRepeat}">
+		    alert( "success" );
+		</c:if>
+    	
+    </form>
+    </div>
+  </div>
+</div>
+
+
+
+<!-- ONE POST -->
 
 <!-- Modal -->
 <div class="modal fade" id="onePostModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -339,10 +393,10 @@
 
 
 
-
-
-
 </main>
+
+
+
 
 <script type='text/javascript'>
 
@@ -370,8 +424,14 @@ function clickSearchButton() {
 </script>
 
 <script>
-// On mouse-over, execute myFunction
+function clickMemberButton() {
+	$('#signUpFormModalU').modal('show'); 
+}
+</script>
 
+
+<script>
+// On mouse-over, execute myFunction
 
 //파라미터를 받아서 펑션 안에서 모달을 직접 띄워라.
 function clickOnePostButton() {
@@ -406,8 +466,7 @@ function clickOnePostButton() {
 	  			
 	  		$('#updateDescription').show();
 	  		$('#updateInstaId').show();
-	  		
-	  		
+	  			  		
 	  	
   		})
 
@@ -417,8 +476,7 @@ function clickOnePostButton() {
 
 		<script type="text/javascript">
 			function onePost(param){
-				//기존 모달 내용을 지우는 메소드 실행해라.
-				//$('#onePostModal').empty();
+				
 				
 				 $.ajax({
 			         url: 'onePostViewAjax',
@@ -474,7 +532,7 @@ function clickOnePostButton() {
 			 	        
 			    	 method: "POST",
 			 	     data: {'postId': postId, 'instaId' : instaId, 'description' : description}				 	
-				 			//'컨트롤러에서 받는 아이디', 여기에서의 변
+				 			//'컨트롤러에서 받는 아이디' : 여기에서의 변수 
 			 	})
 				.done(function(data) {
 					    

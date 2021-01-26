@@ -78,5 +78,11 @@
 		select * from Post where instaId like #{search1} or description like #{search1} order by PostId desc limit #{pageSize} offset #{currentPage} 
 	</select> 
   
+    <insert id="signUp" parameterType="aaa.bbb.ccc.entity.Member">
+ 	insert into Member (eMailMember, penName, passwordMember, createdMember)
+ 	values (#{eMailMember}, #{penName}, #{passwordMember}, now()) 
+  	</insert>
+  
+  
 </mapper>
 

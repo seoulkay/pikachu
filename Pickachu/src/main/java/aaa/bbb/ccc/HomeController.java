@@ -29,7 +29,7 @@ import org.springframework.web.servlet.view.RedirectView;
 import aaa.bbb.ccc.entity.PageManager;
 import aaa.bbb.ccc.entity.Post;
 import aaa.bbb.ccc.entity.Reply;
-
+import aaa.bbb.ccc.entity.Member;
 
 /**
  * Handles requests for the application home page.
@@ -212,6 +212,48 @@ public class HomeController {
 			
 		return new RedirectView("home");
 	}
+
+	
+	@RequestMapping(value = "/signUpFormInput", method = RequestMethod.POST)
+	public RedirectView signUpFormInput(Locale locale, Model model, String eMailMember,	String penName, String passwordMember, String passwordMemberRepeat) {
+		
+		String resource = "aaa/bbb/ccc/mybatis_config.xml";
+		InputStream inputStream;
+		
+		
+		
+		try {
+			inputStream = Resources.getResourceAsStream(resource);
+			SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
+			SqlSession session = sqlSessionFactory.openSession();
+			
+			
+			
+			
+			Member member = new Member();
+			member.seteMailMember(eMailMember);
+			member.setPenName(penName);
+			member.setPasswordMember(passwordMember);
+			
+			
+			if(member.getPasswordMember() != passwordMemberRepeat) {
+				System.out.println("비밀번호 불일치");
+			}else {
+				session.insert("aaa.bbb.ccc.BaseMapper.signUp", member);
+				model.addAttribute("member", member );
+			
+				session.commit();
+			}
+			
+			session.close();
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+			
+		return new RedirectView("home");
+	}
+	
 	
 
 	@RequestMapping(value = "/onePostView", method = RequestMethod.GET)
