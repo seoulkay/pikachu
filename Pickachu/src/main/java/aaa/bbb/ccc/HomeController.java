@@ -807,6 +807,7 @@ public class HomeController {
  		InputStream inputStream;
  		
  		Integer count = 0;
+ 		String email = new String();
  		
  		try {
 
@@ -817,7 +818,7 @@ public class HomeController {
             count = session.selectOne("aaa.bbb.ccc.BaseMapper.eMailMemberCounter", eMailMember);
             session.commit();
  			session.close();
-
+ 			
  			
  		} catch (IOException e) {
  			e.printStackTrace();
@@ -846,7 +847,7 @@ public class HomeController {
             count = session.selectOne("aaa.bbb.ccc.BaseMapper.penNameCounter", penName);
             session.commit();
  			session.close();
-
+ 			
  			
  		} catch (IOException e) {
  			e.printStackTrace();

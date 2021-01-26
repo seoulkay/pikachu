@@ -298,22 +298,29 @@
       
         	<div class="form-group">
         	
-			<input class="form-control input-lg" type="text" name="eMailMember" placeholder="Email" autofocus>
+			<input class="form-control input-lg" type="text" name="eMailMember" placeholder="Email" id="eMailMember"autofocus>
+			<button type="button" class="btn btn-secondary" onclick="eMailCheck(eMailMember)">check</button>
+			
+			</div>
+			
+			<div class="form-group">
+			<input class="form-control input-lg" type="text" name="penName" placeholder="Pen Name" id="penName">
+			<button type="button" class="btn btn-secondary" onclick="penNameCheck(penName)">check</button>
+			</div>
+			
+			<div class="form-group">
+			<input class="form-control input-lg" type="password" name="passwordMember" placeholder="Password" id="passwordMember" >
 			</div>
 			<div class="form-group">
-			<input class="form-control input-lg" type="text" name="penName" placeholder="Pen Name" >
-			</div>
-			<div class="form-group">
-			<input class="form-control input-lg" type="password" name="passwordMember" placeholder="Password" >
-			</div>
-			<div class="form-group">
-			<input class="form-control input-lg" type="password" name="passwordMemberRepeat" placeholder="Confirm Password" >
+			<input class="form-control input-lg" type="password" name="passwordMemberRepeat" placeholder="Confirm Password" id="passwordMemberRepeat" >
 			</div>
 
      	 </div>
       
+
       	<div class="modal-footer">
-<!--         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button> -->
+		<h5 id="eMailErrorMsg"></h5>
+		<h5 id="penNameErrorMsg"></h5>
         <button type="button" class="btn btn-primary" onclick="signUpSubmitCheck()">sign up</button>
       	</div>
     	
@@ -410,23 +417,25 @@ function openModal(){
 
 function signUpSubmitCheck(){
 
-	var str = $(#패스워드);
+	var str = $('#passwordMember');
 	var re = "/^(?=.*[a-zA-Z])((?=.*\d)|(?=.*\W)).{6,20}$/";
 	var found = str.match(re);
+	
 	if(found==true){
 		//패스워드 비교 조건문
-			if(패스워드==패스워드리핏){
+			if($('#passwordMember')==$('#passwordMemberRepeat')){
 				
-				if(idCheckOk){
+				if(eMailCheckOk){
 					if(penNameCheckOk){
 						//버튼 클릭시 서브밋을 해라.										
 					}else{
-						//.html("펜네임 중복확인을 해주세요.")	
+						$('#penNameErrorMsg').html("펜네임 중복확인을 해주세요.");	
 					}
 				}else{
-					//.html("아이디 중복확인을 해주세요.")	
+					$('#eMailErrorMsg').html("아이디 중복확인을 해주세요.");	
 				}
 			}else{
+				$('#penNameErrorMsg').html("비밀번호가 일치하지 않습니다.");	
 				//경고를 띄우든지, 뭘 해라.
 				//폼 안에 글을 하나 쓰게 html<h3 id="fdaf"></h3>만들어놓고, 여기서 $(#아이디).html(""); 넣어
 			}
@@ -434,10 +443,11 @@ function signUpSubmitCheck(){
 	}else{
 		//경고를 띄우든지, 뭘 해라.
 		//폼 안에 글을 하나 쓰게 html<h3 id="fdaf"></h3>만들어놓고, 여기서 $(#아이디).html(""); 넣어
+		$('#penNameErrorMsg').html("비밀번호는 6~20자 영문 대소문자 및 숫자를 혼합하여 지정해주세요.");
 	}
 }
 
-console.log(found);
+//console.log(found);
 
 
 
@@ -512,8 +522,71 @@ function clickOnePostButton() {
 
 
 		<script type="text/javascript">
-			// var idCheckOk = false;
-			// var penNameCheckOk = false;
+		
+		
+			var eMailCheckOk = false;
+			var penNameCheckOk = false;
+			
+			function eMailCheck(param){
+				
+				 $.ajax({
+			         url: 'eMailCheckAjax',
+			 	        
+			         //팬네임 체크 
+			         //포스트로 보내는 걸 추천
+			         
+			    	 method: "POST",
+			 	     data: {'eMailMember': param}
+				 	
+			 	})
+				.done(function(data) {
+					
+					//펜네임 체크
+					//데이터가 오면 여기서 이프를 걸어라.
+					if(data=1){
+					//	아이디 중복 .html("아아디 중복입니다.");
+						$('#eMailErrorMsg').html("Email is already used.");
+					}else{
+						$('#eMailErrorMsg').html("Email is ok.");
+						//	아이디 ok .html("아아디 사용이 가능합니다.");
+						eMailCheckOk = true;
+					}
+
+				});
+				
+			}
+			
+			
+			function penNameCheck(param){
+				
+				 $.ajax({
+			         url: 'penNameCheckAjax',
+			 	        
+			         //팬네임 체크 
+			         //포스트로 보내는 걸 추천
+			         
+			    	 method: "POST",
+			 	     data: {'penName': param}
+				 	
+			 	})
+				.done(function(data) {
+					
+					//펜네임 체크
+					//데이터가 오면 여기서 이프를 걸어라.
+					if(data=1){
+					//	아이디 중복 .html("아아디 중복입니다.");
+						$('#penNameErrorMsg').html("Pen name is already used.");
+					}else{
+						$('#penNameErrorMsg').html("Pen name is ok.");
+						//	아이디 ok .html("아아디 사용이 가능합니다.");
+						penNameCheckOk = true;
+					}
+
+				});
+				
+			}
+			
+			
 			
 			function onePost(param){
 				
