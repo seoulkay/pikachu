@@ -299,13 +299,13 @@
         	<div class="form-group">
         	
 			<input class="form-control input-lg" type="text" name="eMailMember" placeholder="Email" id="eMailMember"autofocus>
-			<button type="button" class="btn btn-secondary" onclick="eMailCheck(eMailMember)">check</button>
+			<button type="button" class="btn btn-secondary" onclick="eMailCheck()">check</button>
 			
 			</div>
 			
 			<div class="form-group">
 			<input class="form-control input-lg" type="text" name="penName" placeholder="Pen Name" id="penName">
-			<button type="button" class="btn btn-secondary" onclick="penNameCheck(penName)">check</button>
+			<button type="button" class="btn btn-secondary" onclick="penNameCheck()">check</button>
 			</div>
 			
 			<div class="form-group">
@@ -417,17 +417,20 @@ function openModal(){
 
 function signUpSubmitCheck(){
 
-	var str = $('#passwordMember');
-	var re = "/^(?=.*[a-zA-Z])((?=.*\d)|(?=.*\W)).{6,20}$/";
-	var found = str.match(re);
+	var str = $('#passwordMember').val();
+	//var re = /^.*(?=^.{6,15}$)(?=.*\d)(?=.*[a-zA-Z])(?=.*[!@#$%^&+=]).*$/;
+	var re = /^[0-9a-z]+$/;
+	var found = re.test(str);
+	console.log(found);
 	
 	if(found==true){
 		//패스워드 비교 조건문
-			if($('#passwordMember')==$('#passwordMemberRepeat')){
+			if($('#passwordMember').val()==$('#passwordMemberRepeat').val()){
 				
 				if(eMailCheckOk){
 					if(penNameCheckOk){
-						//버튼 클릭시 서브밋을 해라.										
+						//버튼 클릭시 서브밋을 해라.
+						$('#signUpFormInput').submit();
 					}else{
 						$('#penNameErrorMsg').html("펜네임 중복확인을 해주세요.");	
 					}
@@ -527,7 +530,14 @@ function clickOnePostButton() {
 			var eMailCheckOk = false;
 			var penNameCheckOk = false;
 			
-			function eMailCheck(param){
+			
+			function eMailCheck(){
+				//유저가 친 다음에 받을 수 있기 때문에
+				//이 함수가 실행 순간에 인자를 찾을 수 밖에 없다.
+				//변수를 만들어서 이메일 벨류값을 넣어라.
+				
+				var eMailMember = $('#eMailMember').val();
+				
 				
 				 $.ajax({
 			         url: 'eMailCheckAjax',
@@ -536,14 +546,16 @@ function clickOnePostButton() {
 			         //포스트로 보내는 걸 추천
 			         
 			    	 method: "POST",
-			 	     data: {'eMailMember': param}
-				 	
+			 	     data: {'eMailMember': eMailMember}
+						//'컨트롤러에서 받는 아이디' : 여기에서의 변수
+				 
 			 	})
+			 	
 				.done(function(data) {
 					
 					//펜네임 체크
 					//데이터가 오면 여기서 이프를 걸어라.
-					if(data=1){
+					if(data==1){
 					//	아이디 중복 .html("아아디 중복입니다.");
 						$('#eMailErrorMsg').html("Email is already used.");
 					}else{
@@ -557,7 +569,9 @@ function clickOnePostButton() {
 			}
 			
 			
-			function penNameCheck(param){
+			function penNameCheck(){
+				
+				var penName = $('#penName').val();
 				
 				 $.ajax({
 			         url: 'penNameCheckAjax',
@@ -566,14 +580,14 @@ function clickOnePostButton() {
 			         //포스트로 보내는 걸 추천
 			         
 			    	 method: "POST",
-			 	     data: {'penName': param}
+			 	     data: {'penName' : penName}
 				 	
 			 	})
 				.done(function(data) {
 					
 					//펜네임 체크
 					//데이터가 오면 여기서 이프를 걸어라.
-					if(data=1){
+					if(data==1){
 					//	아이디 중복 .html("아아디 중복입니다.");
 						$('#penNameErrorMsg').html("Pen name is already used.");
 					}else{
@@ -651,7 +665,7 @@ function clickOnePostButton() {
 			
 			
 			
-			function updatePost(){
+			function updatePost(인자 ){
 								
 				var postId = $('#updatePostId').val();
 				var description = $('#updateDescription').val();
@@ -662,7 +676,8 @@ function clickOnePostButton() {
 			 	        
 			    	 method: "POST",
 			 	     data: {'postId': postId, 'instaId' : instaId, 'description' : description}				 	
-				 			//'컨트롤러에서 받는 아이디' : 여기에서의 변수 
+				 				// 하얀색 포스트 아이디 : $('#updatePostId').val();
+				 				//'컨트롤러에서 받는 아이디' : 여기에서의 변수 
 			 	})
 				.done(function(data) {
 					    

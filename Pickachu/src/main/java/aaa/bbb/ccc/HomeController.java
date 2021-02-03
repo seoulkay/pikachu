@@ -10,6 +10,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
@@ -234,15 +235,40 @@ public class HomeController {
 			member.setPenName(penName);
 			member.setPasswordMember(passwordMember);
 			
+			boolean eMail = false;
+			boolean penNameCheck = false;
+			boolean password = false;
+			boolean passwordEqual = false;
+			
+			int eMailCount = 0;
+			int penNameCount = 0;
+			
+			eMailCount = session.selectOne("aaa.bbb.ccc.BaseMapper.eMailMemberCounter", eMailMember);
+			penNameCount = session.selectOne("aaa.bbb.ccc.BaseMapper.penNameCounter", penName);
+			
+			if(eMailCount==0) {
+				eMail = true;
+			}
+			if(penNameCount==0) {
+				penNameCheck = true;
+			}
+			if(Pattern.matches("^[0-9a-z]+$", passwordMember)){
+				password = true;
+			}
 			
 			if(member.getPasswordMember().equals(passwordMemberRepeat)) {
+				passwordEqual = true;
+			}
+
+			
+			if(eMail==true&&penNameCheck==true&&password==true&&passwordEqual==true) {
 				session.insert("aaa.bbb.ccc.BaseMapper.signUp", member);
 				model.addAttribute("member", member );
-				
 				session.commit();
 				
 			}else {
-				System.out.println("비밀번호 불일치");
+				System.out.println("sign up failed.");
+				return new RedirectView("http://google.com");
 			}
 			
 			session.close();
@@ -800,14 +826,18 @@ public class HomeController {
 	}
     
     
-    @RequestMapping(value = "eMailCheckAjax", method = {RequestMethod.POST}, produces = "application/json")
- 	public @ResponseBody Integer eMailCheckAjax(@RequestParam("eMailMember") String eMailMember){
-     	
+    @RequestMapping(value = "eMailCheckAjax", method = {RequestMethod.POST})
+ 	public @ResponseBody Integer eMailCheckAjax(@RequestParam("eMailMember") String z){
+     														// 에이젝스 라벨     //자바 안에서 쓸 변수이름 
+    	
+    	System.out.println(z+"를 받아왔습니다.");
+    	
      	String resource = "aaa/bbb/ccc/mybatis_config.xml";
  		InputStream inputStream;
  		
  		Integer count = 0;
- 		String email = new String();
+ 		//String email = new String();
+ 		Integer result = 0;
  		
  		try {
 
@@ -815,7 +845,11 @@ public class HomeController {
  			SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
  			SqlSession session = sqlSessionFactory.openSession();
  			
-            count = session.selectOne("aaa.bbb.ccc.BaseMapper.eMailMemberCounter", eMailMember);
+            count = session.selectOne("aaa.bbb.ccc.BaseMapper.eMailMemberCounter", z);
+            result=count;
+            
+            System.out.println(count+"는 동일한 이메일의 갯수임");
+            
             session.commit();
  			session.close();
  			
@@ -824,19 +858,21 @@ public class HomeController {
  			e.printStackTrace();
  			System.out.println("이메일 중복 갯수 셀 때 디비에서  문제가 발생");
  		}
- 		System.out.println("동일한 이메일이 "+count+"개 있습니다."); 
  		
- 		return count;
+ 		System.out.println("동일한 이메일이 "+result+"개 있습니다.");
+ 		
+ 		return result;
 
  	}
     
-    @RequestMapping(value = "penNameCheckAjax", method = {RequestMethod.POST}, produces = "application/json")
+    @RequestMapping(value = "penNameCheckAjax", method = {RequestMethod.POST})
  	public @ResponseBody Integer penNameCheckAjax(@RequestParam("penName") String penName){
      	
      	String resource = "aaa/bbb/ccc/mybatis_config.xml";
  		InputStream inputStream;
  		
  		Integer count = 0;
+ 		Integer result = 0;
  		
  		try {
 
@@ -845,6 +881,7 @@ public class HomeController {
  			SqlSession session = sqlSessionFactory.openSession();
  			
             count = session.selectOne("aaa.bbb.ccc.BaseMapper.penNameCounter", penName);
+            result=count;
             session.commit();
  			session.close();
  			
@@ -853,9 +890,9 @@ public class HomeController {
  			e.printStackTrace();
  			System.out.println("펜네임 중복 갯수 셀 때 디비에서  문제가 발생");
  		}
- 		System.out.println("동일한 펜네임이 "+count+"개 있습니다."); 
+ 		System.out.println("동일한 펜네임이 "+result+"개 있습니다."); 
  		
- 		return count;
+ 		return result;
 
  	}
     
