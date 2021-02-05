@@ -80,29 +80,34 @@
 	</select> 
   
     <insert id="signUp" parameterType="aaa.bbb.ccc.entity.Member">
- 	insert into Member (eMailMember, penName, passwordMember, createdMember)
+ 	insert into hw_utf8.Member (eMailMember, penName, passwordMember, createdMember)
  	values (#{eMailMember}, #{penName}, #{passwordMember}, now()) 
   	</insert>
   
   	<select id="penNameCounter" parameterType="String" resultType="Integer">
-  	    select count(*) from Member where PenName = #{penName}
+  	    select count(*) from hw_utf8.Member where PenName = #{penName}
   	</select>
   
   	<select id="eMailMemberCounter" parameterType="String" resultType="Integer">
-  	    select count(*) from Member where eMailMember = #{emailMember}
+  	    select count(*) from hw_utf8.Member where eMailMember = #{emailMember}
   	</select>
   
   	<select id="showMember" resultType="aaa.bbb.ccc.entity.Member" >
-		select * from Member order by idMember desc 
+		select * from hw_utf8.Member order by idMember desc 
 	</select> 
   
   	<select id="searchMember" resultType="aaa.bbb.ccc.entity.Member" parameterType="String">
   	<bind name="search" value="'%' + _parameter + '%'" />
-    select * from Member where eMailMember like #{search} or penName like #{search} order by idMember desc
+    select * from hw_utf8.Member where eMailMember like #{search} or penName like #{search} order by idMember desc
+  	</select>
+  	
+  	<select id="searchMember2" resultType="aaa.bbb.ccc.entity.Member" parameterType="String">
+  	<bind name="search" value="'%' + _parameter + '%'" />
+    select * from hw_utf8.Member where eMailMember like #{search}
   	</select>
 	
 	<select id="loginSuccess" resultType="Integer" parameterType="aaa.bbb.ccc.entity.Member">
-    select count(*) from Member where eMailMember like #{eMailMember} and passwordMember like #{passwordMember} 
+    select count(*) from hw_utf8.Member where eMailMember like #{eMailMember} and passwordMember like #{passwordMember} 
   	</select>
 	
 	<insert id="loginLog" parameterType="aaa.bbb.ccc.entity.LoginLog">
@@ -110,6 +115,21 @@
  	values (#{loginId}, #{sourceIP}, now(), #{loginSuccess}) 
  	</insert>
 	
+	<select id="totalMember" resultType="Integer">
+		select count(*) from hw_utf8.Member
+	</select>  
+	
+	<select id="totalLoginSuccess" resultType="double" >
+    select count(*) from LoginLog01 where loginSuccess like 1
+  	</select>
+	
+	<select id="totalLoginTry" resultType="double" >
+    select count(*) from LoginLog01
+  	</select>
+  	
+  	<select id="loginToday" resultType="Integer" >
+	select count(*) from LoginLog01 where loginCreated > CURRENT_DATE( )
+	</select>
 	
 </mapper>
 
