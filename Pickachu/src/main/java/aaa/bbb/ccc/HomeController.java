@@ -40,10 +40,10 @@ public class HomeController {
 			inputStream = Resources.getResourceAsStream(resource);
 			SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
 			SqlSession session = sqlSessionFactory.openSession();
-			Post post = session.selectOne("aaa.bbb.ccc.BaseMapper.selectPost", 1);
-			System.out.println(post.getPostId());
+//			Post post = session.selectOne("aaa.bbb.ccc.BaseMapper.selectPost", 1);
+//			System.out.println(post.getPostId());
 			
-			model.addAttribute("post", post );
+//			model.addAttribute("post", post );
 			
 		} catch (IOException e) {
 			e.printStackTrace();
