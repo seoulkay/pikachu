@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.regex.Pattern;
 
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.view.RedirectView;
 
 import aaa.bbb.ccc.entity.Like;
+import aaa.bbb.ccc.entity.Member;
 import aaa.bbb.ccc.entity.PageManager;
 import aaa.bbb.ccc.entity.Post;
 import aaa.bbb.ccc.entity.Reply;
@@ -57,6 +59,7 @@ public class HomeController {
 				totalSize.setPageSize(5);
 				
 				int showPage = postTotal / totalSize.getPageSize();
+			model.addAttribute("showPage",showPage );
 			model.addAttribute("totalSize", totalSize );	
 				pageSize=totalSize.getPageSize();
 				currentPage=0;	
@@ -67,7 +70,7 @@ public class HomeController {
 				Integer postTotal = session.selectOne("aaa.bbb.ccc.BaseMapper.countPost");
 				PageManager totalSize = new PageManager();
 				totalSize.setTotalSize(postTotal);
-				totalSize.setCurrentPage(currentPage);
+				totalSize.setCurrentPage(currentPage * 5);
 				totalSize.setPageSize(pageSize);
 				List<Post> limitPostList = session.selectList("aaa.bbb.ccc.BaseMapper.limitPost", totalSize);
 				int showPage = postTotal / totalSize.getPageSize();
@@ -88,9 +91,11 @@ public class HomeController {
 				PageManager searchTotalSize = new PageManager();
 				searchTotalSize.setSearch(search);
 				searchTotalSize.setTotalSize(searchPostTotal);
-				searchTotalSize.setCurrentPage(currentPage);
+				searchTotalSize.setCurrentPage(currentPage * 5);
 				searchTotalSize.setPageSize(pageSize);
 				int showPage = searchPostTotal / searchTotalSize.getPageSize();
+				System.out.println("검색어를 집어넣고 offset 값은 : "+searchTotalSize.getCurrentPage());
+				
 			model.addAttribute("showPage",showPage );
 				List<Post> limitSearchPostList = session.selectList("aaa.bbb.ccc.BaseMapper.searchLimitPost", searchTotalSize);
 				PageManager postPm = new PageManager();
@@ -98,6 +103,8 @@ public class HomeController {
 				postPm.setTotal(searchTotalSize.getTotalSize());
 				postPm.setMaxPager(maxPager);
 				postPm = currentPagerCalculator(postPm);
+				
+
 			model.addAttribute("pm", postPm );
 			model.addAttribute("postList", limitSearchPostList );
 			model.addAttribute("totalSize", searchTotalSize );
@@ -222,6 +229,95 @@ public class HomeController {
 	return "postForm";
 	}
 	
+	@RequestMapping(value = "test", method = RequestMethod.GET)
+	public String test(Locale locale, Model model) {
+	
+	return "test";
+	}
+	
+	@RequestMapping(value = "/logIn", method = {RequestMethod.GET,RequestMethod.POST})
+	public String logIn(Locale locale, Model model) {
+	System.out.println("login에 왔어요");
+	return "logIn";
+	
+	}
+	
+	
+	
+	@RequestMapping(value = "idCheck", method = {RequestMethod.POST})
+	public @ResponseBody Integer idCheck(@RequestParam("id") String id){
+		
+		
+		String resource = "aaa/bbb/ccc/mybatis_config.xml";
+		InputStream inputStream;
+		Integer result = 0;
+		System.out.println("id = "+id);
+		System.out.println("resurt = "+result);
+		
+		
+		try {
+			
+			inputStream = Resources.getResourceAsStream(resource);
+			SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
+			SqlSession session = sqlSessionFactory.openSession();
+
+			Integer count = session.selectOne("aaa.bbb.ccc.BaseMapper.countId", id);
+			
+			if(count==0) {
+				result = count ;
+			}else {
+				result = 1 ;
+			}
+		
+			System.out.println("resurt = "+result);
+		} catch (IOException e) {
+			e.printStackTrace();
+			System.out.println("id check error in sql");
+			
+		}
+		
+	 return result;
+	}
+	
+	
+	@RequestMapping(value = "nickCheck", method = {RequestMethod.POST})
+	public @ResponseBody Integer nickCheck(@RequestParam("nickName") String nickName){
+		
+		
+		String resource = "aaa/bbb/ccc/mybatis_config.xml";
+		InputStream inputStream;
+		Integer result = 0;
+		System.out.println("nick = "+nickName);
+		System.out.println("resurt = "+result);
+		
+		
+		try {
+			
+			inputStream = Resources.getResourceAsStream(resource);
+			SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
+			SqlSession session = sqlSessionFactory.openSession();
+
+			Integer count = session.selectOne("aaa.bbb.ccc.BaseMapper.countNick", nickName);
+			
+			if(count==0) {
+				result = count ;
+			}else {
+				result = 1 ;
+			}
+		
+			System.out.println("resurt = "+result);
+		} catch (IOException e) {
+			e.printStackTrace();
+			System.out.println("nick check error in sql");
+			
+		}
+		
+	 return result;
+	}
+	
+	
+	
+	
 	
 	@RequestMapping(value = "postUpdateForm", method = RequestMethod.GET)
 	public String postUpdateForm(Locale locale, Model model, int postId) {
@@ -274,6 +370,76 @@ public class HomeController {
 		}
 		return new RedirectView("home");
 	}
+	
+	@RequestMapping(value = "memberAction", method = RequestMethod.POST)
+	public RedirectView memberAction(Locale locale, Model model, String id, String nickName, String password, String passwordConfirm , String role) {
+	
+		String resource = "aaa/bbb/ccc/mybatis_config.xml";
+		InputStream inputStream;
+		
+		try {
+			
+			inputStream = Resources.getResourceAsStream(resource);
+			SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
+			SqlSession session = sqlSessionFactory.openSession();
+			
+			Member member = new Member();
+			member.setId(id);
+			member.setNickName(nickName);
+			member.setPassword(password);
+			member.setPasswordConfirm(passwordConfirm);
+			member.setRole(role);
+			
+			
+			
+			System.out.println(member);
+			boolean idCheck = false;
+			boolean nickCheck = false;
+			boolean pswCheck = false;
+			boolean pswConfirm = false;
+			
+			
+			Integer countId = session.selectOne("aaa.bbb.ccc.BaseMapper.countId", id);
+			if(countId==0) {
+				idCheck = true ;
+				System.out.println("id 중복 체크 완료");
+			}
+			
+			Integer countNick = session.selectOne("aaa.bbb.ccc.BaseMapper.countNick", nickName);
+			if(countNick==0) {
+				nickCheck = true ;
+				System.out.println("nick 중복 체크 완료");
+			}
+			
+			if(password.equals(passwordConfirm)) {
+				pswConfirm = true;
+				System.out.println("password 체크 완료");
+			}
+			
+			if(Pattern.matches("^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$", password)) {
+				pswCheck = true;
+				System.out.println("password 형식 체크 완료");
+			}
+				
+			
+			
+			if(idCheck==true&&nickCheck==true&&pswCheck==true&&pswConfirm==true) {
+				session.insert("aaa.bbb.ccc.BaseMapper.insertMember", member);
+				session.commit();
+				session.close();
+			}else {
+				
+				return new RedirectView("logIn");
+			}
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+			System.out.println("멤버 넣으려고 하다가 에러가 났어요  ");
+		}
+		return new RedirectView("home");
+	}
+	
+	
 	
 	@RequestMapping(value = "postUpdateAction", method = RequestMethod.POST)
 	public RedirectView postUpdateAction(Locale locale, Model model, Integer postId, String instaId, String picture, String description) {

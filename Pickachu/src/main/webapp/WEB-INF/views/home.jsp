@@ -14,11 +14,6 @@
     <!-- CSS only -->
 <link href="resources/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
 
-    
-
-    <!-- Bootstrap core CSS -->
-<link href="resources/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
-
     <!-- Favicons -->
 <link rel="apple-touch-icon" href="/docs/5.0/assets/img/favicons/apple-touch-icon.png" sizes="180x180">
 <link rel="icon" href="/docs/5.0/assets/img/favicons/favicon-32x32.png" sizes="32x32" type="image/png">
@@ -29,19 +24,24 @@
 
 
     <style>
-      .bd-placeholder-img {
-        font-size: 1.125rem;
-        text-anchor: middle;
-        -webkit-user-select: none;
-        -moz-user-select: none;
-        user-select: none;
-      }
-
-      @media (min-width: 768px) {
-        .bd-placeholder-img-lg {
-          font-size: 2rem;
-        }
-      }
+		      .bd-placeholder-img {
+		        font-size: 1.125rem;
+		        text-anchor: middle;
+		        -webkit-user-select: none;
+		        -moz-user-select: none;
+		        user-select: none;
+		      }
+		
+		      @media (min-width: 768px) {
+		        .bd-placeholder-img-lg {
+		          font-size: 2rem;
+		        }
+		      }
+      
+/*       login */
+      
+    	   
+      
     </style>
 
     
@@ -49,7 +49,6 @@
     <link href="resources/cover.css" rel="stylesheet">
 </head>
 <body class="d-flex h-100 text-center text-white bg-dark">
-<script src="resources/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
 
 <div class="cover-container w-150 h-100 p-3 mx-auto flex-column">
 
@@ -59,7 +58,7 @@
       <nav class="nav nav-masthead justify-content-center float-md-end">
         <a class="nav-link active" aria-current="page" href="http://localhost:8080/ccc/home">Home</a>
         <a class="nav-link" aria-current="page" href="#" onclick='newButton()'>새글쓰기</a>
-        <a class="nav-link" href="#">Login</a>
+        <a class="nav-link" href="#" onclick="document.getElementById('id01').style.display='block'">Login</a>
       </nav>
     </div>
 </header>
@@ -104,8 +103,8 @@
 						<div class="row">
 							<ul class="pagination">
 						 	 	<li class="page-item">
-							 	 	<c:if test="${totalSize.currentPage != 0 }"> 
-									<a class="page-link" href="http://localhost:8080/ccc/home?pageSize=${totalSize.pageSize }&currentPage=${totalSize.currentPage - 1}&search=${search}" aria-label="Previous">
+							 	 	<c:if test="${pm.currentPage != 0 }"> 
+									<a class="page-link" href="http://localhost:8080/ccc/home?pageSize=${totalSize.pageSize }&currentPage=${pm.currentPage - 1}&search=${search}" aria-label="Previous">
 									<span aria-hidden="true">&laquo;</span>
 									</a>
 									</c:if>
@@ -119,7 +118,7 @@
 					<td>
 						<nav aria-label="Page navigation example">
 							<ul class="pagination">
-								<li class="page-item <c:out value="${idx == totalSize.currentPage ? 'active' : '' }"/>">
+								<li class="page-item <c:out value="${idx == pm.currentPage ? 'active' : '' }"/>">
 									<a class="page-link" href="http://localhost:8080/ccc/home?pageSize=${totalSize.pageSize }&currentPage=${idx}&search=${search}">${idx + 1}
 									</a>
 								</li>
@@ -131,8 +130,8 @@
 			 	<nav aria-label="Page navigation example">
 						<ul class="pagination">
 							<li class="page-item">
-								<c:if test="${totalSize.currentPage != showPage}">
-									<a class="page-link" href="http://localhost:8080/ccc/home?pageSize=${totalSize.pageSize }&currentPage=${totalSize.currentPage + 1}&search=${search}" aria-label="Next">
+								<c:if test="${pm.currentPage != showPage}">
+									<a class="page-link" href="http://localhost:8080/ccc/home?pageSize=${totalSize.pageSize }&currentPage=${pm.currentPage + 1}&search=${search}" aria-label="Next">
 										<span aria-hidden="true">&raquo;</span>
 									</a>
 								</c:if>
@@ -161,7 +160,7 @@
 			      </div>
 			      
 			      
-			       <form action="postFormAction" id="myForm" class="form-inline" method="post">
+			       <form action="postFormAction" class="form-inline" method="post">
 			     	 <div class="modal-body">
 				 	 	<i class="fas fa-search" aria-hidden="true"></i>
 							 <table>
@@ -184,8 +183,8 @@
 						 	 	</tr>
 				 	 	</table>
 					      <div class="modal-footer">
-					      <button  type="submit" class="btn btn-secondary">V</button>
-					      <button  onclick="reset()" class="btn btn-secondary">X</button>
+					      <button  type="submit" class="btn btn-secondary">✔️</button>
+					      <button  type="button" onclick="reset()" class="btn btn-secondary">⬅️</button>
 					      </div>
 				      
 				     	 </div>
@@ -208,8 +207,8 @@
 			        <h5 class="modal-title" id="staticBackdropLabel">하나의 포스트를 보여줄거에요</h5>
 			        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 			      </div>
-			      <form action="postOneUpdate" id="myForm" class="form-inline" method="post">
-			      <input type="hidden" name="postId" id="updatePostId">
+			      
+			      
 			      <div class="modal-body">
 			     	   <input class="form-control" type="text" aria-label="readonly input example" readonly id="postDescription">
   					  <small id="instaId">   </small><br><br>
@@ -233,7 +232,7 @@
 <!-- 								<button type="submit" class="btn btn-secondary" id="goUpButton">V</button> -->
 <!-- 						 	 </form> -->
 						 	 
-						 	 
+						 	 <form action="" class="form-inline" method="post">
 						 	 	<i class="fas fa-search" aria-hidden="true"></i>
 						 	 	<textarea  name="description" style="resize: none;" rows="5" cols="40" id="updateDescriptionInput"></textarea>
 						 	 	<div class="mb-3">
@@ -241,9 +240,9 @@
 					 				<input class="form-control form-control-sm" name="picture" type="file" id="updateFile">
 								</div>
 	  					    	<input class="form-control form-control-sm" type="text" name="instaId" aria-label="instaId" id="updateInstaIdInput">	
-								
-								<button type="button" onclick="goPostUpdate(description, instaId)" class="btn btn-secondary" id="goUpButton">V</button>
-						 	 
+								<input type="hidden" name="postId" id="updatePostId">
+								<button type="button" onclick="goPostUpdate()" class="btn btn-secondary" id="goUpButton">V</button>
+						 	 </form>
 							
 							
 							
@@ -253,7 +252,7 @@
 			        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
 			      </div>
 			      
-			      </form>
+			      
 			      
 			     
 			    </div>
@@ -268,6 +267,72 @@
 
 </main>
 </div>
+
+<!-- 	 sing up -->
+			
+			
+<!-- 			<button onclick="document.getElementById('id01').style.display='block'" style="width:auto;">Sign Up</button> -->
+			
+			<div id="id01" class="modal">
+			<div class="modal-dialog">
+			<div class="modal-content">
+			  <span onclick="document.getElementById('id01').style.display='none'" class="close" title="Close Modal">&times;</span>
+			  <form class="modal-content" action="/ccc/memberAction" method="post" id="signupForm">
+			    <div class="container">
+			    <div class="modal-header">
+			      <h1>Sign Up</h1>
+			      <p>Please fill in this form to create an account.</p>
+			      </div>
+			      <hr>
+			      <input class="form-control" type="text" aria-label="readonly input example" readonly id="signInMessage">
+			      <div>
+			      <label for="email"><b>Email</b></label>
+			      <input type="text" placeholder="Enter Email" name="id" required id="idInput">
+			       <button type="button" onclick="idCheck()" class="cancelbtn">중복체크</button><br>
+			       </div>
+			       
+			      <div>
+				  <label for="email"><b>Name</b></label>
+			      <input type="text" placeholder="Enter Name" name="nickName" required id="nickInput"><br>
+			      <button type="button" onclick="nickCheck()" class="cancelbtn">중복체크</button><br>
+			      </div>
+			      
+			      <div>
+			      <label for="psw"><b>Password</b></label>
+			      <input type="password" placeholder="숫자 및 문자하나가 들어가게 입력해주세요." name="password" required id="passwordInput"><br>
+			      </div>
+			
+			      <label for="psw-repeat"><b>Repeat Password</b></label>
+			      <input type="password" placeholder="Repeat Password" name="passwordConfirm" required id="passwordConfirm"><br>
+			      
+			      <input type="hidden" name="role" value="nomal" required>
+<!-- 			      <label> -->
+<!-- 			        <input type="checkbox" checked="checked" name="remember" style="margin-bottom:15px"> Remember me -->
+<!-- 			      </label> -->
+			
+			      <p>By creating an account you agree to our <a href="#" style="color:dodgerblue">Terms & Privacy</a>.</p>
+			
+			      <div class="clearfix">
+			        <button type="button" onclick="document.getElementById('id01').style.display='none'" class="cancelbtn">Cancel</button>
+			        <button type="button" onclick="signupSubmitChecker()" class="signupbtn" id="signUpSub">Sign Up</button>
+			      </div>
+			    </div>
+			  </form>
+			  </div>
+			  </div>
+			</div>
+			
+			<script>
+			// Get the modal
+			var modal = document.getElementById('id01');
+			
+			// When the user clicks anywhere outside of the modal, close it
+			window.onclick = function(event) {
+			  if (event.target == modal) {
+			    modal.style.display = "none";
+			  }
+			}
+			</script>
 
 </body>
 		
@@ -342,6 +407,8 @@
 		<script type="text/javascript">
 			function updatePostInput(){
 				
+
+				
 				$('#postDescription').hide(); 
 				$('#instaId').hide(); 
 				$('#updateDescriptionInput').show(); 
@@ -350,6 +417,7 @@
 				$('#inputUpButton').hide(); 
 				$('#goUpButton').show(); 
 				
+				
 			}	
 		</script>
 
@@ -357,24 +425,136 @@
 		<script type="text/javascript">
 			function goPostUpdate(){
 				
-					var postId = $('#updatePostId');
-					var picture = $('#updateFile').val();
-					var description = $('#updateDescriptionInput').val();
-					var instaId = $('#updateInstaIdInput').val();
-					
+				var postId = $('#updatePostId').val();
+				var description = $('#updateDescriptionInput').val();
+				var instaId = $('#updateInstaIdInput').val();
+				var picture = $('#updateFile').val();
+				
 				 $.ajax({
 			         url: 'postOneUpdate',
 			    	 method: "POST",
 			 	     data: {'postId': postId, 'description': description , 'picture' : picture, 'instaId' : instaId}
-
+					 
 			 	})
 				.done(function(data) {
+					$('#loadingSpinner').show();
 					$('#postOneModal').modal('hide'); 
-					
+					updated=true;
 				});
 
 			}
+			
+			$('#postOneModal').on('hidden.bs.modal', function () {
+				if(updated){
+					
+					location.reload();
+					console.log("리프레시 페이지");
+					$('#loadingSpinner').hide();
+				}else{
+					console.log("업데이트가 안됨, 고로 리프레시 안함");
+				}  
+				
+				})
 		</script>
-	
+		
+		
+		<script>
+		
+		
+		function signupSubmitChecker(){
+			var passwordConfirm = $('#passwordConfirm').val();
+			var str = $('#passwordInput').val();
+			var re = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+			var found = re.test(str);
+			console.log(str, passwordConfirm);
+			
+			if(found==true){
+				console.log("1번");
+				if(passwordConfirm==str){
+					console.log("2번");
+					if(idCheckOk==true){
+						console.log("3번");
+						if(nickNameCheckOk==true){
+							console.log("4번");
+							
+							$('#signInMessage').attr("placeholder", "가입을 진행합니다");
+							$('#signupForm').submit();
+							
+							}else{
+								$('#signInMessage').attr("placeholder", "이름 중복확인 해주세요");
+							}
+						}else{
+							$('#signInMessage').attr("placeholder", "Email 중복확인 해주세요");
+					}
+					
+				}else{
+					$('#signInMessage').attr("placeholder", "비밀번호 재확인이 틀렸습니다.");
+				
+				}
+				
+			}else{
+				console.log("6번");
+				$('#signInMessage').attr("placeholder", "비밀번호를 형식에 맞게 입력해주세요.");
+			}
+			
+			console.log(found);
+		}
+
+
+		var idCheckOk = 0; //현재는 체크안한 상태
+		var nickNameCheckOk = 0; //현재는 체크안한 상태 
+
+		function idCheck(){
+			
+			var id = $('#idInput').val();
+			
+			 $.ajax({
+		         url: 'idCheck',
+		    	 method: "POST",
+		 	     data: {'id': id}
+		 	     })
+		 	
+			.done(function(data) {
+				if(data==1){
+					
+					$('#idInput').val('');
+					$('#signInMessage').attr("placeholder", "해당 email은 사용 할 수 습니다.");
+					//사용할수 없습니다를 띄어
+					}else{
+					$('#signInMessage').attr("placeholder", "해당 email은 사용 할 수 있습니다.");
+					idCheckOk = true;
+					//사용할수 있습니다를 띄어 
+					//idCheckOk = true;
+					}
+				})
+			}
+			
+		
+			function nickCheck(){
+				
+				var nick = $('#nickInput').val();
+				 $.ajax({
+			         url: 'nickCheck',
+			    	 method: "POST",
+			 	     data: {'nickName': nick}
+				 	})
+				 	
+				.done(function(data) {
+					if(data==1){
+						
+							$('#nickInput').val('');
+							$('#nickInput').attr("placeholder", "해당 이름은 사용 할 수 없습니다.");
+							//사용할수 없습니다를 띄어
+						}else{
+							$('#signInMessage').attr("placeholder", "해당 이름은 사용 할 수 있습니다.");
+							nickNameCheckOk = true;
+							//사용할수 있습니다를 띄어 
+						}
+					})
+				}
+		
+
+			
+		</script>
 	
 </html>

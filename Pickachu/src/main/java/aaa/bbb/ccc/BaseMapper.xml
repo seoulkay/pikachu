@@ -6,12 +6,26 @@
   <select id="selectPost" resultType="aaa.bbb.ccc.entity.Post">
     select * from MyPost where postId = #{postId}
   </select>
+  
+  <select id="indexUser" resultType="aaa.bbb.ccc.entity.Member">
+    select * from hong.member where id = #{id}
+  </select>
+  
   <select id="selectReply" resultType="aaa.bbb.ccc.entity.Reply">
     select * from MyPostReply where id = #{id}
   </select>
   <select id="allPost" resultType="aaa.bbb.ccc.entity.Post">
     select * from MyPost order by postId desc 
   </select>
+  
+  <select id="memberList" resultType="aaa.bbb.ccc.entity.Member">
+    select * from hong.member 
+  </select>
+  <select id="searchMemberList" resultType="aaa.bbb.ccc.entity.Member" parameterType="aaa.bbb.ccc.entity.Member" >
+   <bind name="search2" value="'%' + _parameter.search + '%'" />
+    select * from hong.member where id like  #{search2} or nickName like #{search2} 
+  </select>
+  
   <select id="limitPost" resultType="aaa.bbb.ccc.entity.Post">
     select * from MyPost order by postId desc limit #{pageSize} offset #{currentPage}
   </select>
@@ -32,12 +46,61 @@
   <select id="countPost" resultType="Integer">
     select count(*) as totalSize from hong.MyPost
   </select>
+  
+  <select id="countIdPsw" resultType="Integer">
+    select count(*) from member where id = #{id} and password = #{password}
+  </select>
+  
+  <select id="countLogAjax" resultType="aaa.bbb.ccc.entity.loginLog" >
+   SELECT  COUNT(*) AS total, DAY(created) AS day, MONTH(created) AS month FROM hong.loginLog WHERE MONTH(created) = ${time1} GROUP BY  MONTH(created), DAY(created) order by DAY(created) desc
+  </select>
+  <select id="countLogSuccessAjax" resultType="aaa.bbb.ccc.entity.loginLog" >
+   SELECT  COUNT(*) AS successTotal, DAY(created) AS day, MONTH(created) AS month FROM hong.loginLog WHERE successful = '1' AND MONTH(created) = #{time1} GROUP BY  MONTH(created), DAY(created) order by DAY(created) desc
+  </select>
+  
+  <select id="countAllMember" resultType="Integer">
+    select count(*) from member 
+  </select>
+  <select id="countSuccessLogin" resultType="Integer" >
+    select count(*) from hong.loginLog where successful = 1 
+  </select>
+  <select id="countLogin" resultType="Integer" >
+    select count(*) from hong.loginLog 
+  </select>
+  <select id="countTodayLogin" resultType="Integer" parameterType="String">
+  <bind name="time1" value="'%' + _parameter + '%'" />
+    select count(*) from hong.loginLog where created like #{time1} 
+  </select>
+
+  
+  <select id="countId" resultType="Integer">
+    select count(*) from member where id = #{id}
+  </select>
+  
+  
+  
+  <select id="countNick" resultType="Integer">
+    select count(*) from member where nickName = #{nickName}
+  </select>
+  
   <select id="countSearchPost" resultType="Integer" parameterType="String">
   <bind name="search" value="'%' + _parameter + '%'" />
     select count(*) as totalSize from hong.MyPost where instaId like #{search} or description like #{search}
   </select>
+  
+  <insert id="insertLoginLogFalse" parameterType="aaa.bbb.ccc.entity.Member">
+    insert into hong.loginLog (hong.loginLog.created,loginId,sourceIp,successful) values (now(),#{loginId},#{sourceIp},false)
+  </insert>
+  
+  <insert id="insertLoginLogTrue" parameterType="aaa.bbb.ccc.entity.Member">
+    insert into hong.loginLog (hong.loginLog.created,loginId,sourceIp,successful) values (now(),#{loginId},#{sourceIp},true)
+  </insert>
+  
   <insert id="insertPost" parameterType="aaa.bbb.ccc.entity.Post">
     insert into MyPost (hong.MyPost.create,picture,instaId,description) values (now(),#{picture},#{instaId},#{description})
+  </insert>
+  <insert id="insertMember" parameterType="aaa.bbb.ccc.entity.Member">
+    insert into member (hong.member.create,id,nickName,password,passwordConfirm,role) values (now(),#{id},#{nickName},#{password},#{passwordConfirm},#{role})
   </insert>
   <insert id="insertReply" parameterType="aaa.bbb.ccc.entity.Reply">
     insert into MyPostReply (hong.MyPostReply.create,instaId,description,postId) values (now(),#{instaId},#{description},#{postId})
