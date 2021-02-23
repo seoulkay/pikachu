@@ -71,7 +71,24 @@
   <bind name="time1" value="'%' + _parameter + '%'" />
     select count(*) from hong.loginLog where created like #{time1} 
   </select>
-
+  
+  
+  <select id="countNdaySuccessLogin" resultType="aaa.bbb.ccc.entity.loginLog" parameterType="String">
+    SELECT  COUNT(*) AS total, DAY(created) AS day, MONTH(created) AS month , successful 
+	FROM 
+	(SELECT  * 
+	FROM hong.loginLog 
+	WHERE created >= #{time1}) xmen
+	GROUP BY  MONTH(created), DAY(created), successful
+	ORDER BY DAY(created) desc;
+  </select>
+  
+ <select id="countNdayTotalLogin" resultType="Integer" parameterType="String">
+  <bind name="time1" value="'%' + _parameter + '%'" />
+    select count(*) AS successTotal from hong.loginLog WHERE created like #{time1} 
+  </select>
+  
+  
   
   <select id="countId" resultType="Integer">
     select count(*) from member where id = #{id}

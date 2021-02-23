@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -143,60 +144,97 @@ public class adminControler {
 	}
 	
 	@RequestMapping(value = "loginCountAjax", method = {RequestMethod.GET})
-	public @ResponseBody List<loginLog> loginCountAjax(@RequestParam("data") int data1){
+	public @ResponseBody List<loginLog>  loginCountAjax(@RequestParam("data") int data1){
+
 		String resource = "aaa/bbb/ccc/mybatis_config.xml";
 		InputStream inputStream;
 		
+		List<loginLog> count = new ArrayList<loginLog>();
+		List<loginLog> countSuccessful = new ArrayList<loginLog>();
+		List<loginLog> countLoginFailure = new ArrayList<loginLog>();
 		List<loginLog> result = new ArrayList<loginLog>();
-		SimpleDateFormat format1 = new SimpleDateFormat ("MM");
-		Date time = new Date();
-		String time1 = format1.format(time);
-		System.out.println(time1);
+			
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+		DateFormat df1 = new SimpleDateFormat("M");
+		DateFormat df2 = new SimpleDateFormat("d");
 		
+		for(int i = 0 ; i < 7 ; i ++ ) {
+			loginLog test1 = new loginLog();
+			Calendar cal2 = Calendar.getInstance();
+	        cal2.setTime(new Date());
+	        cal2.add(Calendar.DATE, -i);
+	        test1.setDay(df2.format(cal2.getTime()));
+	        test1.setMonth(df1.format(cal2.getTime()));
+	        test1.setSuccessTotal(0);
+	        test1.setTotal(0);
+	        result.add(test1);
+	        countSuccessful.add(test1);
+	        countLoginFailure.add(test1);
+
+			  }
 		try {
+			
 			inputStream = Resources.getResourceAsStream(resource);
 			SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
 			SqlSession session = sqlSessionFactory.openSession();
 			
-			result = session.selectList("aaa.bbb.ccc.BaseMapper.countLogAjax", time1);
-			
-		
-			System.out.println("결과는 "+result);
-			
+				Calendar cal = Calendar.getInstance();
+		        cal.setTime(new Date());
+		        cal.add(Calendar.DATE, -7);
+		        String time1 = df.format(cal.getTime());
+		        System.out.println(time1);
+		        count = session.selectList("aaa.bbb.ccc.BaseMapper.countNdaySuccessLogin", time1);
+		        
+		        
+		        //count 결과를 두개로 나눠보자
+		        
+		        
+		    for(int i=0;i<countSuccessful.size();i++) {
+		    	for(int j=0;j<count.size();j++) {
+		    		if(countSuccessful.get(i).getMonth().equals(count.get(j).getMonth()) && 
+		    				countSuccessful.get(i).getDay().equals(count.get(j).getDay()) &&
+		    				count.get(j).getSuccessful() == 1) { //로그인 성공 횟수를 날짜별로 비교해서 넣어준다  
+		    			countSuccessful.get(i).setSuccessTotal(count.get(j).getTotal());
+		    		}
+		    	}     	
+		    }
+		    
+		    for(int i=0;i<countLoginFailure.size();i++) {
+		    	for(int j=0;j<count.size();j++) {
+		    		if(countLoginFailure.get(i).getMonth().equals(count.get(j).getMonth()) && 
+		    				countLoginFailure.get(i).getDay().equals(count.get(j).getDay()) &&
+		    				count.get(j).getSuccessful() == 0) { //로그인 실패 횟수를 날짜별로 비교해서 넣어준다  
+		    			countLoginFailure.get(i).setTotal(count.get(j).getTotal());
+		    		}
+		    	}     	
+		    }
+		    	
+		    //리턴할 아이들을 만들어 보자 
+		    for(int i=0;i<result.size();i++) {
+				result.get(i).setTotal(countSuccessful.get(i).getSuccessTotal()+countLoginFailure.get(i).getTotal()); //전체 횟수를 합쳐서  넣어준다 
+				System.out.println(result.get(i).getMonth()+"-"+result.get(i).getDay()+"의 로그인 전체횟수는 : "+result.get(i).getTotal());
+			}
+	
+			for(int i=0;i<result.size();i++) {
+				result.get(i).setSuccessTotal(countSuccessful.get(i).getSuccessTotal()); //성공횟수를 넣어준다 
+				System.out.println(result.get(i).getMonth()+"-"+result.get(i).getDay()+"의 로그인 성공횟수는 : "+result.get(i).getSuccessTotal());
+			}
+
 		} catch (IOException e) {
 			e.printStackTrace();	
 			
 		}
+		
 			return result;
+		
 		}
 	
+	@RequestMapping(value = "admin/calendarTest", method = {RequestMethod.GET})
+	public @ResponseBody String calendarTest(Locale locale, Model model){
 	
-	@RequestMapping(value = "loginCountSuccessAjax", method = {RequestMethod.GET})
-	public @ResponseBody List<loginLog> loginCountSuccessAjax(@RequestParam("data") int data1){
-		String resource = "aaa/bbb/ccc/mybatis_config.xml";
-		InputStream inputStream;
 		
-		List<loginLog> result = new ArrayList<loginLog>();
-		SimpleDateFormat format1 = new SimpleDateFormat ("MM");
-		Date time = new Date();
-		String time1 = format1.format(time);
+			return "안녕 테스트";
 		
-		try {
-			inputStream = Resources.getResourceAsStream(resource);
-			SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
-			SqlSession session = sqlSessionFactory.openSession();
-			
-			result = session.selectList("aaa.bbb.ccc.BaseMapper.countLogSuccessAjax", time1);
-			
-			
-			
-			System.out.println("성공한 결과는 "+result);
-			
-		} catch (IOException e) {
-			e.printStackTrace();	
-			
-		}
-			return result;
 		}
 	
 	@RequestMapping(value = "loginSuccessAjax", method = {RequestMethod.GET})
@@ -364,6 +402,8 @@ public class adminControler {
 				
 		return "admin/pages/tables/simple";
 	}
+	
+	
 }
 
 

@@ -5,8 +5,8 @@
  *      This is a demo file used only for the main dashboard (index.html)
  **/
 
-var loginDataTotal = [0,0,0,0,0,0,0];
-var loginSuccessDataTotal = [0,0,0,0,0,0,0];
+var loginData = [0,0,0,0,0,0,0];
+
 
 function loginChartDataAjax(){
 	
@@ -18,20 +18,10 @@ function loginChartDataAjax(){
  	     data: {'data': data1}
  	     })
 	.done(function(data) {
-		console.log("결과값"+JSON.stringify(data[0]));
-		loginDataTotal = data;
 		
-		//salesChartData.data = [0,0,0,0,0,0,1];
-		console.log(JSON.stringify(loginDataTotal));
-		console.log(loginDataTotal[0].total);
+		loginData = data;
+		console.log(JSON.stringify(loginData));
 		
-		$.ajax({
-         url: 'loginCountSuccessAjax',
-    	 method: "GET",
- 	     data: {'data': data1}
- 	     })
-		.done(function(data) {
-		loginSuccessDataTotal = data;
 
 $(function () {
 
@@ -156,13 +146,13 @@ $(function () {
   
 
   var salesChartData = {
-    labels  : [loginSuccessDataTotal[6].month+'월'+loginSuccessDataTotal[6].day+'일', 
-		 	   loginSuccessDataTotal[5].month+'월'+loginSuccessDataTotal[5].day+'일', 
-			   loginSuccessDataTotal[4].month+'월'+loginSuccessDataTotal[4].day+'일', 
-			   loginSuccessDataTotal[3].month+'월'+loginSuccessDataTotal[3].day+'일', 
-			   loginSuccessDataTotal[2].month+'월'+loginSuccessDataTotal[2].day+'일', 
-			   loginSuccessDataTotal[1].month+'월'+loginSuccessDataTotal[1].day+'일', 
-		       loginSuccessDataTotal[0].month+'월'+loginSuccessDataTotal[0].day+'일'],
+    labels  : [ loginData[6].month+'-'+loginData[6].day,
+				loginData[5].month+'-'+loginData[5].day,
+				loginData[4].month+'-'+loginData[4].day,
+				loginData[3].month+'-'+loginData[3].day,
+				loginData[2].month+'-'+loginData[2].day,
+				loginData[1].month+'-'+loginData[1].day,
+			    loginData[0].month+'-'+loginData[0].day],
     datasets: [
       {
         label               : '로그인성공횟수',
@@ -173,13 +163,13 @@ $(function () {
         pointStrokeColor    : 'rgba(60,141,188,1)',
         pointHighlightFill  : '#fff',
         pointHighlightStroke: 'rgba(60,141,188,1)',
-        data                : [loginSuccessDataTotal[6].successTotal, 
-							   loginSuccessDataTotal[5].successTotal,	
-							   loginSuccessDataTotal[4].successTotal, 
-							   loginSuccessDataTotal[3].successTotal, 
-				               loginSuccessDataTotal[2].successTotal, 
-							   loginSuccessDataTotal[1].successTotal, 
-							   loginSuccessDataTotal[0].successTotal]
+        data                : [loginData[6].successTotal, 
+							   loginData[5].successTotal,	
+							   loginData[4].successTotal, 
+							   loginData[3].successTotal, 
+				               loginData[2].successTotal, 
+							   loginData[1].successTotal, 
+							   loginData[0].successTotal]
       },
       {
         label               : '로그인전체횟수',
@@ -190,13 +180,13 @@ $(function () {
         pointStrokeColor    : '#c1c7d1',
         pointHighlightFill  : '#fff',
         pointHighlightStroke: 'rgba(220,220,220,1)',
-        data                : [loginDataTotal[6].total, 
-							   loginDataTotal[5].total,	
-							   loginDataTotal[4].total, 
-							   loginDataTotal[3].total, 
-				               loginDataTotal[2].total, 
-							   loginDataTotal[1].total, 
-							   loginDataTotal[0].total]
+        data                : [loginData[6].total, 
+							   loginData[5].total,	
+							   loginData[4].total, 
+							   loginData[3].total, 
+				               loginData[2].total, 
+							   loginData[1].total, 
+							   loginData[0].total]
       },
     ]
   }
@@ -319,9 +309,6 @@ $(function () {
       options: salesGraphChartOptions
     }
   )
-
-})
-
 
 })
 })
