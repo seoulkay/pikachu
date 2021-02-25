@@ -32,7 +32,11 @@ import aaa.bbb.ccc.entity.Member;
 import aaa.bbb.ccc.entity.PageManager;
 import aaa.bbb.ccc.entity.Post;
 import aaa.bbb.ccc.entity.Reply;
+import aaa.bbb.ccc.entity.countryData;
 import aaa.bbb.ccc.entity.loginLog;
+import io.ipgeolocation.api.Geolocation;
+import io.ipgeolocation.api.GeolocationParams;
+import io.ipgeolocation.api.IPGeolocationAPI;
 
 import javax.servlet.http.HttpServletRequest;
 @Controller
@@ -68,15 +72,68 @@ public class adminControler {
 		
 		System.out.println(getClientIp(request));
 		
+		//countryCode 생성해서 넣어주자 
+		
+		IPGeolocationAPI api = new IPGeolocationAPI("dc908921857b45f2b8083a266fbc964d");
+		System.out.println("테스트실행중");
+		GeolocationParams geoParams = new GeolocationParams();
+		geoParams.setIPAddress(getClientIp(request));
+		geoParams.setFields("geo,time_zone,currency");
+		geoParams.setIncludeSecurity(true);
+		Geolocation geolocation = api.getGeolocation(geoParams);
+		System.out.println("나라코드는  "+geolocation.getCountryCode2());
+		Member loginLog = new Member();
+		loginLog.setLoginId(id);
+		loginLog.setSourceIp(getClientIp(request));
+		
+		if(geolocation.getStatus() == 200) {
+		    System.out.println(geolocation.getCountryName());
+		    System.out.println(geolocation.getCurrency().getName());
+		    System.out.println(geolocation.getTimezone().getCurrentTime());
+		    loginLog.setCountryCode(geolocation.getCountryCode2());
+		    
+		   
+		   // System.out.println(geolocation.getGeolocationSecurity().getAnonymous());
+		   // System.out.println(geolocation.getGeolocationSecurity().getKnownAttacker());
+		   // System.out.println(geolocation.getGeolocationSecurity().getProxy());
+		   // System.out.println(geolocation.getGeolocationSecurity().getProxyType());
+		   // System.out.println(geolocation.getGeolocationSecurity().getAnonymous());
+		   // System.out.println(geolocation.getGeolocationSecurity().getCloudProvider());
+		} else {
+		    System.out.printf("Status Code: %d, Message: %s\n", geolocation.getStatus(), geolocation.getMessage());
+		    geoParams.setIPAddress("13.225.134.116");
+			Geolocation geolocationResult = api.getGeolocation(geoParams);
+			loginLog.setCountryCode(geolocationResult.getCountryCode2());
+			System.out.println(" 변환된 나라코드는  "+geolocationResult.getCountryCode2());
+		}
+		
+		
+		//대쉬보드에서 먹히게 소문자로 변환해주자 
+		//String input = loginLog.getCountryCode();
+		String input = loginLog.getCountryCode();
+		String output = "";
+		char tmp;
+		for(int i=0; i < input.length(); i++) {
+			tmp = input.charAt(i);
+			if((65 <= tmp) && (tmp <=90)) {
+				output += input.valueOf(tmp).toLowerCase();
+			}else {
+				output +=(char)tmp;
+			}
+		}
+		
+		System.out.println("소문자변환은 "+output);
+		loginLog.setCountryCode(output);
+		
+		
 		String resource = "aaa/bbb/ccc/mybatis_config.xml";
 		InputStream inputStream;
 		Integer result = 0;
 		Member idPsw = new Member();
 		idPsw.setId(id);
 		idPsw.setPassword(password);
-		Member loginLog = new Member();
-		loginLog.setLoginId(id);
-		loginLog.setSourceIp(getClientIp(request));
+		
+		
 		SimpleDateFormat format1 = new SimpleDateFormat ("yyyy-MM-dd");
 		Date time = new Date();
 		String time1 = format1.format(time);
@@ -143,6 +200,37 @@ public class adminControler {
 		return "";
 	}
 	
+	@RequestMapping(value = "countCountryCodeAjax", method = {RequestMethod.GET})
+	public @ResponseBody List<countryData> countCountryCodeAjax(@RequestParam("data") int data1){
+		
+		String resource = "aaa/bbb/ccc/mybatis_config.xml";
+		InputStream inputStream;
+		
+		List<countryData> count= new ArrayList<countryData>();
+		List<countryData> result= new ArrayList<countryData>();
+		System.out.println(count);
+		countryData countryCodeUse = new countryData();
+		countryCodeUse.setCountryCodeTotal(0);
+		countryCodeUse.setCountryCode("");
+		count.add(countryCodeUse);
+		result.add(countryCodeUse);
+	
+		try {
+			
+			inputStream = Resources.getResourceAsStream(resource);
+			SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
+			SqlSession session = sqlSessionFactory.openSession();
+			count = session.selectList("aaa.bbb.ccc.BaseMapper.countCountryCode");
+			System.out.println("요기다 테스트  "+count);
+		} catch (IOException e) {
+			e.printStackTrace();	
+			
+		}
+		
+			return count;
+		
+		}
+	
 	@RequestMapping(value = "loginCountAjax", method = {RequestMethod.GET})
 	public @ResponseBody List<loginLog>  loginCountAjax(@RequestParam("data") int data1){
 
@@ -153,7 +241,9 @@ public class adminControler {
 		List<loginLog> countSuccessful = new ArrayList<loginLog>();
 		List<loginLog> countLoginFailure = new ArrayList<loginLog>();
 		List<loginLog> result = new ArrayList<loginLog>();
-			
+		
+		
+		
 		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 		DateFormat df1 = new SimpleDateFormat("M");
 		DateFormat df2 = new SimpleDateFormat("d");
@@ -184,7 +274,6 @@ public class adminControler {
 		        String time1 = df.format(cal.getTime());
 		        System.out.println(time1);
 		        count = session.selectList("aaa.bbb.ccc.BaseMapper.countNdaySuccessLogin", time1);
-		        
 		        
 		        //count 결과를 두개로 나눠보자
 		        
@@ -229,11 +318,37 @@ public class adminControler {
 		
 		}
 	
-	@RequestMapping(value = "admin/calendarTest", method = {RequestMethod.GET})
-	public @ResponseBody String calendarTest(Locale locale, Model model){
+	@RequestMapping(value = "admin/apiTest", method = {RequestMethod.GET})
+	public @ResponseBody Geolocation apiTest(Locale locale, Model model){
 	
 		
-			return "안녕 테스트";
+		IPGeolocationAPI api = new IPGeolocationAPI("dc908921857b45f2b8083a266fbc964d");
+		System.out.println("테스트실행중");
+		GeolocationParams geoParams = new GeolocationParams();
+		geoParams.setIPAddress("125.209.222.142");
+		geoParams.setFields("geo,time_zone,currency");
+		geoParams.setIncludeSecurity(true);
+		Geolocation geolocation = api.getGeolocation(geoParams);
+		
+		if(geolocation.getStatus() == 200) {
+		    System.out.println(geolocation.getCountryName());
+		    System.out.println(geolocation.getCurrency().getName());
+		    System.out.println(geolocation.getTimezone().getCurrentTime());
+		   // System.out.println(geolocation.getGeolocationSecurity().getAnonymous());
+		   // System.out.println(geolocation.getGeolocationSecurity().getKnownAttacker());
+		   // System.out.println(geolocation.getGeolocationSecurity().getProxy());
+		   // System.out.println(geolocation.getGeolocationSecurity().getProxyType());
+		   // System.out.println(geolocation.getGeolocationSecurity().getAnonymous());
+		   // System.out.println(geolocation.getGeolocationSecurity().getCloudProvider());
+		} else {
+		    System.out.printf("Status Code: %d, Message: %s\n", geolocation.getStatus(), geolocation.getMessage());
+		}
+		// Get geolocation in Russian** for IP address (1.1.1.1) and all fields
+		
+		geoParams.setIPAddress("1.1.1.1");
+		geoParams.setLang("ru");
+
+			return geolocation;
 		
 		}
 	
@@ -402,6 +517,9 @@ public class adminControler {
 				
 		return "admin/pages/tables/simple";
 	}
+	
+	
+	
 	
 	
 }
