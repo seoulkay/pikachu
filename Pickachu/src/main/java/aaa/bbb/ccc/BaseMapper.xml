@@ -131,5 +131,32 @@
 	select count(*) from LoginLog01 where loginCreated > CURRENT_DATE( )
 	</select>
 	
+	<select id="loginCount" resultType="aaa.bbb.ccc.entity.LoginCount">
+	SELECT COUNT(*) as loginCount, DAY(loginCreated) as loginDate, MONTH(loginCreated) as loginMonth FROM LoginLog01 WHERE MONTH(loginCreated) = '2' GROUP BY  MONTH(loginCreated), DAY(loginCreated)
+	</select>
+
+	<select id="sevenDayLogins" resultType="aaa.bbb.ccc.entity.LoginCount">
+	SELECT COUNT(*) as loginCount, DAY(loginCreated) as loginDate, MONTH(loginCreated) as loginMonth FROM hw_utf8.LoginLog01 where loginCreated > date_add(now(),interval -7 day) GROUP BY  MONTH(loginCreated), DAY(loginCreated)
+	</select>	
+	
+	<select id="sevenDayLoginsSubQ" resultType="aaa.bbb.ccc.entity.LoginCount" parameterType="String">
+	SELECT  COUNT(*) AS loginCount, DAY(loginCreated) AS loginDate, MONTH(loginCreated) AS loginMonth, loginSuccess AS loginSuccess
+	FROM 
+	(SELECT  * 
+	FROM hw_utf8.LoginLog01 
+	WHERE loginCreated >= #{time1}) xmen
+	GROUP BY  MONTH(loginCreated), DAY(loginCreated), loginSuccess;
+	</select>
+	
+	<select id="sevenDayLoginsAllSubQ" resultType="aaa.bbb.ccc.entity.LoginCount" parameterType="String">
+	SELECT  COUNT(*) AS loginCount, DAY(loginCreated) AS loginDate, MONTH(loginCreated) AS loginMonth
+	FROM 
+	(SELECT  * 
+	FROM hw_utf8.LoginLog01 
+	WHERE loginCreated >= #{time1}) xmen
+	GROUP BY  MONTH(loginCreated), DAY(loginCreated);
+	</select>
+	
+	
 </mapper>
 
