@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="aaa.bbb.ccc.BaseMapper">
+  <select id="selectPost" resultType="aaa.bbb.ccc.entity.Post" parameterType="aaa.bbb.ccc.entity.Post">
+    select * from Post where postId = #{postId}
+
+  </select>
+  
+  <select id="allPost" resultType="aaa.bbb.ccc.entity.Post">
+    select * from Post order by postId desc
+  </select>
+  
+  <select id="searchPost" resultType="aaa.bbb.ccc.entity.Post" parameterType="String">
+  	<bind name="search" value="'%' + _parameter + '%'" />
+    select * from Post where instaId like #{search} or description like #{search} order by postId desc
+  </select>
+  
+  <insert id="writePost" parameterType="aaa.bbb.ccc.entity.Post">
+ 	insert into Post (instaId, description, Post.create)
+ 	values (#{instaId}, #{description}, now()) 
+  </insert>
+  
+  <update id="updatePost" parameterType="aaa.bbb.ccc.entity.Post">
+  	update Post set instaId = #{instaId}, description = #{description} where postId= #{postId}
+  </update>
+  
+  <delete id="deletePost" parameterType="Integer">
+  	delete from Post where postId = #{postId}
+  </delete>
+  
+	<insert id="writeReply" parameterType="aaa.bbb.ccc.entity.Reply" useGeneratedKeys="true" keyProperty="replyId">
+		insert into Reply (instaId, description, Reply.created, postId)
+ 		values (#{instaId}, #{description}, now(), #{postId}) 
+ 	</insert>
+  
+	<select id="repliesForAPost" resultType="aaa.bbb.ccc.entity.Reply" parameterType="Integer">
+		select * from Reply where postId = #{postId} AND reReplyId is null order by replyId desc
+	</select>  
+
+	<select id="selectReply" resultType="aaa.bbb.ccc.entity.Reply" parameterType="aaa.bbb.ccc.entity.Reply">
+    select * from Reply where replyId = #{replyId} 
+  	</select>
+
+  <update id="updateReply" parameterType="aaa.bbb.ccc.entity.Reply">
+  	update Reply set instaId = #{instaId}, description = #{description} where replyId= #{replyId}
+  </update>
+  
+   <delete id="deleteReply" parameterType="Integer">
+  	delete from Reply where replyId = #{replyId}
+  </delete>
+  
+  	<select id="reReplyList" resultType="aaa.bbb.ccc.entity.Reply" parameterType="Integer">
+		select * from Reply where reReplyId = #{replyId} order by replyId desc
+	</select>  
+  
+  	<insert id="writeReReply" parameterType="aaa.bbb.ccc.entity.Reply" >
+		insert into Reply (instaId, description, Reply.created, postId, reReplyId)
+ 		values (#{instaId}, #{description}, now(), #{postId}, #{reReplyId}) 
+ 	</insert>
+ 	
+ 	
+	<select id="totalSize" resultType="Integer">
+		select count(*) from Post
+	</select>  
+ 	
+ 	<select id="totalSizeSearched" resultType="Integer" parameterType="String">
+	<bind name="search1" value="'%' + _parameter + '%'" />
+		select count(*) from Post where instaId like #{search1} or description like #{search1}
+	</select>  
+ 	
+ 	<select id="showPostByPage" resultType="aaa.bbb.ccc.entity.Post" parameterType="aaa.bbb.ccc.entity.PageManager" >
+		select * from Post order by PostId desc limit #{pageSize} offset #{currentPage} 
+	</select> 
+  	
+  	<select id="searchPostByPage" resultType="aaa.bbb.ccc.entity.Post" parameterType="aaa.bbb.ccc.entity.PageManager">
+		<bind name="search1" value="'%' + _parameter.search + '%'" />
+		select * from Post where instaId like #{search1} or description like #{search1} order by PostId desc limit #{pageSize} offset #{currentPage} 
+	</select> 
+  
+    <insert id="signUp" parameterType="aaa.bbb.ccc.entity.Member">
+ 	insert into hw_utf8.Member (eMailMember, penName, passwordMember, createdMember)
+ 	values (#{eMailMember}, #{penName}, #{passwordMember}, now()) 
+  	</insert>
+  
+  	<select id="penNameCounter" parameterType="String" resultType="Integer">
+  	    select count(*) from hw_utf8.Member where PenName = #{penName}
+  	</select>
+  
+  	<select id="eMailMemberCounter" parameterType="String" resultType="Integer">
+  	    select count(*) from hw_utf8.Member where eMailMember = #{emailMember}
+  	</select>
+  
+  	<select id="showMember" resultType="aaa.bbb.ccc.entity.Member" >
+		select * from hw_utf8.Member order by idMember desc 
+	</select> 
+  
+  	<select id="searchMember" resultType="aaa.bbb.ccc.entity.Member" parameterType="String">
+  	<bind name="search" value="'%' + _parameter + '%'" />
+    select * from hw_utf8.Member where eMailMember like #{search} or penName like #{search} order by idMember desc
+  	</select>
+  	
+  	<select id="searchMember2" resultType="aaa.bbb.ccc.entity.Member" parameterType="String">
+  	<bind name="search" value="'%' + _parameter + '%'" />
+    select * from hw_utf8.Member where eMailMember like #{search}
+  	</select>
+	
+	<select id="loginSuccess" resultType="Integer" parameterType="aaa.bbb.ccc.entity.Member">
+    select count(*) from hw_utf8.Member where eMailMember like #{eMailMember} and passwordMember like #{passwordMember} 
+  	</select>
+	
+	<insert id="loginLog" parameterType="aaa.bbb.ccc.entity.LoginLog">
+ 	insert into LoginLog01 (loginId, sourceIP, loginCreated, loginSuccess)
+ 	values (#{loginId}, #{sourceIP}, now(), #{loginSuccess}) 
+ 	</insert>
+	
+	<select id="totalMember" resultType="Integer">
+		select count(*) from hw_utf8.Member
+	</select>  
+	
+	<select id="totalLoginSuccess" resultType="double" >
+    select count(*) from LoginLog01 where loginSuccess like 1
+  	</select>
+	
+	<select id="totalLoginTry" resultType="double" >
+    select count(*) from LoginLog01
+  	</select>
+  	
+  	<select id="loginToday" resultType="Integer" >
+	select count(*) from LoginLog01 where loginCreated > CURRENT_DATE( )
+	</select>
+	
+	<select id="loginCount" resultType="aaa.bbb.ccc.entity.LoginCount">
+	SELECT COUNT(*) as loginCount, DAY(loginCreated) as loginDate, MONTH(loginCreated) as loginMonth FROM LoginLog01 WHERE MONTH(loginCreated) = '2' GROUP BY  MONTH(loginCreated), DAY(loginCreated)
+	</select>
+
+	<select id="sevenDayLogins" resultType="aaa.bbb.ccc.entity.LoginCount">
+	SELECT COUNT(*) as loginCount, DAY(loginCreated) as loginDate, MONTH(loginCreated) as loginMonth FROM hw_utf8.LoginLog01 where loginCreated > date_add(now(),interval -7 day) GROUP BY  MONTH(loginCreated), DAY(loginCreated)
+	</select>	
+	
+	<select id="sevenDayLoginsSubQ" resultType="aaa.bbb.ccc.entity.LoginCount" parameterType="String">
+	SELECT  COUNT(*) AS loginCount, DAY(loginCreated) AS loginDate, MONTH(loginCreated) AS loginMonth, loginSuccess AS loginSuccess
+	FROM 
+	(SELECT  * 
+	FROM hw_utf8.LoginLog01 
+	WHERE loginCreated >= #{time1}) xmen
+	GROUP BY  MONTH(loginCreated), DAY(loginCreated), loginSuccess;
+	</select>
+	
+	<select id="sevenDayLoginsAllSubQ" resultType="aaa.bbb.ccc.entity.LoginCount" parameterType="String">
+	SELECT  COUNT(*) AS loginCount, DAY(loginCreated) AS loginDate, MONTH(loginCreated) AS loginMonth
+	FROM 
+	(SELECT  * 
+	FROM hw_utf8.LoginLog01 
+	WHERE loginCreated >= #{time1}) xmen
+	GROUP BY  MONTH(loginCreated), DAY(loginCreated);
+	</select>
+	
+	
+</mapper>
+
