@@ -6,6 +6,9 @@
  **/
 
 var loginData = [0,0,0,0,0,0,0];
+var countryData= [0,0];
+var visitorsData= {};
+	
 
 
 function loginChartDataAjax(){
@@ -22,7 +25,21 @@ function loginChartDataAjax(){
 		loginData = data;
 		console.log(JSON.stringify(loginData));
 		
+		$.ajax({
+	         url: 'countCountryCodeAjax',
+	    	 method: "GET",
+	 	     data: {'data': data1}
+	 	     })
+		.done(function(data) {
+			countryData = data
 
+			for(var i=0; i<Object.keys(countryData).length; i++){
+				var keyname = '';
+				visitorsData[keyname + data[i].countryCode] = data[i].countryCodeTotal;			
+			}
+			
+			console.log(JSON.stringify(countryData));
+			console.log(JSON.stringify(visitorsData));
 $(function () {
 
   'use strict'
@@ -67,7 +84,7 @@ $(function () {
   $('.knob').knob()
 
   // jvectormap data
-  var visitorsData = {
+  var tt= {
     'us': 5000, //USA
     'sa': 200, //Saudi Arabia
     'ca': 300.30, //Canada
@@ -310,6 +327,8 @@ $(function () {
     }
   )
 
+
+})
 })
 })
 }

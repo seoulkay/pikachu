@@ -83,6 +83,12 @@
 	ORDER BY DAY(created) desc;
   </select>
   
+   <select id="countCountryCode" resultType="aaa.bbb.ccc.entity.countryData" parameterType="String">
+    SELECT   countryCode, COUNT(*) AS countryCodeTotal
+    FROM hong.loginLog
+	GROUP BY  countryCode;
+  </select>
+  
  <select id="countNdayTotalLogin" resultType="Integer" parameterType="String">
   <bind name="time1" value="'%' + _parameter + '%'" />
     select count(*) AS successTotal from hong.loginLog WHERE created like #{time1} 
@@ -106,11 +112,11 @@
   </select>
   
   <insert id="insertLoginLogFalse" parameterType="aaa.bbb.ccc.entity.Member">
-    insert into hong.loginLog (hong.loginLog.created,loginId,sourceIp,successful) values (now(),#{loginId},#{sourceIp},false)
+    insert into hong.loginLog (hong.loginLog.created,loginId,sourceIp,successful,countryCode) values (now(),#{loginId},#{sourceIp},false,#{countryCode})
   </insert>
   
   <insert id="insertLoginLogTrue" parameterType="aaa.bbb.ccc.entity.Member">
-    insert into hong.loginLog (hong.loginLog.created,loginId,sourceIp,successful) values (now(),#{loginId},#{sourceIp},true)
+    insert into hong.loginLog (hong.loginLog.created,loginId,sourceIp,successful,countryCode) values (now(),#{loginId},#{sourceIp},true,#{countryCode})
   </insert>
   
   <insert id="insertPost" parameterType="aaa.bbb.ccc.entity.Post">

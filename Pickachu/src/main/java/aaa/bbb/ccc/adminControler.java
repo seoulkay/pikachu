@@ -74,7 +74,7 @@ public class adminControler {
 		
 		//countryCode 생성해서 넣어주자 
 		
-		IPGeolocationAPI api = new IPGeolocationAPI("");
+		IPGeolocationAPI api = new IPGeolocationAPI("dc908921857b45f2b8083a266fbc964d");
 		System.out.println("테스트실행중");
 		GeolocationParams geoParams = new GeolocationParams();
 		geoParams.setIPAddress(getClientIp(request));
