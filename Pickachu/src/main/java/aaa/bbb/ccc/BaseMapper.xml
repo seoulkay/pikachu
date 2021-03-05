@@ -111,8 +111,8 @@
   	</select>
 	
 	<insert id="loginLog" parameterType="aaa.bbb.ccc.entity.LoginLog">
- 	insert into LoginLog01 (loginId, sourceIP, loginCreated, loginSuccess)
- 	values (#{loginId}, #{sourceIP}, now(), #{loginSuccess}) 
+ 	insert into LoginLog01 (loginId, sourceIP, loginCreated, loginSuccess, countryCode)
+ 	values (#{loginId}, #{sourceIP}, now(), #{loginSuccess}, #{countryCode}) 
  	</insert>
 	
 	<select id="totalMember" resultType="Integer">
@@ -139,8 +139,8 @@
 	SELECT COUNT(*) as loginCount, DAY(loginCreated) as loginDate, MONTH(loginCreated) as loginMonth FROM hw_utf8.LoginLog01 where loginCreated > date_add(now(),interval -7 day) GROUP BY  MONTH(loginCreated), DAY(loginCreated)
 	</select>	
 	
-	<select id="sevenDayLoginsSubQ" resultType="aaa.bbb.ccc.entity.LoginCount" parameterType="String">
-	SELECT  COUNT(*) AS loginCount, DAY(loginCreated) AS loginDate, MONTH(loginCreated) AS loginMonth, loginSuccess AS loginSuccess
+	<select id="sevenDayLoginsSubQ" resultType="aaa.bbb.ccc.entity.LoginLog" parameterType="String">
+	SELECT  COUNT(*) AS total, DAY(loginCreated) AS date, MONTH(loginCreated) AS month, loginSuccess AS loginSuccess
 	FROM 
 	(SELECT  * 
 	FROM hw_utf8.LoginLog01 
@@ -148,13 +148,10 @@
 	GROUP BY  MONTH(loginCreated), DAY(loginCreated), loginSuccess;
 	</select>
 	
-	<select id="sevenDayLoginsAllSubQ" resultType="aaa.bbb.ccc.entity.LoginCount" parameterType="String">
-	SELECT  COUNT(*) AS loginCount, DAY(loginCreated) AS loginDate, MONTH(loginCreated) AS loginMonth
-	FROM 
-	(SELECT  * 
-	FROM hw_utf8.LoginLog01 
-	WHERE loginCreated >= #{time1}) xmen
-	GROUP BY  MONTH(loginCreated), DAY(loginCreated);
+	<select id="countCountryCode" resultType="aaa.bbb.ccc.entity.CountryData" parameterType="String">
+    SELECT   countryCode, COUNT(*) AS countryCodeTotal
+    FROM hw_utf8.LoginLog01
+	GROUP BY  countryCode;
 	</select>
 	
 	

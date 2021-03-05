@@ -16,6 +16,9 @@ import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,6 +32,7 @@ import aaa.bbb.ccc.entity.Post;
 import io.ipgeolocation.api.Geolocation;
 import io.ipgeolocation.api.GeolocationParams;
 import io.ipgeolocation.api.IPGeolocationAPI;
+import aaa.bbb.ccc.entity.CountryData;
 import aaa.bbb.ccc.entity.LoginCount;
 import aaa.bbb.ccc.entity.LoginLog;
 
@@ -101,6 +105,8 @@ public class AdminController {
 		
 		System.out.println(getClientIp(request));
 		
+		//scheduleTaskUsingCronExpression();
+		
 		return "admin/pages/examples/logIn";
 	}
 
@@ -124,6 +130,11 @@ public class AdminController {
 	@RequestMapping(value = "admin/pages/examples/loginAction", method = RequestMethod.POST)
 	public String loginAction(Locale locale, Model model, String eMailMember,	String passwordMember, HttpServletRequest ipRequest) {
 		
+		//System.out.println(getClientIp(ipRequest));
+		
+		
+		
+		
 		String resource = "aaa/bbb/ccc/mybatis_config.xml";
 		InputStream inputStream;
 		
@@ -143,6 +154,30 @@ public class AdminController {
 			log1.setLoginId(eMailMember);
 			log1.setSourceIP(getClientIp(ipRequest));
 			log1.setLoginSuccess(loginSuccess);
+			
+			IPGeolocationAPI api = new IPGeolocationAPI("b2351617dfad414eaaf53967ef6457e8");
+			GeolocationParams geoParams = new GeolocationParams();
+			
+			geoParams.setIPAddress(getClientIp(ipRequest));
+			geoParams.setFields("geo,time_zone,currency");
+			geoParams.setIncludeSecurity(true);
+			Geolocation geolocation = api.getGeolocation(geoParams);
+			System.out.println("나라코드는  "+geolocation.getCountryCode2());
+
+			if(geolocation.getStatus() == 200) {
+			    System.out.println(geolocation.getCountryName());
+			    System.out.println(geolocation.getCurrency().getName());
+			    System.out.println(geolocation.getTimezone().getCurrentTime());
+			    log1.setCountryCode(geolocation.getCountryCode2().toLowerCase());
+			}else{
+			    System.out.printf("Status Code: %d, Message: %s\n", geolocation.getStatus(), geolocation.getMessage());
+			    geoParams.setIPAddress("13.225.134.116");
+				Geolocation geolocationResult = api.getGeolocation(geoParams);
+				log1.setCountryCode(geolocationResult.getCountryCode2().toLowerCase());
+				System.out.println(" 변환된 나라코드는  "+geolocationResult.getCountryCode2().toLowerCase());
+				System.out.println(log1.getCountryCode());
+			}
+			
 			
 			Member log2 = new Member();
 			
@@ -230,105 +265,107 @@ public class AdminController {
 		return count;
 	}
 	
-	@RequestMapping(value = "admin/calendarTest", method = RequestMethod.GET)
-	public @ResponseBody ArrayList <LoginCount> calendarTest(Locale locale, Model model) {
+	@RequestMapping(value = "admin/loginCountAjax", method = RequestMethod.GET)
+	public @ResponseBody List <LoginLog> loginCountAjax(@RequestParam("data") int data1) {
 		String resource = "aaa/bbb/ccc/mybatis_config.xml";
 		InputStream inputStream;
-				
-        //System.out.println("current: " + df.format(cal.getTime()));
-        
-        ArrayList <LoginCount> lastSeven = new ArrayList<LoginCount>(); 
-        //LoginCount day1 = new LoginCount();
-        
-        try {
+		
+		//sql 뽑아오는 모든 데이
+		List<LoginLog> count = new ArrayList<LoginLog>();
+		
+		List<LoginLog> countSuccessful = new ArrayList<LoginLog>();
+		List<LoginLog> countLoginFailure = new ArrayList<LoginLog>();
+		
+		//ajax로 보낼 리턴 데이
+		List<LoginLog> result = new ArrayList<LoginLog>();
+
+		
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+		DateFormat df1 = new SimpleDateFormat("M");
+		DateFormat df2 = new SimpleDateFormat("d");
+		
+		for(int i = 0 ; i < 7 ; i ++ ) {
+			LoginLog test1 = new LoginLog();
+			Calendar cal = Calendar.getInstance();
+	        cal.setTime(new Date());
+	        cal.add(Calendar.DATE, -i);
+	        test1.setDate(df2.format(cal.getTime()));
+	        test1.setMonth(df1.format(cal.getTime()));
+	        test1.setSuccessTotal(0);
+	        test1.setTotal(0);
+	        result.add(test1);
+	        countSuccessful.add(test1);
+	        countLoginFailure.add(test1);
+
+			  }
+		try {
+			
 			inputStream = Resources.getResourceAsStream(resource);
 			SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
 			SqlSession session = sqlSessionFactory.openSession();
 			
-			
-			//db에 "며칠전(time1)"인자를 넣어야하기 때문에 날짜를 만든다. 
-			Calendar cal = Calendar.getInstance();
-	        cal.setTime(new Date());
-	        cal.add(Calendar.DATE, -6);
-	        
-	        DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-	        String time1 = new String();
-	        time1 = df.format(cal.getTime());			
-			System.out.println("오늘로부터 7일전 날짜는 : "+time1);
-	        
-			List<LoginCount> count = new ArrayList<LoginCount>();
-			
-			//count=session.selectList("aaa.bbb.ccc.BaseMapper.sevenDayLogins");
-			count=session.selectList("aaa.bbb.ccc.BaseMapper.sevenDayLoginsSubQ", time1);
-			System.out.println("db에서 넘어온 7일전 로그인카운트 객체 수: "+count.size());		
-			
-			for(int l=0; l<7; l++) {
-				//캘린더 객체 만들어서 오늘로 지정 
-    			Calendar cal1 = Calendar.getInstance();
-	        	cal1.setTime(new Date());
-	        	//오늘에서부터 하루씩 마이너스 된 날짜로 반복 
-	        	cal1.add(Calendar.DATE, -l);
-	        	
-	        	//cal1의 월,일을 분리해서 각각 자바 먼쓰, 자바데이트에 넣어줌. 
-	        	DateFormat m = new SimpleDateFormat("M");
-	        	DateFormat d = new SimpleDateFormat("d");
-	        	String javaMonth = m.format(cal1.getTime());
-    	       	String javaDate = d.format(cal1.getTime());
-				
-    	       	//String temp = javaMonth+"-"+javaDate+"-0";
-    	       	
-    	       	//로그인 
-    	       	LoginCount test = new LoginCount();
-    	       	test.setLoginCount("0");
-    	       	test.setLoginMonth(javaMonth);
-    	       	test.setLoginDate(javaDate);
-    	       	test.setLoginSuccess(0);
-    	       	
-				for(int h=0; h<count.size();h++) {
-					//로그인 객체 day0에 sql에서 받아온 로그인 배열을 순서대로 집어넣는다.
-					LoginCount day0 = count.get(h);
-					String sqlMonth = day0.getLoginMonth();
-		    		String sqlDate = day0.getLoginDate(); 		    		
-		    		
-		    		//System.out.println("javaMonth :"+javaMonth+"---"+"sqlMonth: "+sqlMonth);
-		    		//System.out.println("javaMonth :"+javaDate+"---"+"sqlMonth: "+sqlDate);
-		    		if(javaMonth.equals(sqlMonth) && javaDate.equals(sqlDate)) {
-        	       		//temp = javaMonth+"-"+javaDate+"-"+day0.getLoginCount();
-        	       		test.setLoginCount(day0.getLoginCount());
-        	       		test.setLoginSuccess(day0.getLoginSuccess());
-        	       		
-        	       		System.out.println("로그인이 있었던 날 : "+javaMonth+"-"+javaDate+"-"+"로그인 카운트 수:"+day0.getLoginCount());
-        	       	  
-		    		}else {
-		    			System.out.println("로그인이 없었던 날 : "+javaMonth+"-"+javaDate+"-"+"로그인 카운트 수:"+test.getLoginCount());
+				Calendar cal = Calendar.getInstance();
+		        cal.setTime(new Date());
+		        cal.add(Calendar.DATE, -7);
+		        String time1 = df.format(cal.getTime());
+		        System.out.println(time1);
+		        count = session.selectList("aaa.bbb.ccc.BaseMapper.sevenDayLoginsSubQ", time1);
+		        
+		        //count 결과를 두개로 나눠보자
+		        
+		      
+		    for(int i=0;i<countSuccessful.size();i++) {
+		    	for(int j=0;j<count.size();j++) {
+		    		if(countSuccessful.get(i).getMonth().equals(count.get(j).getMonth()) && 
+		    				countSuccessful.get(i).getDate().equals(count.get(j).getDate()) &&
+		    				count.get(j).getLoginSuccess() == 1) 
+		    		{ //로그인 성공 횟수를 날짜별로 비교해서 넣어준다  
+		    			countSuccessful.get(i).setSuccessTotal(count.get(j).getTotal());
 		    		}
-				}
-				lastSeven.add(test);
-				//System.out.println(lastSeven);
+		    	}     	
+		    }
+		    
+		    for(int i=0;i<countLoginFailure.size();i++) {
+		    	for(int j=0;j<count.size();j++) {
+		    		if(countLoginFailure.get(i).getMonth().equals(count.get(j).getMonth()) && 
+		    				countLoginFailure.get(i).getDate().equals(count.get(j).getDate()) &&
+		    				count.get(j).getLoginSuccess() == 0) 
+		    		{ //로그인 실패 횟수를 날짜별로 비교해서 넣어준다  
+		    			countLoginFailure.get(i).setTotal(count.get(j).getTotal());
+		    		}
+		    	}     	
+		    }
+		    	
+		    //리턴할 아이들을 만들어 보자 
+		    for(int i=0;i<result.size();i++) {
+				result.get(i).setTotal(countSuccessful.get(i).getSuccessTotal()+countLoginFailure.get(i).getTotal()); //전체 횟수를 합쳐서  넣어준다 
+				System.out.println(result.get(i).getMonth()+"-"+result.get(i).getDate()+"의 로그인 전체횟수는 : "+result.get(i).getTotal());
 			}
-			System.out.println(lastSeven);
-
-    		
-			
-		}catch (IOException e){
-			e.printStackTrace();
-		}
-
 	
-		return lastSeven;
+			for(int i=0;i<result.size();i++) {
+				result.get(i).setSuccessTotal(countSuccessful.get(i).getSuccessTotal()); //성공횟수를 넣어준다 
+				System.out.println(result.get(i).getMonth()+"-"+result.get(i).getDate()+"의 로그인 성공횟수는 : "+result.get(i).getSuccessTotal());
+			}
+
+		} catch (IOException e) {
+			e.printStackTrace();	
+			
+		}
+		
+			return result;
 	}
 	
 	
 	@RequestMapping(value = "admin/ipGeoTest", method = RequestMethod.GET)
-	public String ipGeoTest(Locale locale, Model model, HttpServletRequest request ) {
+	public @ResponseBody Geolocation ipGeoTest(Locale locale, Model model, HttpServletRequest request ) {
 		String result = new String();
 		
-		System.out.println(getClientIp(request));
+		//System.out.println(getClientIp(request));
 		
-		IPGeolocationAPI api = new IPGeolocationAPI("");
+		IPGeolocationAPI api = new IPGeolocationAPI("b2351617dfad414eaaf53967ef6457e8");
 		
 		GeolocationParams geoParams = new GeolocationParams();
-		geoParams.setIPAddress(getClientIp(request));
+		geoParams.setIPAddress("125.209.222.142");
 		geoParams.setFields("geo,time_zone,currency");
 		geoParams.setIncludeSecurity(true);
 		Geolocation geolocation = api.getGeolocation(geoParams);
@@ -347,12 +384,62 @@ public class AdminController {
 			System.out.println(" 변환된 나라코드는  "+geolocationResult.getCountryCode2());
 		}    
 		
-		return result;
+		
+		return geolocation;
 		
 	
 	}
 	
+	@RequestMapping(value = "admin/countCountryCodeAjax", method = {RequestMethod.GET})
+	public @ResponseBody List<CountryData> countCountryCodeAjax(@RequestParam("data") int data1){
+		
+		String resource = "aaa/bbb/ccc/mybatis_config.xml";
+		InputStream inputStream;
+		
+		List<CountryData> countByCountry= new ArrayList<CountryData>();
+		//List<CountryData> result= new ArrayList<CountryData>();
+		System.out.println(countByCountry);
+		CountryData countryCodes = new CountryData();
+		countryCodes.setCountryCodeTotal(0);
+		countryCodes.setCountryCode("");
+		countByCountry.add(countryCodes);
+		//result.add(countryCodes);
 	
+		try {
+			
+			inputStream = Resources.getResourceAsStream(resource);
+			SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
+			SqlSession session = sqlSessionFactory.openSession();
+			countByCountry = session.selectList("aaa.bbb.ccc.BaseMapper.countCountryCode");
+			System.out.println("테스트 : "+countByCountry);
+		} catch (IOException e) {
+			e.printStackTrace();	
+			
+		}
+		
+		scheduleTaskUsingCronExpression();
+		
+			return countByCountry;
+		
+		}
+	
+	@Scheduled(cron = "1 * * * * ?")
+	public void scheduleTaskUsingCronExpression() {
+	 
+	    //long now = System.currentTimeMillis() / 1000;
+	    System.out.println(
+	      "크론 매분 실행");
+	}
+	
+	@RequestMapping(value = "admin/cronTest", method = RequestMethod.GET)
+	public String cronTest(Locale locale, Model model) {
+		String result = "안녕하세요.";
+		scheduleTaskUsingCronExpression();
+		
+		return result;
+	}
+
+
 	
 }
 //로그인 체크
