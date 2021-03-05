@@ -17,8 +17,8 @@ import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.scheduling.annotation.Scheduled;
+//import org.springframework.scheduling.annotation.EnableScheduling;
+//import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -417,27 +417,32 @@ public class AdminController {
 			
 		}
 		
-		scheduleTaskUsingCronExpression();
+		//scheduleTaskUsingCronExpression();
 		
 			return countByCountry;
 		
 		}
 	
-	@Scheduled(cron = "1 * * * * ?")
-	public void scheduleTaskUsingCronExpression() {
-	 
-	    //long now = System.currentTimeMillis() / 1000;
-	    System.out.println(
-	      "크론 매분 실행");
-	}
-	
-	@RequestMapping(value = "admin/cronTest", method = RequestMethod.GET)
-	public String cronTest(Locale locale, Model model) {
-		String result = "안녕하세요.";
-		scheduleTaskUsingCronExpression();
-		
-		return result;
-	}
+//	@Configuration
+//	@EnableScheduling
+//	public class SpringConfig {
+//	    
+//	}
+//	
+//	@Scheduled(cron = "1 * * * * ?")
+//	public void scheduleTaskUsingCronExpression() {
+//	 
+//	    //long now = System.currentTimeMillis() / 1000;
+//	    System.out.println(
+//	      "크론 매분 실행");
+//	}
+//	
+//	@RequestMapping(value = "admin/cronTest", method = RequestMethod.GET)
+//	public void cronTest() {
+//		
+//		scheduleTaskUsingCronExpression();
+//		
+//	}
 
 
 	
