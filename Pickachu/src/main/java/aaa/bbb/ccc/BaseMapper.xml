@@ -7,6 +7,10 @@
     select * from MyPost where postId = #{postId}
   </select>
   
+  <select id="nullIdIp" resultType="aaa.bbb.ccc.entity.Member">
+   SELECT sourceIp , id FROM hong.loginLog Where id = #{id}
+  </select>
+  
   <select id="indexUser" resultType="aaa.bbb.ccc.entity.Member">
     select * from hong.member where id = #{id}
   </select>
@@ -18,9 +22,18 @@
     select * from MyPost order by postId desc 
   </select>
   
+  
+  
+  
   <select id="memberList" resultType="aaa.bbb.ccc.entity.Member">
     select * from hong.member 
   </select>
+  
+  <select id="searchCountryCodeNullId" resultType="Integer">
+    select id from hong.loginLog  where countryCode is null GROUP BY  id
+  </select>
+  
+  
   <select id="searchMemberList" resultType="aaa.bbb.ccc.entity.Member" parameterType="aaa.bbb.ccc.entity.Member" >
    <bind name="search2" value="'%' + _parameter.search + '%'" />
     select * from hong.member where id like  #{search2} or nickName like #{search2} 
@@ -46,6 +59,22 @@
   <select id="countPost" resultType="Integer">
     select count(*) as totalSize from hong.MyPost
   </select>
+  
+  <select id="countProjectList" resultType="Integer">
+    select count(*) as totalSize from hong.projectList
+  </select>
+  <select id="limitProjectList" resultType="aaa.bbb.ccc.entity.Project">
+    select * from hong.projectList order by id desc limit #{pageSize} offset #{currentPage}
+  </select>
+  <select id="countSearchProjectList" resultType="Integer" parameterType="String">
+  <bind name="search" value="'%' + _parameter + '%'" />
+    select count(*) as totalSize from hong.projectList where title like #{search}
+  </select>
+  <select id="searchLimitProjectList" resultType="aaa.bbb.ccc.entity.Project" parameterType="aaa.bbb.ccc.entity.PageManager" >
+   <bind name="search1" value="'%' + _parameter.search + '%'" />
+    select * from hong.projectList where title like  #{search1} limit #{pageSize} offset #{currentPage}
+  </select>
+  
   
   <select id="countIdPsw" resultType="Integer">
     select count(*) from member where id = #{id} and password = #{password}
@@ -131,9 +160,42 @@
   <insert id="insertReReply" parameterType="aaa.bbb.ccc.entity.Reply">
     insert into MyPostReply (hong.MyPostReply.create,instaId,description,postId,replyId) values (now(),#{instaId},#{description},#{postId},#{replyId})
   </insert>
+  
+  <insert id="insertIamkayNotList" parameterType="aaa.bbb.ccc.entity.JsoupReply">
+    insert into hong.iamkayList (hong.iamkayList.password,id,writer,published,content) 
+    values 
+    (#{password},#{id},#{writer},#{published},#{content})
+  </insert>
+  
+  <insert id="insertIamkay" parameterType="aaa.bbb.ccc.entity.JsoupReply">
+	   insert into hong.iamkayList (hong.iamkayList.password,id,writer,published,content)
+		VALUES
+		<foreach collection="list" item="item" separator=",">
+		("${item.password}","${item.id}","${item.writer}","${item.published}","${item.content}")
+		</foreach>
+  </insert>
+  
+  <select id="getAllId" resultType="aaa.bbb.ccc.entity.JsoupReply">
+    SELECT id FROM hong.iamkayList order by id desc
+  </select>
+   <select id="getMaxId" resultType="Integer">
+    SELECT MAX(id) FROM hong.iamkayList
+  </select>
+
+  <select id="getCountId" resultType="integer">
+    SELECT count(*) id FROM hong.iamkayList where id
+  </select>
+  
+  
   <update id="updatePost" parameterType="aaa.bbb.ccc.entity.Post">
     update MyPost set instaId=#{instaId} , picture=#{picture}, description=#{description} where postId=#{postId}
   </update>
+  
+   <update id="updateNullIp" parameterType="aaa.bbb.ccc.entity.loginLog">
+    update hong.loginLog set countryCode=#{countryCode} where id=#{id}
+  </update>
+  
+  
   <update id="updateReply" parameterType="aaa.bbb.ccc.entity.Reply">
     update MyPostReply set instaId=#{instaId} , description=#{description} where id=#{id}
   </update>

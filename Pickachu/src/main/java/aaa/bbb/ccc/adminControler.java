@@ -19,6 +19,8 @@ import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,6 +36,7 @@ import aaa.bbb.ccc.entity.Post;
 import aaa.bbb.ccc.entity.Reply;
 import aaa.bbb.ccc.entity.countryData;
 import aaa.bbb.ccc.entity.loginLog;
+import aaa.bbb.ccc.AlarmTask;
 import io.ipgeolocation.api.Geolocation;
 import io.ipgeolocation.api.GeolocationParams;
 import io.ipgeolocation.api.IPGeolocationAPI;
@@ -64,6 +67,8 @@ public class adminControler {
 		
 		return "admin/pages/examples/login";
 	}
+	
+	
 	
 	
 	@RequestMapping(value = "loginAction", method = RequestMethod.POST)
@@ -230,6 +235,41 @@ public class adminControler {
 			return count;
 		
 		}
+	
+//	@Scheduled(cron = "*/60 * * * * *")
+//	public void searchNull() {
+//		String resource = "aaa/bbb/ccc/mybatis_config.xml";
+//		InputStream inputStream;
+//		
+//		List<Integer> result= new ArrayList<Integer>();
+//		
+//		try {
+//			
+//			inputStream = Resources.getResourceAsStream(resource);
+//			SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
+//			SqlSession session = sqlSessionFactory.openSession();
+//			result = session.selectList("aaa.bbb.ccc.BaseMapper.searchCountryCodeNullId");
+//			System.out.println("받아온 아이들은  "+result);
+//			
+//		} catch (IOException e) {
+//			e.printStackTrace();	
+//			
+//		}
+//		
+//		System.out.println("받아온 아이들은  "+result);	
+//	}
+//	
+//	@Scheduled(cron = "*/60 * * * * *")
+//	public void cronTest() {
+//		System.out.println("컨트롤러다잇 cron = */60 * * * * * 이며, 1분마다 호출됩니다. ");
+//	}
+	
+//	public List<Integer> getCountryNullLoginAttempts(){
+//		List<Integer> result = new ArrayList<Integer>();
+//		
+//		return result;
+//	}
+	
 	
 	@RequestMapping(value = "loginCountAjax", method = {RequestMethod.GET})
 	public @ResponseBody List<loginLog>  loginCountAjax(@RequestParam("data") int data1){
@@ -468,6 +508,14 @@ public class adminControler {
 		return "admin/index";
 	}
 	
+	
+	@RequestMapping(value = "TaskExecutorExample", method = RequestMethod.GET)
+	public String test(Locale locale, Model model) {
+		
+
+		return "TaskExecutorExample";
+	}
+	
 	@RequestMapping(value = "admin/index2", method = RequestMethod.GET)
 	public String adminIndex2(Locale locale, Model model) {
 	
@@ -517,8 +565,6 @@ public class adminControler {
 				
 		return "admin/pages/tables/simple";
 	}
-	
-	
 	
 	
 	
