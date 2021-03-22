@@ -4,17 +4,17 @@ import java.util.Date;
 
 public class LoginLog {
 
-	private Integer idLoginTry;
+	private Integer idLoginTry; // 고유 아이디 
 	
-	private String loginId;
+	private String loginId; //이메일 
 	
-	private String sourceIP;
+	private String sourceIP; // 아이피 
 	
 	private Date loginCreated;
 	
 	private Integer loginSuccess;
 
-	private String countryCode;
+	private String countryCode; //컨트리코드 
 	
 	private String date;
 	

@@ -145,13 +145,56 @@
 	(SELECT  * 
 	FROM hw_utf8.LoginLog01 
 	WHERE loginCreated >= #{time1}) xmen
-	GROUP BY  MONTH(loginCreated), DAY(loginCreated), loginSuccess;
+	GROUP BY  MONTH(loginCreated), DAY(loginCreated), loginSuccess
 	</select>
 	
 	<select id="countCountryCode" resultType="aaa.bbb.ccc.entity.CountryData" parameterType="String">
     SELECT   countryCode, COUNT(*) AS countryCodeTotal
     FROM hw_utf8.LoginLog01
-	GROUP BY  countryCode;
+	GROUP BY  countryCode
+	</select>
+	
+	<select id="getCountryNullId" resultType="Integer">
+    SELECT idLoginLog01
+    FROM hw_utf8.LoginLog01
+    where countryCode is null
+	</select>
+	
+	<select id="noCountryIP" parameterType="Integer" resultType="String">
+    SELECT sourceIP
+    FROM hw_utf8.LoginLog01
+    where idLoginLog01= #{id}
+	</select>
+	
+	<update id="updateCountryCode" parameterType="aaa.bbb.ccc.entity.LoginLog">
+	update hw_utf8.LoginLog01 
+	set countryCode = #{countryCode} 	
+	where idLoginLog01= #{idLoginTry}
+	</update>
+	
+	<insert id="insertResultAll" parameterType="java.util.List">
+    INSERT INTO hw_utf8.JsoupBoard
+    (idK, contentK, writerK, passwordK, publishedK)
+    VALUES
+    	<foreach collection="list" item="item" separator=" , " >
+        	("${item.Id}", "${item.content}", "${item.writer}", "${item.password}", "${item.published}")
+    	</foreach>
+	ON DUPLICATE KEY UPDATE
+
+		contentK = values(contentK),
+		writerK = values(writerK),
+		passwordK = values(passwordK),
+		publishedK = values(publishedK)
+
+	</insert>
+	
+	<select id="countDB" resultType="Integer">
+    SELECT COUNT(*)
+    FROM hw_utf8.JsoupBoard
+	</select>
+	
+	<select id="lastId" resultType="Integer">
+    SELECT idK FROM hw_utf8.JsoupBoard ORDER BY idK DESC LIMIT 1
 	</select>
 	
 	
