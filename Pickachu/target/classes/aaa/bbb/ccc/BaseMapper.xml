@@ -198,5 +198,22 @@
 	</select>
 	
 	
+	<insert id="insertNews" parameterType="java.util.List">
+    INSERT INTO hw_utf8.PortalNews
+    (newsDescription, newsLink, PortalNews.created)
+    VALUES
+    	<foreach collection="list" item="item" separator=" , " >
+        	(#{item.description}, #{item.link}, now())
+    	</foreach>
+	</insert>
+	
+	<insert id="insertNewsByOne" parameterType="aaa.bbb.ccc.entity.PortalNews">
+    insert into hw_utf8.PortalNews (hw_utf8.PortalNews.created,newsDescription,newsLink,sourcePortal) 
+    values 
+    (now(),#{description},#{link},#{source})
+  	</insert>
+	
+	
+	
 </mapper>
 

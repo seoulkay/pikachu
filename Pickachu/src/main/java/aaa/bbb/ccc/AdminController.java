@@ -38,6 +38,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.view.RedirectView;
 
 import aaa.bbb.ccc.entity.Member;
+import aaa.bbb.ccc.entity.PortalNews;
 import aaa.bbb.ccc.entity.Post;
 import io.ipgeolocation.api.Geolocation;
 import io.ipgeolocation.api.GeolocationParams;
@@ -46,7 +47,7 @@ import aaa.bbb.ccc.entity.CountryData;
 import aaa.bbb.ccc.entity.JsoupReply;
 import aaa.bbb.ccc.entity.LoginCount;
 import aaa.bbb.ccc.entity.LoginLog;
-import aaa.bbb.ccc.Scheduler;
+//import aaa.bbb.ccc.Scheduler;
 
 @Controller
 public class AdminController {
@@ -697,12 +698,12 @@ public class AdminController {
 	
 	
 	
-	@Scheduled(cron = "*/10 * * * * * ")
+	@Scheduled(cron = "* */10 * * * * ")
 	public void jsoupSchedular() {
 		
-		//jsoupTest();
+		jsoupTest();
 		//reListToDB(jsoupTest2());				
-		//jsoupTest3();
+		jsoupNaverHead();
 		//jsoupLastIdCheck();
 		//reListToDB(jsoupTest0());
 		//jsoupTest5();
@@ -710,6 +711,7 @@ public class AdminController {
 	}
 	
 	
+
 	//reList 디비에 넣기 마이바티스 함수  
 	public static void reListToDB(List<JsoupReply> reList){
 		
@@ -915,9 +917,7 @@ public class AdminController {
 		i++;
 		}
 		return reList;
-
 	}
-	
 	
 	public static void jsoupListCopy() {
 				
@@ -956,13 +956,6 @@ public class AdminController {
 	
 
 	
-	
-	
-	
-	
-	
-	
-	
 	public static List<JsoupReply> jsoupTest0() {
 		
 		Document doc0;
@@ -997,7 +990,7 @@ public class AdminController {
 				//바디 안에 있는 내용만 문자로 만들어라.
 				String tBody = doc.select("body").text();
 				//그런데 지금 스트링 상태임. 이 자료들을 어떻게 데려올 것인가...?
-				
+				System.out.println("티바디: "+tBody);
 				//스트링으로 받은 자료를 JSON으로 파싱하고, 그걸 JAVA 객체로 만드는게 목표  
 				//simple.parser 레포지토리 이용 
 				JSONParser parser = new JSONParser();
@@ -1042,42 +1035,70 @@ public class AdminController {
 		return reList;
 
 	}
-	
-	public static void jsoupTest3() {
-		//String head = "";
-		
-		Document doc;
-		
-		try {
-			doc = Jsoup.connect("https://www.naver.com/").get();
-			System.out.println("웹사이트 헤더 : "+ doc.title());
-			
-			Elements navList = doc.select(".list_nav");
-			Elements issues = doc.select(".issue_area");
-			Elements stocks = doc.select(".card_stock");
-			
-			for (Element nav : navList) {
-				System.out.println("네비게이션 헤더 : " + nav.text());
-			}
-			
-			for (Element issue : issues) {
-				System.out.println("실시간 이슈 : "+ issue.text());
-			}
-			
-			for (Element stock : stocks) {
-				System.out.println(stock.text());
-			}
-			
-		} catch (IOException e) {			
-			e.printStackTrace();
-		}
 
+	
+	
+
+	@RequestMapping(value = "admin/jsoupTest", method = RequestMethod.GET)
+	public @ResponseBody void whyNoSchedule() {
+		//jsoupTest0();
+		//newsListToDB(jsoupNaverHead());
+	}
+	
+
+	// 네이버 뉴스 가져오는 함수 
+	public static  void getNaver_newHaedline() {
+		Calendar calendar = Calendar.getInstance();
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		System.out.println("네이버 뉴스 긁어올게 " +dateFormat.format(calendar.getTime())+" 기다려  ");
+					
+		try {
+			Document doc = Jsoup.connect("https://news.naver.com/main/home.nhn").get();
+			System.out.println(doc.title());
+			Elements newsHeadlines = doc.select("ul[class=hdline_article_list]").select("li");
+			newsTitle toDay = new newsTitle();
+					
+					
+		for(Element elem : newsHeadlines) {
+				toDay.setTitle(elem.select("li").text());
+				toDay.setLink("https://news.naver.com/"+elem.select("div[class=hdline_article_tit] a").attr("href"));
+				toDay.setSource("NAVER");
+						
+				insertNews(toDay);
+						
+				}
+
+					}catch(IOException e) {
+						e.printStackTrace();
+					}
+		
+				}
+	
+	public static void insertNews(PortalNews p1){
+		
+		String resource = "aaa/bbb/ccc/mybatis_config.xml";
+		InputStream inputStream;
+		try {
+
+			inputStream = Resources.getResourceAsStream(resource);
+			SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
+			SqlSession session = sqlSessionFactory.openSession();
+
+			session.insert("aaa.bbb.ccc.BaseMapper.insertNewsByOne", p1);
+			
+			session.commit();
+			session.close();
+			
+			System.out.println("DB에 자료를 잘 넣었습니다.");
+			
+		}catch (Exception e) {
+				e.printStackTrace();
+		}
 	}
 	
 	
 	
-	
-	
+
 	public static void jsoupTest() {
 		//String head = "";
 		
@@ -1103,20 +1124,71 @@ public class AdminController {
 
 	
 	
+	
+	
+	
 	public static void jsoupTest5() {
 		Document doc0;
-		
 		try {
 			doc0 = Jsoup.connect("https://mania.kr/g2/bbs/board.php?bo_table=loltalk&page=3").ignoreContentType(true).get();
-			
 			System.out.println(doc0);
-			
-			
 			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
+	
+	
+	//네이버 뉴스 헤드라인 받아오기
+	public static List<PortalNews> jsoupNaverHead() {
+		//jsoup으로 news.naver.com 헤드라인 5개의 내용과 링크를 받아오는 로직
+		
+		Document doc;
+		List<PortalNews> newsList = new ArrayList<PortalNews>();
+		
+		try {
+			doc = Jsoup.connect("https://news.naver.com/").get();
+			//System.out.println("웹사이트 헤더 : "+ doc.title());
+			//String headLine = doc.select(".hdline_article_list").text();
+			//System.out.println("헤드라인 : "+ headLine);
+
+			Elements headLineList = doc.select(".hdline_article_list").select("li");
+			
+			//li로 받아온 리스트를 하나씩 돌려서 자바 객체에 집어 넣기.
+			for (Element head : headLineList) {
+				String desc = head.select(".hdline_article_tit a").text();
+				//링크 주소 앞에 필요한 정보 넣기
+				String link = "https://news.naver.com"+ head.select(".hdline_article_tit a").attr("href");
+				
+				PortalNews news = new PortalNews();
+				news.setDescription(desc);
+				news.setLink(link);
+				newsList.add(news);
+				System.out.println(news.getDescription()+"\n"+news.getLink());			
+				}
+			
+			
+//			Elements navList = doc.select(".list_nav");
+//			Elements issues = doc.select(".issue_area");
+//			Elements stocks = doc.select(".card_stock");
+//			for (Element nav : navList) {
+//				System.out.println("네비게이션 헤더 : " + nav.text());
+//			}
+//			for (Element issue : issues) {
+//				System.out.println("실시간 이슈 : "+ issue.text());
+//			}
+//			for (Element stock : stocks) {
+//				System.out.println(stock.text());
+//			}
+			
+		} catch (IOException e) {			
+			e.printStackTrace();
+		}
+		
+		return newsList;
+
+	}
+	
 	
 	
 	//https://mania.kr/g2/bbs/board.php?bo_table=loltalk&page=3
