@@ -30,9 +30,11 @@ import org.springframework.stereotype.Component;
 
 import aaa.bbb.ccc.entity.JsoupReply;
 import aaa.bbb.ccc.entity.Member;
+import aaa.bbb.ccc.entity.PageManager;
 import aaa.bbb.ccc.entity.Post;
 import aaa.bbb.ccc.entity.countryData;
 import aaa.bbb.ccc.entity.loginLog;
+import aaa.bbb.ccc.entity.newsTitle;
 import io.ipgeolocation.api.Geolocation;
 import io.ipgeolocation.api.GeolocationParams;
 import io.ipgeolocation.api.IPGeolocationAPI;
@@ -45,37 +47,117 @@ public class AlarmTask {
 	
 			private static final Logger logger = LoggerFactory.getLogger(AlarmTask.class);
 	
-			// 5 분마다 국가코드가 null인 로그인 기록의 국가코드를 바꿔주는 함수
-			@Scheduled(cron = "0 */5 * * * *")
-				public void cronTest1() {
+			// 10분마다 국가코드가 null인 로그인 기록의 국가코드를 바꿔주는 함수
+			@Scheduled(cron = "0 */10 * * * *")
+			public void cronTest1() {
 				Calendar calendar = Calendar.getInstance();
 				SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 				List<Integer> nullCountryList = getCountryNullLoginAttempts();
 				System.out.println("스케쥴 실행 : " +dateFormat.format(calendar.getTime())+" 현재 국가 코드가 없는 로그인기록의 아이디들은  "+nullCountryList+"이며 변환을 실행합니다. ");
 				forNullCountryList(nullCountryList);
 			}
-	
+			//아이엠케이 게시판긁어서 저장하기
+			@Scheduled(cron = "0 */30 * * * *")
+			public void getIamkay() {
+				ScheduledExecution();
+			}
 			
-			//jsoup 첫사용 성공
-//			@Scheduled(cron = "0 * * * * *")
-//			public void jsouptest() {
-//			
-//				try {
-//				Document doc = Jsoup.connect("https://en.wikipedia.org/").get();
-//				System.out.println(doc.title());
-//				Elements newsHeadlines = doc.select("#mp-itn b a");
-//				String text = newsHeadlines.text();
-//				System.out.println(text);
-//				}catch(IOException e) {
-//					e.printStackTrace();
-//				}
-//	
-//			}
+			
+			// 포탈들 헤드라인 뉴스 긁어오기 
+			@Scheduled(cron = "0 */15 * * * *")
+			public void getTotalNews() {
+				getNaver_newHaedline();
+				getDaum_newHaedline();
+			}
+			
+			// 네이버 뉴스 가져오는 함수 
+			public static  void getNaver_newHaedline() {
+				Calendar calendar = Calendar.getInstance();
+				SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+				System.out.println("네이버 뉴스 긁어올게 " +dateFormat.format(calendar.getTime())+" 기다려  ");
+				
+				try {
+				Document doc = Jsoup.connect("https://news.naver.com/main/home.nhn").get();
+				System.out.println(doc.title());
+				Elements newsHeadlines = doc.select("ul[class=hdline_article_list]").select("li");
+				newsTitle toDay = new newsTitle();
+				
+				
+				for(Element elem : newsHeadlines) {
+					toDay.setTitle(elem.select("li").text());
+					toDay.setLink("https://news.naver.com/"+elem.select("div[class=hdline_article_tit] a").attr("href"));
+					toDay.setSource("NAVER");
+					
+					insertNews(toDay);
+					
+				}
+
+				}catch(IOException e) {
+					e.printStackTrace();
+				}
+	
+			}
+			
+			//다음헤드라인 뉴스 가져오는 함수 5개만 
+			public static void getDaum_newHaedline() {
+				Calendar calendar = Calendar.getInstance();
+				SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+				System.out.println("다음 뉴스 긁어올게 " +dateFormat.format(calendar.getTime())+" 기다려  ");
+				
+				try {
+				Document doc = Jsoup.connect("https://www.daum.net/").get();
+				System.out.println(doc.title());
+				Elements newsHeadlines = doc.select("ul[class=list_txt]").select("li");
+				newsTitle toDay = new newsTitle();
+				int i = 0;
+				
+				for(Element elem : newsHeadlines) {
+					toDay.setTitle(elem.select("li").text());
+					toDay.setLink(elem.select("a").attr("href"));
+					toDay.setSource("DAUM");
+					i += 1 ;
+					System.out.println(toDay.getLink());
+					insertNews(toDay);
+					System.out.println(i+"번째 뉴스 기록중");
+					if(i == 5) {
+						System.out.println("멈출게 5라서");
+						break;
+						
+					}
+				}
+
+				}catch(IOException e) {
+					e.printStackTrace();
+				}
+	
+			}
+			
+			
+			// 가져온 뉴스 타이틀과 url을 DB에 기록해줌
+			public static void insertNews(newsTitle  p1){
+			
+			String resource = "aaa/bbb/ccc/mybatis_config.xml";
+			InputStream inputStream;
+			try {
+				inputStream = Resources.getResourceAsStream(resource);
+				SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
+				SqlSession session = sqlSessionFactory.openSession();
+				
+				System.out.println("insert하는 중"+p1);
+				session.insert("aaa.bbb.ccc.BaseMapper.insertNews", p1);
+				session.commit();
+				session.close();
+
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+			
+			
 			
 			// 게시판을 DB에 저장하기
-			
-			@Scheduled(cron = "0 * * * * *")
-			public void ScheduledExecution() {
+
+			public static void ScheduledExecution() {
 				
 				boolean check = trueNfalseAll();
 				System.out.println(check);
@@ -118,7 +200,7 @@ public class AlarmTask {
 				return result;
 			}
 			
-			//제일 큰 아이디 가져와 
+			// 게시판 아이디값중 가장큰값을 찾음
 			public static Integer bigId() {
 				Integer result = 0;
 
@@ -139,8 +221,6 @@ public class AlarmTask {
 			}
 			
 			//소스중 가장 큰 숫자는 ?
-			
-			
 			public static Integer testSourceId () {
 				Integer result = 0;
 				List<Integer> source = new ArrayList<Integer>();
@@ -150,12 +230,13 @@ public class AlarmTask {
 				return result;
 			}
 			
-			public static List<Integer> testSourceId2(JSONObject p1){	
-				
-				List<Integer> result = new ArrayList<Integer>();
-				result.add(Integer.parseInt(p1.get("id").toString()));
-				return result;
-			}
+//			public static List<Integer> testSourceId2(JSONObject p1){	
+//				
+//				List<Integer> result = new ArrayList<Integer>();
+//				result.add(Integer.parseInt(p1.get("id").toString()));
+//				return result;
+//			}
+			
 			//json object가 필요해 
 			public static List<Integer> urlToJsonObject(String url) {
 
@@ -181,72 +262,7 @@ public class AlarmTask {
 				
 				
 			}
-//			public static Integer subtractBigIdFromSource(String url) {
-//
-//				Document doc = null;
-//			
-//				List<JsoupReply> ids = new ArrayList<JsoupReply>();
-//				try {
-//				doc = Jsoup.connect(url).ignoreContentType(true).get();
-//				String docText = doc.select("body").text();
-//				System.out.println("가져온 내용은"+docText+"입니다.");
-//				JSONArray docTextArray = jsonToJsonArray(docText);
-//
-//				for(int i=0; i<docTextArray.size() + 1; i++) {
-//					//JSON 객체에 있는 것들을 자바 객체에 넣는 작업
-//					System.out.println("반복해서" +docTextArray.get(i)+"를 기록중입니다. ");
-//					ids = sourceOnlyIdToList((JSONObject) docTextArray.get(i));
-//					
-//					JsoupReply result = Collections.max(ids);
-//				}
-//
-//				}catch(Exception e) {
-//					e.printStackTrace();
-//				}
-//				return result;
-//			}
-			
-//			@Scheduled(cron = "* * 1 * * *")
-//			public void ScheduledExecution() {
-//	
-//				//유알엘 뒤를 반복시켜값이 없으면 반복을 멈추는 다.
-//
-//				boolean check = trueNfalseAll();
-//				System.out.println(check);
-//				
-//				if (check == true) {
-//					//전체 긁어와서 넣는거 하자
-//					System.out.println("우리 DB가 비어 있어서 실행합니다.");
-//					//소스를 받아왔을때 값이 null이면 반복을 멈추게 해야한다. 
-//					while (check == true){
-//						int nextInt = 0;
-//						String url = "http://www.iamk.shop:8080/reply?page="+nextInt;
-//						System.out.println("이곳에 있는 아이들을 쓴다"+url);
-//						List<JsoupReply> sourceId = subtractIdFromSource(url);
-//						
-//						if (sourceId.isEmpty()) {
-//							System.out.println("id값이 없으므로 페이지를 그만 넘깁니다.");
-//							   break;
-//						   }else {
-//							   System.out.println("id값이 있으므로 저장하겠습니다.");
-//							   iamkayGesipanSave(url);   
-//						   }
-//						nextInt += 1 ;
-//						System.out.println("주소뒤에 이렇게 들어간다 "+url+nextInt);
-//						check = trueNfalsePageNumber(url);
-//						
-//						}
-//					System.out.println("DB가 꽉차서 끝냅니다.");
-					
-					
-					//체크에 false넣어주는 아이를 만들어보자 
-//				}
-				// 배열에 넣어서 끝값으로 비교 
-				// id 내 디비 id 넘기고 없으면 기록해 마지막 뒷페이지 있는지 체크하고 있으면 넘겨 
-//			}
-			
-			
-			
+
 			//전체 파싱할건지결정해주는 함수 
 			public static boolean trueNfalseAll(){
 				boolean result = true ; 
@@ -287,59 +303,9 @@ public class AlarmTask {
 				System.out.println("가져온 디비의 아이디들은"+dbAllId);
 				System.out.println("가져온 소스의 아이디들은"+sourceId);
 				System.out.println("아직 비교되게 안만들어서 그냥 false 줄게 ");
-				
-				//아래에서 내용을 비교해서 기본값이 false이고 없는게 생기면 true로 바꿔주고 빠져나간다 
-			
-//				if(dbAllId.equals(sourceId)) {
-//					같으면 결과 false;
-//				} 
-//					없으면 결과 true;
-//				
 
-				
-				
-//				String resource = "aaa/bbb/ccc/mybatis_config.xml";
-//				InputStream inputStream;
-//				try {
-//					inputStream = Resources.getResourceAsStream(resource);
-//					SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
-//					SqlSession session = sqlSessionFactory.openSession();
-//					truefalsPage = session.selectOne("aaa.bbb.ccc.BaseMapper.getAllId");
-//					System.out.println("가져온 아이는 "+truefalsPage);
-//					if(truefalsPage == 0) {
-//						result = true ;
-//						System.out.println("변환된 값은 1 "+result);
-//					}else {
-//						result = false;
-//						System.out.println("변환된 값은 2 "+result);
-//					}
-//				} catch (IOException e) {
-//					e.printStackTrace();
-//				}
-//				
 				return result;
 			}
-			
-			//public static void 전체실행 함수() {
-			
-			//실행하면 url뒷숫자를 바꾸는 반복 
-			//테스트를 해보자
-			
-			//체크변수 = 소스와 디비비교 함수 ()실행해서리절트;
-			//if (체크변수 == true ) 맞으면 실행하지 않아 
-			//}else{
-			//없으면 그페이지를 반복해서 넣어준다 
-			
-			// 유알엘을 받아페이지 숫자가 넘어가는 반복을 실행하다가 허가가 없으면 브레이크 
-			// if(check==true) 면 실행하고 whkle을 써서 반복 할까 그러다 브레이크 
-			
-			// 소스를 빼와서 아이디 확인 해서 DB에 들어있는 아이디와 중복이 되는지 확인해야돼
-			
-			// 소스 빼오기
-			
-			// 빼온소스를 받으면 아이디를 넣어서 있는지 확인 토탈사이즈가 있으면 실패를 리턴해준다
-			
-			// 
 			
 			// 여기서 소스를 빼서 아이디를 줄거야 
 			public static List<JsoupReply> subtractIdFromSource(String url) {
@@ -498,36 +464,7 @@ public class AlarmTask {
 					return result;
 				}
 	
-				
-				// =======================================================================
-				// =======================================================================
-				// =======================================================================
-				// =======================================================================
-				// =======================================================================
-				
-				
-				
-			@Scheduled(cron = "0 * * * * *")
-			public void jsouptestDaum() {
-			
-				String url = "http://www.naver.com";
-				Document doc = null;
-				
-				try {
-				doc = Jsoup.connect(url).get();
-				System.out.println(doc.title());
-				Elements newsHeadlines = doc.select("span[aria-hidden]");
-				String text = newsHeadlines.text();
-				System.out.println(text);
-				Elements newsHeadlines2 = doc.select("#mainServiceTitle");
-				String text2 = newsHeadlines2.text();
-				System.out.println(text2);
-				}catch(IOException e) {
-					e.printStackTrace();
-				}
-	
-			}
-			
+
 
 			// id리스트를 받아와 반복시켜서 ip를 찾아서나라코드를 바꿔주는 함수에 id를 넣어주는 일을 반복하는 함
 			public static void forNullCountryList (List<Integer> p1) {

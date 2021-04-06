@@ -167,6 +167,13 @@
     (#{password},#{id},#{writer},#{published},#{content})
   </insert>
   
+   <insert id="insertNews" parameterType="aaa.bbb.ccc.entity.newsTitle">
+    insert into hong.todayNews (hong.todayNews.created,title,link,source) 
+    values 
+    (now(),#{title},#{link},#{source})
+  </insert>
+  
+  
   <insert id="insertIamkay" parameterType="aaa.bbb.ccc.entity.JsoupReply">
 	   insert into hong.iamkayList (hong.iamkayList.password,id,writer,published,content)
 		VALUES
