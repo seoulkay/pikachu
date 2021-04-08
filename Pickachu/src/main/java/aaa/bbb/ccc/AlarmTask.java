@@ -8,7 +8,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -46,30 +48,139 @@ public class AlarmTask {
 
 	
 			private static final Logger logger = LoggerFactory.getLogger(AlarmTask.class);
+			
+			// 배포했기때문에 중복없이 하기위해 스케쥴러잠급니다.
 	
-			// 10분마다 국가코드가 null인 로그인 기록의 국가코드를 바꿔주는 함수
-			@Scheduled(cron = "0 */10 * * * *")
-			public void cronTest1() {
-				Calendar calendar = Calendar.getInstance();
-				SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-				List<Integer> nullCountryList = getCountryNullLoginAttempts();
-				System.out.println("스케쥴 실행 : " +dateFormat.format(calendar.getTime())+" 현재 국가 코드가 없는 로그인기록의 아이디들은  "+nullCountryList+"이며 변환을 실행합니다. ");
-				forNullCountryList(nullCountryList);
-			}
-			//아이엠케이 게시판긁어서 저장하기
-			@Scheduled(cron = "0 */30 * * * *")
-			public void getIamkay() {
-				ScheduledExecution();
-			}
+//			// 10분마다 국가코드가 null인 로그인 기록의 국가코드를 바꿔주는 함수
+//			@Scheduled(cron = "0 */10 * * * *")
+//			public void cronTest1() {
+//				Calendar calendar = Calendar.getInstance();
+//				SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//				List<Integer> nullCountryList = getCountryNullLoginAttempts();
+//				System.out.println("스케쥴 실행 : " +dateFormat.format(calendar.getTime())+" 현재 국가 코드가 없는 로그인기록의 아이디들은  "+nullCountryList+"이며 변환을 실행합니다. ");
+//				forNullCountryList(nullCountryList);
+//			}
+//			//아이엠케이 게시판긁어서 저장하기
+//			@Scheduled(cron = "0 */30 * * * *")
+//			public void getIamkay() {
+//				ScheduledExecution();
+//			}
+//			
+//			
+//			// 포탈들 헤드라인 뉴스 긁어오기 
+//			@Scheduled(cron = "0 */15 * * * *")
+//			public void getTotalNews() {
+//				getNaver_newHaedline();
+//				getDaum_newHaedline();
+//			}
 			
 			
-			// 포탈들 헤드라인 뉴스 긁어오기 
-			@Scheduled(cron = "0 */15 * * * *")
-			public void getTotalNews() {
-				getNaver_newHaedline();
-				getDaum_newHaedline();
+			@Scheduled(cron = "0 * * * * *")
+			public void test24hour() {
+				
+				List<newsTitle> result = getToDayData();
+				System.out.println("가져온 데이터는 "+result);
+				Map<String,Integer> wordsMap = pieceWord(result);
+				System.out.println("가져온 단어들은 "+wordsMap);
+				//Top20 가져오기
 			}
 			
+			//top20봅는 함수
+			public static Map<String,Integer> top20(Map<String,Integer> p1) {
+				Map<String,Integer> result = new HashMap<String,Integer>();
+				
+				//
+				
+				
+				return result;
+			}
+			
+			//뉴스타이틀을 공백기준으로 짤라서 맵에 넣어준다
+			public static Map<String,Integer> pieceWord(List<newsTitle> p1) {
+				Map<String,Integer> result = new HashMap<String,Integer>();
+				
+				for(int i=0;i<p1.size();i++) {
+					String newsTitle = p1.get(i).getTitle();
+					String piece[] = newsTitle.split(" ");
+					
+					for(int j=0 ;j<piece.length ;j++) {
+						System.out.println(piece[j]+"단어 저장중");
+						if(result.containsKey(piece[j])) {
+							result.put(piece[j],result.get(piece[j])+1);
+						}else {
+							result.put(piece[j],1);
+						}
+					}
+				}
+				System.out.println(result+"생성했습니다.");
+				return result ;
+			}
+			
+			//타이틀 하나를 빼서단어를 쪼개서 결과에 넣는거거든 
+			
+			
+			//url이 같은것을 제외하는 함수
+			
+			//url이 같은 id를 뽑아준다
+			
+			//문제가 생김 (나에게는) 같은 id든 뭐든 뽑아서 지우면 다지워진다 하나만 남기려면? 일단 둘다지우고 하나만 다시 입력해준다
+			
+			//생각해보니 중복을 지우면 안됨 
+			
+			//뉴스노출을 시간으로 다뤄야 하기때문에 그시간에 존재 하면 데이터상에 숫자가 늘어나야함 
+			
+//			public static List<newsTitle> duplicateDataRemoval(List<newsTitle> p1) {
+//				List<newsTitle> result = p1;
+//				List<newsTitle> targetUrl = p1 ;
+//				List<newsTitle> targetId = new ArrayList<newsTitle>() ;
+//				List<newsTitle> delId = new ArrayList<newsTitle>() ;
+//				
+//				for(int i=0;i<result.size();i++) {
+//			    	for(int j=0;j<targetUrl.size();j++) {
+//			    		if(result.get(i).getLink().equals(targetUrl.get(j).getLink())) { 
+//			    			newsTitle duplicateNews = new newsTitle();
+//			    			duplicateNews.setId(result.get(i).getId());
+//			    			duplicateNews.setTitle(result.get(i).getTitle());
+//			    			duplicateNews.setLink(result.get(i).getLink());
+//			    			duplicateNews.setSource(result.get(i).getSource());
+//			    			targetId.add(duplicateNews);
+//			    			System.out.println("전체리스트에서 url이 겹치는 id " +duplicateNews+"를 찾음");
+//			    		}
+//			    	}     	
+//			    }
+//				
+//				for(int i=0;i<result.size();i++) {
+//			    	for(int j=0;j<targetId.size();j++) {
+//			    		if(result.get(i).getId().equals(targetId.get(j).getId())) { 
+//			    			result.remove(i);
+//			    			System.out.println("전체리스트에서 url이 겹쳐서 " +result.get(i)+"를 지우는중");
+//			    		}
+//			    	}     	
+//			    }
+//				return result ;
+//			}
+			
+			
+			//24시간 데이터긁어오는 함수
+			public static List<newsTitle> getToDayData() {
+				String resource = "aaa/bbb/ccc/mybatis_config.xml";
+				InputStream inputStream;
+				
+				List<newsTitle> result = new ArrayList<newsTitle>();
+				try {
+					inputStream = Resources.getResourceAsStream(resource);
+					SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
+					SqlSession session = sqlSessionFactory.openSession();
+					result = session.selectList("aaa.bbb.ccc.BaseMapper.getToDayNewsData");
+
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				
+				return result ;
+			}
+			
+
 			// 네이버 뉴스 가져오는 함수 
 			public static  void getNaver_newHaedline() {
 				Calendar calendar = Calendar.getInstance();

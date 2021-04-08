@@ -173,6 +173,17 @@
     (now(),#{title},#{link},#{source})
   </insert>
   
+  <select id="getToDayNewsData" resultType="aaa.bbb.ccc.entity.newsTitle">
+  	SELECT 
+	* 
+	FROM 
+	hong.todayNews 
+	WHERE
+	created >
+	DATE_ADD(now(), INTERVAL -24 HOUR) 
+	order by id desc;
+  </select>
+  
   
   <insert id="insertIamkay" parameterType="aaa.bbb.ccc.entity.JsoupReply">
 	   insert into hong.iamkayList (hong.iamkayList.password,id,writer,published,content)
