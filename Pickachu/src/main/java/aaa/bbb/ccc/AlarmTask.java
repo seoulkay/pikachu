@@ -8,9 +8,11 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -82,12 +84,33 @@ public class AlarmTask {
 				System.out.println("가져온 데이터는 "+result);
 				Map<String,Integer> wordsMap = pieceWord(result);
 				System.out.println("가져온 단어들은 "+wordsMap);
+				top20(wordsMap);
 				//Top20 가져오기
 			}
 			
 			//top20봅는 함수
-			public static Map<String,Integer> top20(Map<String,Integer> p1) {
-				Map<String,Integer> result = new HashMap<String,Integer>();
+			public static List<Entry<String,Integer>> top20(Map<String,Integer> p1) {
+				List<Entry<String, Integer>> result = new ArrayList<Entry<String, Integer>>();
+				List<Entry<String, Integer>> list_entries = new ArrayList<Entry<String, Integer>>(p1.entrySet());
+				
+				Collections.sort(list_entries, new Comparator<Entry<String, Integer>>() {
+					// compare로 값을 비교
+					public int compare(Entry<String, Integer> obj1, Entry<String, Integer> obj2) {
+						// 오름 차순 정렬
+						return obj2.getValue().compareTo(obj1.getValue());
+					}
+				});
+					System.out.println("오름 차순 정렬");
+					// 결과 출력
+					int i = 0;
+					for(Entry<String, Integer> entry : list_entries) {
+						System.out.println(entry.getKey() + " : " + entry.getValue());
+						i += 1;
+						if(i == 30) {
+							break;
+						}
+						result.addAll(list_entries);
+					}
 				
 				//
 				
@@ -104,17 +127,26 @@ public class AlarmTask {
 					String piece[] = newsTitle.split(" ");
 					
 					for(int j=0 ;j<piece.length ;j++) {
-						System.out.println(piece[j]+"단어 저장중");
-						if(result.containsKey(piece[j])) {
-							result.put(piece[j],result.get(piece[j])+1);
+						String match = "[^\uAC00-\uD7A3xfe0-9a-zA-Z\\s]";
+				        piece[j] =piece[j].replaceAll(match, "");
+						if(piece[j].equals("관련기사")||piece[j].equals("개수")||piece[j].equals("")) {	
+							System.out.println("단어뺄게");
 						}else {
-							result.put(piece[j],1);
+							System.out.println(piece[j]+"단어 저장중");
+							if(result.containsKey(piece[j])) {
+								result.put(piece[j],result.get(piece[j])+1);
+							}else {
+								result.put(piece[j],1);
+							}	
 						}
+						
 					}
 				}
 				System.out.println(result+"생성했습니다.");
 				return result ;
 			}
+			
+			//비슷한 단어들 모아서 가장 많은 단어만 보여주기 
 			
 			//타이틀 하나를 빼서단어를 쪼개서 결과에 넣는거거든 
 			
