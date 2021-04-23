@@ -5,19 +5,25 @@ import java.io.InputStream;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -28,7 +34,10 @@ import aaa.bbb.ccc.entity.Like;
 import aaa.bbb.ccc.entity.Member;
 import aaa.bbb.ccc.entity.PageManager;
 import aaa.bbb.ccc.entity.Post;
+import aaa.bbb.ccc.entity.Project;
 import aaa.bbb.ccc.entity.Reply;
+import aaa.bbb.ccc.entity.newsTitle;
+import aaa.bbb.ccc.AlarmTask;
 
 /**
  * Handles requests for the application home page.
@@ -37,6 +46,47 @@ import aaa.bbb.ccc.entity.Reply;
 public class HomeController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
+	
+	
+	@RequestMapping(value = "/get/todayTop20/{id}", method = RequestMethod.GET, produces = "application/json; charset=UTF-8")
+	@ResponseBody
+	public String getFoosBySimplePathWithPathVariable(
+	  @PathVariable String id) {
+//		Map<String,Integer> result = new HashMap<String,Integer>();
+//		result = AlarmTask.todayTop20(id);
+//		JSONObject jsonObject = convertMapToJson(AlarmTask.todayTop20(id));
+		
+		ObjectMapper mapper = new ObjectMapper();
+		String jsonList="";
+		
+		try {
+			newsTitle sourceIs = new newsTitle();
+			sourceIs.setSource(id);
+			jsonList = mapper.writeValueAsString(AlarmTask.orrm2(AlarmTask.top20MaptoString(AlarmTask.getLastTop20(sourceIs))));
+		}catch(IOException e) {
+			e.printStackTrace();
+		}
+		
+		
+	    return jsonList.toString();
+	}
+	
+	
+	
+	public static JSONObject convertMapToJson(Map<String, Integer> map) {
+		
+		JSONObject json = new JSONObject();
+		
+		
+		
+		for (Map.Entry<String, Integer> entry : map.entrySet()) {
+			String key = entry.getKey();
+			Object value = entry.getValue();
+			json.put(key, value);
+		}
+		
+		return json;
+	}
 	
 	@RequestMapping(value = "/home", method = RequestMethod.GET)
 	public String home(Locale locale, Model model, String search, Integer pageSize, Integer currentPage, Integer maxPager) {
@@ -232,7 +282,89 @@ public class HomeController {
 	@RequestMapping(value = "test", method = RequestMethod.GET)
 	public String test(Locale locale, Model model) {
 	
+		
+		
 	return "test";
+	}
+	
+	@RequestMapping(value = "testAdmin", method = RequestMethod.GET)
+	public String testAdmin(Locale locale, Model model , String search, Integer pageSize, Integer currentPage, Integer maxPager) {
+	
+		String resource = "aaa/bbb/ccc/mybatis_config.xml";
+		InputStream inputStream;
+		try {
+			inputStream = Resources.getResourceAsStream(resource);
+			SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
+			SqlSession session = sqlSessionFactory.openSession();
+			maxPager=5;
+
+			if(pageSize==null||currentPage==null) {
+				
+				Integer postTotal = session.selectOne("aaa.bbb.ccc.BaseMapper.countProjectList");			
+				PageManager totalSize = new PageManager();
+				totalSize.setTotalSize(postTotal);
+				totalSize.setCurrentPage(0);
+				totalSize.setPageSize(5);
+				
+				int showPage = postTotal / totalSize.getPageSize();
+			model.addAttribute("showPage",showPage );
+			model.addAttribute("totalSize", totalSize );	
+				pageSize=totalSize.getPageSize();
+				currentPage=0;	
+			}
+
+			if(search==null||search.isEmpty()){
+				
+				Integer postTotal = session.selectOne("aaa.bbb.ccc.BaseMapper.countProjectList");
+				PageManager totalSize = new PageManager();
+				totalSize.setTotalSize(postTotal);
+				totalSize.setCurrentPage(currentPage * 5);
+				totalSize.setPageSize(pageSize);
+				List<Project> limitPostList = session.selectList("aaa.bbb.ccc.BaseMapper.limitProjectList", totalSize);
+				int showPage = postTotal / totalSize.getPageSize();
+			model.addAttribute("showPage",showPage );	
+				PageManager postPm = new PageManager();
+				postPm.setCurrentPage(currentPage);
+				postPm.setTotal(totalSize.getTotalSize());
+				postPm.setMaxPager(maxPager);
+				postPm = currentPagerCalculator(postPm);
+			model.addAttribute("pm", postPm );
+			model.addAttribute("totalSize", totalSize );
+			model.addAttribute("postList", limitPostList );
+			
+			}else {
+			
+				Integer searchPostTotal = session.selectOne("aaa.bbb.ccc.BaseMapper.countSearchProjectList", search);
+				System.out.println("검색어를 집어넣고 전체 게시물의 갯수는 : "+searchPostTotal);
+				PageManager searchTotalSize = new PageManager();
+				searchTotalSize.setSearch(search);
+				searchTotalSize.setTotalSize(searchPostTotal);
+				searchTotalSize.setCurrentPage(currentPage * 5);
+				searchTotalSize.setPageSize(pageSize);
+				int showPage = searchPostTotal / searchTotalSize.getPageSize();
+				System.out.println("검색어를 집어넣고 offset 값은 : "+searchTotalSize.getCurrentPage());
+				
+			model.addAttribute("showPage",showPage );
+				List<Project> limitSearchPostList = session.selectList("aaa.bbb.ccc.BaseMapper.searchLimitProjectList", searchTotalSize);
+				PageManager postPm = new PageManager();
+				postPm.setCurrentPage(currentPage);
+				postPm.setTotal(searchTotalSize.getTotalSize());
+				postPm.setMaxPager(maxPager);
+				postPm = currentPagerCalculator(postPm);
+				
+
+			model.addAttribute("pm", postPm );
+			model.addAttribute("postList", limitSearchPostList );
+			model.addAttribute("totalSize", searchTotalSize );
+			model.addAttribute("search", search);
+			}
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		
+	return "testAdmin";
 	}
 	
 	@RequestMapping(value = "/logIn", method = {RequestMethod.GET,RequestMethod.POST})
@@ -629,8 +761,6 @@ public class HomeController {
 	
 		endPage = (int) Math.ceil((pm.getCurrentPage()+1)/(double)pm.getMaxPager()) * pm.getMaxPager();
 		
-		
-//		System.out.println("Start page" + (endPage-pm.getMaxPager()));
 		result.setStartPage(endPage-pm.getMaxPager());
 		
 		
@@ -647,23 +777,5 @@ public class HomeController {
 		
 		return result;
 	}
-	
-//	  public PageManager ts(Integer currentPage) {
-//
-//	    	PageManager ts = new PageManager();
-//	    	try {
-//	    		stmt = con.createStatement();
-//	            rs = stmt.executeQuery("SELECT count(*) as totalSize FROM hong.gesiPost");
-//	            
-//	        while(rs.next()) {
-//      	ts.setTotalSize(rs.getInt("totalSize"));
-//      	ts.setPageSize(5); 
-//      	ts.setCurrentPage(currentPage);
-//	        }
-//	        }catch(Exception e) {
-//	    		e.printStackTrace();
-//	    		System.out.println("포스트 가지고 오다가 디비에서 에러났어요!!");
-//	    	}
-//	       return ts;
-//	    }
+
 }

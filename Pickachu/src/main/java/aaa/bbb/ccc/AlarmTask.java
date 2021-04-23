@@ -6,10 +6,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -39,6 +41,7 @@ import aaa.bbb.ccc.entity.Post;
 import aaa.bbb.ccc.entity.countryData;
 import aaa.bbb.ccc.entity.loginLog;
 import aaa.bbb.ccc.entity.newsTitle;
+import aaa.bbb.ccc.entity.top20Json;
 import io.ipgeolocation.api.Geolocation;
 import io.ipgeolocation.api.GeolocationParams;
 import io.ipgeolocation.api.IPGeolocationAPI;
@@ -77,21 +80,172 @@ public class AlarmTask {
 //			}
 			
 			
-			@Scheduled(cron = "0 * * * * *")
-			public void test24hour() {
+//			@Scheduled(cron = "0 * * * * *")
+//			public void todayScheduled() {
+//				todayTop20("NAVER");
+//				todayTop20("Daum");
+//			}
+			
+			//헤드라인 뉴스의 하루동안 노출빈도가 가장많은단어 20을 꺼내와 보여주고 저장한다.
+			public static Map<String,Integer> todayTop20(String p1) {
+				newsTitle sourceIs = new newsTitle();
+				sourceIs.setSource(p1);
+				System.out.println("시작합니다 "+ sourceIs.getSource() +" 스케쥴 ");
+				//받아놓은 헤드라인 뉴스들중 지난 하루동안의 Top20의 키워드를 찾아 Db에 저장
+				insertTop20(String.join(" ",top20(pieceWord(getToDayData(sourceIs)))),p1);
+				//저장한 Top20의 뉴스중 지정한 소스의 최근 Top20을 꺼내 다시 맵에 키워드별 노출횟수로 넣어 보여줌
+				System.out.println(top20MaptoString(getLastTop20(sourceIs)));
+				Map<String,Integer> result = new HashMap<String,Integer>();
+				result = top20MaptoString(getLastTop20(sourceIs));
 				
-				List<newsTitle> result = getToDayData();
-				System.out.println("가져온 데이터는 "+result);
-				Map<String,Integer> wordsMap = pieceWord(result);
-				System.out.println("가져온 단어들은 "+wordsMap);
-				top20(wordsMap);
-				//Top20 가져오기
+				
+				
+				return result ;
+			}
+	
+			// 키와 밸류로 나눠줘서 각각넣어줘야 한다.
+			public static Map<String,Integer> top20MaptoString(newsTitle p1) {
+				Map<String,Integer> result = new HashMap<String,Integer>();
+					String piece[] = p1.getTop20().split(",");
+					for(int i=0 ;i<piece.length ;i++) {
+						String temp[] = piece[i].split(":");
+						result.put(temp[0].trim(),Integer.parseInt(temp[1].trim()));
+					}
+			    System.out.println(result);
+				return result ;
 			}
 			
-			//top20봅는 함수
-			public static List<Entry<String,Integer>> top20(Map<String,Integer> p1) {
-				List<Entry<String, Integer>> result = new ArrayList<Entry<String, Integer>>();
+			//top20을 맵으로 받아온걸 단어별로 짤라준다
+			public static Map<String,Integer> pieceTop20(List<newsTitle> p1) {
+				Map<String,Integer> result = new HashMap<String,Integer>();
+					String piece[] = p1.get(0).getTop20().split(",");
+					for(int i=0 ;i<piece.length ;i++) {
+						String match = "[^\uAC00-\uD7A3xfe0-9a-zA-Z\\s]";
+				        piece[i] = piece[i].replaceAll(match, "");
+							if(result.containsKey(piece[i])) {
+								result.put(piece[i],result.get(piece[i])+1);
+							}else {
+								result.put(piece[i],1);
+								System.out.println("값이 없으므로 " + result + "저장하고 다음단어로 넘어갑니다.");
+							}	
+						}
+				System.out.println(result+"를 생성했습니다.");
+				return result ;
+			}
+			
+			
+			//top20을 스트링으로 DB에 저장하는함수
+			public static void insertTop20(String  p1, String p2){
+				newsTitle input = new newsTitle();
+				input.setTop20(p1);
+				input.setSource(p2);
+				
+				String resource = "aaa/bbb/ccc/mybatis_config.xml";
+				InputStream inputStream;
+				try {
+					inputStream = Resources.getResourceAsStream(resource);
+					SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
+					SqlSession session = sqlSessionFactory.openSession();
+					
+					System.out.println("insert하는 중"+p1);
+					session.insert("aaa.bbb.ccc.BaseMapper.insertTop20", input);
+					session.commit();
+					session.close();
+
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+
+			public static newsTitle getLastTop20(newsTitle p1) {
+				
+				System.out.println("시작합니다 Last top20 의 아이디 "+p1+"꺼내오기 ");
+				String resource = "aaa/bbb/ccc/mybatis_config.xml";
+				InputStream inputStream;
+				newsTitle result = new newsTitle();
+				
+				try {
+					inputStream = Resources.getResourceAsStream(resource);
+					SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
+					SqlSession session = sqlSessionFactory.openSession();
+					result = session.selectOne("aaa.bbb.ccc.BaseMapper.getLastTop20", p1);
+					
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				System.out.println("꺼내온 last top20 = " + result);
+				return result ;
+			}
+			//오름차순 만들어주기
+			
+			public static List<top20Json> orrm2(Map<String,Integer> p1){
 				List<Entry<String, Integer>> list_entries = new ArrayList<Entry<String, Integer>>(p1.entrySet());
+				List<top20Json> result = new ArrayList<top20Json>();
+				
+				
+				System.out.println("정렬을 시작해볼까");
+				Collections.sort(list_entries, new Comparator<Entry<String, Integer>>() {
+					// compare로 값을 비교
+					public int compare(Entry<String, Integer> obj1, Entry<String, Integer> obj2) {
+						// 오름 차순 정렬
+						return obj2.getValue().compareTo(obj1.getValue());
+					}
+				});
+				
+				int i = 0;
+				for(Entry<String, Integer> entry : list_entries) {
+					System.out.println(i+1 + "위 : " +entry.getKey() + " : " + entry.getValue());
+					top20Json temp = new top20Json();
+					temp.setText(entry.getKey());
+					temp.setSize(entry.getValue());
+					result.add(temp);
+					
+					
+					
+					i += 1;
+					
+					System.out.println(result);
+					if(i == 20) {
+						break;
+					}
+			
+				}
+				
+				return result;
+			}
+			
+			
+			public static Map<String,Integer> orrm(Map<String,Integer> p1){
+				List<Entry<String, Integer>> list_entries = new ArrayList<Entry<String, Integer>>(p1.entrySet());
+				Map<String,Integer> result = new HashMap<String,Integer>();
+				System.out.println("정렬을 시작해볼까");
+				Collections.sort(list_entries, new Comparator<Entry<String, Integer>>() {
+					// compare로 값을 비교
+					public int compare(Entry<String, Integer> obj1, Entry<String, Integer> obj2) {
+						// 오름 차순 정렬
+						return obj2.getValue().compareTo(obj1.getValue());
+					}
+				});
+				
+				int i = 0;
+				for(Entry<String, Integer> entry : list_entries) {
+//					System.out.println(i+1 + "위 : " +entry.getKey() + " : " + entry.getValue());
+					result.put(entry.getKey(),entry.getValue());
+					i += 1;
+					if(i == 20) {
+						break;
+					}
+			
+				}
+				
+				return result;
+			}
+			
+			
+			//top20봅는 함수
+			public static List<String> top20(Map<String,Integer> p1) {
+				List<Entry<String, Integer>> list_entries = new ArrayList<Entry<String, Integer>>(p1.entrySet());
+				List<String> result = new ArrayList<String>();
 				
 				Collections.sort(list_entries, new Comparator<Entry<String, Integer>>() {
 					// compare로 값을 비교
@@ -100,16 +254,19 @@ public class AlarmTask {
 						return obj2.getValue().compareTo(obj1.getValue());
 					}
 				});
-					System.out.println("오름 차순 정렬");
+//					System.out.println("오름 차순 정렬");
 					// 결과 출력
 					int i = 0;
 					for(Entry<String, Integer> entry : list_entries) {
-						System.out.println(entry.getKey() + " : " + entry.getValue());
+//						System.out.println(i+1 + "위 : " +entry.getKey() + " : " + entry.getValue());
+						result.add(entry.getKey()+":"+entry.getValue());
 						i += 1;
-						if(i == 30) {
+						if(i == 20) {
 							break;
+						}else {
+							result.add(",");
 						}
-						result.addAll(list_entries);
+				
 					}
 				
 				//
@@ -130,9 +287,9 @@ public class AlarmTask {
 						String match = "[^\uAC00-\uD7A3xfe0-9a-zA-Z\\s]";
 				        piece[j] =piece[j].replaceAll(match, "");
 						if(piece[j].equals("관련기사")||piece[j].equals("개수")||piece[j].equals("")) {	
-							System.out.println("단어뺄게");
+//							System.out.println("단어뺄게");
 						}else {
-							System.out.println(piece[j]+"단어 저장중");
+//							System.out.println(piece[j]+"단어 저장중");
 							if(result.containsKey(piece[j])) {
 								result.put(piece[j],result.get(piece[j])+1);
 							}else {
@@ -142,59 +299,11 @@ public class AlarmTask {
 						
 					}
 				}
-				System.out.println(result+"생성했습니다.");
+//				System.out.println(result+"생성했습니다.");
 				return result ;
 			}
-			
-			//비슷한 단어들 모아서 가장 많은 단어만 보여주기 
-			
-			//타이틀 하나를 빼서단어를 쪼개서 결과에 넣는거거든 
-			
-			
-			//url이 같은것을 제외하는 함수
-			
-			//url이 같은 id를 뽑아준다
-			
-			//문제가 생김 (나에게는) 같은 id든 뭐든 뽑아서 지우면 다지워진다 하나만 남기려면? 일단 둘다지우고 하나만 다시 입력해준다
-			
-			//생각해보니 중복을 지우면 안됨 
-			
-			//뉴스노출을 시간으로 다뤄야 하기때문에 그시간에 존재 하면 데이터상에 숫자가 늘어나야함 
-			
-//			public static List<newsTitle> duplicateDataRemoval(List<newsTitle> p1) {
-//				List<newsTitle> result = p1;
-//				List<newsTitle> targetUrl = p1 ;
-//				List<newsTitle> targetId = new ArrayList<newsTitle>() ;
-//				List<newsTitle> delId = new ArrayList<newsTitle>() ;
-//				
-//				for(int i=0;i<result.size();i++) {
-//			    	for(int j=0;j<targetUrl.size();j++) {
-//			    		if(result.get(i).getLink().equals(targetUrl.get(j).getLink())) { 
-//			    			newsTitle duplicateNews = new newsTitle();
-//			    			duplicateNews.setId(result.get(i).getId());
-//			    			duplicateNews.setTitle(result.get(i).getTitle());
-//			    			duplicateNews.setLink(result.get(i).getLink());
-//			    			duplicateNews.setSource(result.get(i).getSource());
-//			    			targetId.add(duplicateNews);
-//			    			System.out.println("전체리스트에서 url이 겹치는 id " +duplicateNews+"를 찾음");
-//			    		}
-//			    	}     	
-//			    }
-//				
-//				for(int i=0;i<result.size();i++) {
-//			    	for(int j=0;j<targetId.size();j++) {
-//			    		if(result.get(i).getId().equals(targetId.get(j).getId())) { 
-//			    			result.remove(i);
-//			    			System.out.println("전체리스트에서 url이 겹쳐서 " +result.get(i)+"를 지우는중");
-//			    		}
-//			    	}     	
-//			    }
-//				return result ;
-//			}
-			
-			
-			//24시간 데이터긁어오는 함수
-			public static List<newsTitle> getToDayData() {
+			//소스별로 오늘의 데이터 긁어오는 함수
+			public static List<newsTitle> getToDayData(newsTitle p1) {
 				String resource = "aaa/bbb/ccc/mybatis_config.xml";
 				InputStream inputStream;
 				
@@ -203,7 +312,7 @@ public class AlarmTask {
 					inputStream = Resources.getResourceAsStream(resource);
 					SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
 					SqlSession session = sqlSessionFactory.openSession();
-					result = session.selectList("aaa.bbb.ccc.BaseMapper.getToDayNewsData");
+					result = session.selectList("aaa.bbb.ccc.BaseMapper.getToDayNewsData", p1);
 
 				} catch (IOException e) {
 					e.printStackTrace();
@@ -211,7 +320,6 @@ public class AlarmTask {
 				
 				return result ;
 			}
-			
 
 			// 네이버 뉴스 가져오는 함수 
 			public static  void getNaver_newHaedline() {
