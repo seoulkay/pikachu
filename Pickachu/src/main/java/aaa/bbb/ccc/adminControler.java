@@ -7,9 +7,13 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.regex.Pattern;
 
 import org.apache.ibatis.io.Resources;
@@ -36,6 +40,8 @@ import aaa.bbb.ccc.entity.Post;
 import aaa.bbb.ccc.entity.Reply;
 import aaa.bbb.ccc.entity.countryData;
 import aaa.bbb.ccc.entity.loginLog;
+import aaa.bbb.ccc.entity.newsTitle;
+import aaa.bbb.ccc.entity.top20Json;
 import aaa.bbb.ccc.AlarmTask;
 import io.ipgeolocation.api.Geolocation;
 import io.ipgeolocation.api.GeolocationParams;
@@ -59,6 +65,8 @@ public class adminControler {
 
         return remoteAddr;
     }
+	
+	
 	
 	@RequestMapping(value = "admin/pages/examples/login.html", method = RequestMethod.GET)
 	public String login(Locale locale, Model model ) {
@@ -529,8 +537,123 @@ public class adminControler {
 		return "admin/index3";
 	}
 	
+	@RequestMapping(value = "admin/index4", method = RequestMethod.GET)
+	public String adminIndex4(Locale locale, Model model, String source) {
+		
+		newsTitle sourceIs = new newsTitle();
+		sourceIs.setSource(source);
+		
+		List<String> temp = new ArrayList<String>();
+//		temp = AlarmTask.getToDayData(sourceIs);
+//		String temp3 = insertTop20New(String.join(" ",AlarmTask.top20(AlarmTask.pieceWord(AlarmTask.getToDayData(sourceIs)))),"naver");
+		
+//		System.out.println(temp3);
+		
+		
+		temp = step1(AlarmTask.top20MaptoString(AlarmTask.getLastTop20(sourceIs)));
+		
+		System.out.println(temp);
+		String str = String.join(" ",temp);
+		System.out.println(str);
+		
+		String description = "백신,백신 ,백신,백신 ,백신 ,백신,백신,백신 ,백신,백신,백신,백신,백신,백신,백신,백신,백신,백신,백신,백신,백신,백신,백신,백신,백신,백신,백신,백신,백신,백신,백신,백신,백신,백신,백신,백신,백신,백신,오염수,오염수,오염수,오염수,오염수,오염수,오염수,오염수,오염수,오염수,오염수,오염수,오염수,오염수,오염수,오염수,오염수,오염수,오염수,오염수,오염수,오염수,오염수,오염수,오염수,오염수,오염수,오염수,오염수,오염수,오염수,오염수,오염수,정의용,정의용,정의용,정의용,정의용,정의용,정의용,정의용,정의용,정의용,정의용,정의용,정의용,정의용,정의용,정의용,정의용,정의용,정의용,정의용,정의용,정의용,정의용,정의용,정의용,정의용,정의용,정의용,정의용,김어준,김어준,김어준,김어준,김어준,김어준,김어준,김어준,김어준,김어준,김어준,김어준,김어준,김어준,김어준,김어준,김어준,김어준,김어준,김어준,김어준,방류,방류,방류,방류,방류,방류,방류,방류,방류,방류,방류,방류,방류,방류,방류,방류,방류,방류,방류,방류,방류,출연료,출연료,출연료,출연료,출연료,출연료,출연료,출연료,출연료,출연료,출연료,출연료,출연료,출연료,출연료,출연료,출연료,출연료,출연료,37,37,37,37,37,37,37,37,37,37,37,37,37,37,37,37,37,37,37,38,38,38,38,38,38,38,38,38,38,38,38,38,38,38,38,38,38,38,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,69,69,69,69,69,69,69,69,69,69,69,69,69,69,69,69,69,69,TBS,TBS,TBS,TBS,TBS,TBS,TBS,TBS,TBS,TBS,TBS,TBS,TBS,TBS,TBS,TBS,TBS,TBS,첫,첫,첫,첫,첫,첫,첫,첫,첫,첫,첫,첫,첫,첫,첫,첫,첫,첫,대상,대상,대상,대상,대상,대상,대상,대상,대상,대상,대상,대상,대상,대상,대상,대상,대상,대상,재판,재판,재판,재판,재판,재판,재판,재판,재판,재판,재판,재판,재판,재판,재판,재판,재판,대통령,대통령,대통령,대통령,대통령,대통령,대통령,대통령,대통령,대통령,대통령,대통령,대통령,대통령,대통령,대통령,대통령,63,63,63,63,63,63,63,63,63,63,63,63,63,63,63,63,부산,부산,부산,부산,부산,부산,부산,부산,부산,부산,부산,부산,부산,부산,부산,기모란,기모란,기모란,기모란,기모란,기모란,기모란,기모란,기모란,기모란,기모란,기모란,기모란,기모란,기모란,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,42,42,42,42,42,42,42,42,42,42,42,42,42,42,42\n" + 
+				"";
+		
+		
+		model.addAttribute("description", str );
+		return "admin/index4";
+	}
 	
+	
+	@RequestMapping(value = "admin/index5", method = RequestMethod.GET)
+	public String adminIndex5(Locale locale, Model model, String source) {
+		
+		newsTitle sourceIs = new newsTitle();
+		sourceIs.setSource(source);
+		
+		List<String> temp = new ArrayList<String>();
+//		temp = AlarmTask.getToDayData(sourceIs);
+//		String temp3 = insertTop20New(String.join(" ",AlarmTask.top20(AlarmTask.pieceWord(AlarmTask.getToDayData(sourceIs)))),"naver");
+		
+//		System.out.println(temp3);
+		
+		
+		temp = step1(AlarmTask.top20MaptoString(AlarmTask.getLastTop20(sourceIs)));
+		
+		System.out.println(temp);
+		String str = String.join(" ",temp);
+		System.out.println(str);
+		
+		String description = "백신,백신 ,백신,백신 ,백신 ,백신,백신,백신 ,백신,백신,백신,백신,백신,백신,백신,백신,백신,백신,백신,백신,백신,백신,백신,백신,백신,백신,백신,백신,백신,백신,백신,백신,백신,백신,백신,백신,백신,백신,오염수,오염수,오염수,오염수,오염수,오염수,오염수,오염수,오염수,오염수,오염수,오염수,오염수,오염수,오염수,오염수,오염수,오염수,오염수,오염수,오염수,오염수,오염수,오염수,오염수,오염수,오염수,오염수,오염수,오염수,오염수,오염수,오염수,정의용,정의용,정의용,정의용,정의용,정의용,정의용,정의용,정의용,정의용,정의용,정의용,정의용,정의용,정의용,정의용,정의용,정의용,정의용,정의용,정의용,정의용,정의용,정의용,정의용,정의용,정의용,정의용,정의용,김어준,김어준,김어준,김어준,김어준,김어준,김어준,김어준,김어준,김어준,김어준,김어준,김어준,김어준,김어준,김어준,김어준,김어준,김어준,김어준,김어준,방류,방류,방류,방류,방류,방류,방류,방류,방류,방류,방류,방류,방류,방류,방류,방류,방류,방류,방류,방류,방류,출연료,출연료,출연료,출연료,출연료,출연료,출연료,출연료,출연료,출연료,출연료,출연료,출연료,출연료,출연료,출연료,출연료,출연료,출연료,37,37,37,37,37,37,37,37,37,37,37,37,37,37,37,37,37,37,37,38,38,38,38,38,38,38,38,38,38,38,38,38,38,38,38,38,38,38,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,69,69,69,69,69,69,69,69,69,69,69,69,69,69,69,69,69,69,TBS,TBS,TBS,TBS,TBS,TBS,TBS,TBS,TBS,TBS,TBS,TBS,TBS,TBS,TBS,TBS,TBS,TBS,첫,첫,첫,첫,첫,첫,첫,첫,첫,첫,첫,첫,첫,첫,첫,첫,첫,첫,대상,대상,대상,대상,대상,대상,대상,대상,대상,대상,대상,대상,대상,대상,대상,대상,대상,대상,재판,재판,재판,재판,재판,재판,재판,재판,재판,재판,재판,재판,재판,재판,재판,재판,재판,대통령,대통령,대통령,대통령,대통령,대통령,대통령,대통령,대통령,대통령,대통령,대통령,대통령,대통령,대통령,대통령,대통령,63,63,63,63,63,63,63,63,63,63,63,63,63,63,63,63,부산,부산,부산,부산,부산,부산,부산,부산,부산,부산,부산,부산,부산,부산,부산,기모란,기모란,기모란,기모란,기모란,기모란,기모란,기모란,기모란,기모란,기모란,기모란,기모란,기모란,기모란,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,42,42,42,42,42,42,42,42,42,42,42,42,42,42,42\n" + 
+				"";
+		
+		
+		model.addAttribute("description", str );
+		return "admin/index5";
+	}
 	//admin/pages/tables/simple.html
+	
+	public static String insertTop20New(String p1, String p2) {
+		String result = new String();
+		
+		result = p1;
+		//받아온 맵을 키와 밸류로 구분해
+		return  result;
+	}
+	
+	public static void testtoday() {
+		newsTitle sourceIs = new newsTitle();
+		System.out.println(step1(AlarmTask.top20MaptoString(AlarmTask.getLastTop20(sourceIs))));
+		
+	}
+	public static List<String> mapToListString(top20Json p1){
+		List<String> result = new ArrayList<String>();
+		Integer endPoint = p1.getSize();
+		int roof = 0;
+		while(roof < endPoint) {
+			result.add(p1.getText());
+			roof += 1;
+		}
+		
+		return result;
+	}
+	
+	
+	public static List<String> step1(Map<String,Integer> p1){
+		List<Entry<String, Integer>> list_entries = new ArrayList<Entry<String, Integer>>(p1.entrySet());
+		List<String> result = new ArrayList<String>();
+		Collections.sort(list_entries, new Comparator<Entry<String, Integer>>() {
+			// compare로 값을 비교
+			public int compare(Entry<String, Integer> obj1, Entry<String, Integer> obj2) {
+				// 오름 차순 정렬
+				return obj2.getValue().compareTo(obj1.getValue());
+			}
+		});
+		
+		int i = 0;
+		for(Entry<String, Integer> entry : list_entries) {
+			String title = entry.getKey();
+			Integer j = entry.getValue();
+			
+			System.out.println(entry.getKey()+":"+entry.getValue());
+			int roof = 0;
+			while(roof < j) {
+				System.out.println("반복해서 넣고 있지요 " + roof + "번째 돌리는 중입니다");
+				result.add(title);
+				roof += 1;
+			}
+			
+			i += 1;
+
+			if(i == 20) {
+				break;
+			}
+	
+		}
+		
+		return result;
+	}
+	
 	
 	@RequestMapping(value = "admin/pages/tables/simple.html", method = RequestMethod.GET)
 	public String simpleTables(Locale locale, Model model, String search) {

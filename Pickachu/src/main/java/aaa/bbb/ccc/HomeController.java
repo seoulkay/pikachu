@@ -155,7 +155,7 @@ public class HomeController {
 				postPm = currentPagerCalculator(postPm);
 				
 
-			model.addAttribute("pm", postPm );
+		
 			model.addAttribute("postList", limitSearchPostList );
 			model.addAttribute("totalSize", searchTotalSize );
 			model.addAttribute("search", search);
