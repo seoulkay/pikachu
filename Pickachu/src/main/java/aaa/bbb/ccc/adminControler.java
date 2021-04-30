@@ -21,6 +21,7 @@ import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
@@ -600,27 +601,67 @@ public class adminControler {
 		
 		newsTitle sourceIs = new newsTitle();
 		sourceIs.setSource(source);
+		String result = source;
+		String url = newsSearchUrl(source);
 		
-		List<String> temp = new ArrayList<String>();
-//		temp = AlarmTask.getToDayData(sourceIs);
-//		String temp3 = insertTop20New(String.join(" ",AlarmTask.top20(AlarmTask.pieceWord(AlarmTask.getToDayData(sourceIs)))),"naver");
-		
-//		System.out.println(temp3);
-		
-		
-		temp = step1(AlarmTask.top20MaptoString(AlarmTask.getLastTop20(sourceIs)));
-		
-		System.out.println(temp);
-//		String str = String.join(" ",temp);
-		String str = getFoosBySimplePathWithPathVariable(sourceIs);
-		System.out.println(str);
-		
-		String description = "백신,백신 ,백신,백신 ,백신 ,백신,백신,백신 ,백신,백신,백신,백신,백신,백신,백신,백신,백신,백신,백신,백신,백신,백신,백신,백신,백신,백신,백신,백신,백신,백신,백신,백신,백신,백신,백신,백신,백신,백신,오염수,오염수,오염수,오염수,오염수,오염수,오염수,오염수,오염수,오염수,오염수,오염수,오염수,오염수,오염수,오염수,오염수,오염수,오염수,오염수,오염수,오염수,오염수,오염수,오염수,오염수,오염수,오염수,오염수,오염수,오염수,오염수,오염수,정의용,정의용,정의용,정의용,정의용,정의용,정의용,정의용,정의용,정의용,정의용,정의용,정의용,정의용,정의용,정의용,정의용,정의용,정의용,정의용,정의용,정의용,정의용,정의용,정의용,정의용,정의용,정의용,정의용,김어준,김어준,김어준,김어준,김어준,김어준,김어준,김어준,김어준,김어준,김어준,김어준,김어준,김어준,김어준,김어준,김어준,김어준,김어준,김어준,김어준,방류,방류,방류,방류,방류,방류,방류,방류,방류,방류,방류,방류,방류,방류,방류,방류,방류,방류,방류,방류,방류,출연료,출연료,출연료,출연료,출연료,출연료,출연료,출연료,출연료,출연료,출연료,출연료,출연료,출연료,출연료,출연료,출연료,출연료,출연료,37,37,37,37,37,37,37,37,37,37,37,37,37,37,37,37,37,37,37,38,38,38,38,38,38,38,38,38,38,38,38,38,38,38,38,38,38,38,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,69,69,69,69,69,69,69,69,69,69,69,69,69,69,69,69,69,69,TBS,TBS,TBS,TBS,TBS,TBS,TBS,TBS,TBS,TBS,TBS,TBS,TBS,TBS,TBS,TBS,TBS,TBS,첫,첫,첫,첫,첫,첫,첫,첫,첫,첫,첫,첫,첫,첫,첫,첫,첫,첫,대상,대상,대상,대상,대상,대상,대상,대상,대상,대상,대상,대상,대상,대상,대상,대상,대상,대상,재판,재판,재판,재판,재판,재판,재판,재판,재판,재판,재판,재판,재판,재판,재판,재판,재판,대통령,대통령,대통령,대통령,대통령,대통령,대통령,대통령,대통령,대통령,대통령,대통령,대통령,대통령,대통령,대통령,대통령,63,63,63,63,63,63,63,63,63,63,63,63,63,63,63,63,부산,부산,부산,부산,부산,부산,부산,부산,부산,부산,부산,부산,부산,부산,부산,기모란,기모란,기모란,기모란,기모란,기모란,기모란,기모란,기모란,기모란,기모란,기모란,기모란,기모란,기모란,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,42,42,42,42,42,42,42,42,42,42,42,42,42,42,42\n" + 
-				"";
-		
-		
-		model.addAttribute("description", str );
+		model.addAttribute("url", url);
+		model.addAttribute("source", result);
 		return "admin/index6";
+	}
+	
+	@RequestMapping(value = "/get/news20", method = {RequestMethod.GET})
+	public @ResponseBody List<top20Json> news20(@RequestParam("data") String data){
+	
+		ObjectMapper mapper = new ObjectMapper();
+		List<top20Json> jsonList = new ArrayList<top20Json>();
+//		String jsonList="";
+		
+		newsTitle sourceIs = new newsTitle();
+		sourceIs.setSource(data);
+		jsonList = AlarmTask.orrm2(AlarmTask.top20MaptoString(AlarmTask.getLastTop20(sourceIs)));
+//		System.out.println("news20Ajax 시작 : "+jsonList);
+	
+		
+		
+	    return jsonList;
+	}
+	
+	public static String newsSearchUrl(String source) {
+		String result = "https://search.naver.com/search.naver?where=news&sm=tab_jum&query=";
+		String str = "daum";
+		
+		if (source.equals(str)) {
+			result = "https://search.daum.net/search?w=tot&DA=23A&rtmaxcoll=NNS&q=";
+		}
+		
+		return result;
+	}
+	
+	
+	@RequestMapping(value = "ajaxSource", method = {RequestMethod.GET})
+	public @ResponseBody String ajaxSource(@RequestParam("data") String source){
+		String result = source;
+		
+		return result;
+	
+	}
+	
+	
+	
+	public static JSONObject convertMapToJson(Map<String, Integer> map) {
+		
+		JSONObject json = new JSONObject();
+		
+		
+		
+		for (Map.Entry<String, Integer> entry : map.entrySet()) {
+			String key = entry.getKey();
+			Object value = entry.getValue();
+			json.put(key, value);
+		}
+		
+		
+		return json;
 	}
 	
 	

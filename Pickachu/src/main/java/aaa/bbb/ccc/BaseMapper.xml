@@ -15,6 +15,13 @@
     select * from hong.member where id = #{id}
   </select>
   
+  
+  <select id="getLastNaverTop20" resultType="aaa.bbb.ccc.entity.newsTitle">
+    select * from hong.todayNewsTop20 where id = #{id}
+  </select>
+ 
+  
+  
   <select id="selectReply" resultType="aaa.bbb.ccc.entity.Reply">
     select * from MyPostReply where id = #{id}
   </select>
@@ -173,12 +180,78 @@
     (now(),#{title},#{link},#{source})
   </insert>
   
-  <select id="getToDayNewsData" resultType="aaa.bbb.ccc.entity.newsTitle">
+  
+  <insert id="insertTop20" parameterType="aaa.bbb.ccc.entity.newsTitle">
+    insert into hong.todayNewsTop20 (hong.todayNewsTop20.created,top20,source) 
+    values 
+    (now(),#{top20},#{source})
+  </insert>
+  
+   <select id="getTop20MaxId" parameterType="aaa.bbb.ccc.entity.newsTitle" resultType="integer">
+    select MAX(id) AS id from hong.todayNewsTop20 where source = #{source}
+  </select>
+  
+  <select id="getLastTop20" parameterType="aaa.bbb.ccc.entity.newsTitle" resultType="aaa.bbb.ccc.entity.newsTitle">
+  	SELECT * FROM hong.todayNewsTop20 WHERE source = #{source} order by id desc LIMIT 1;
+  </select>
+  
+  
+  <select id="getToDayNaverTop20" resultType="aaa.bbb.ccc.entity.newsTitle">
+  	SELECT 
+	* 
+	FROM 
+	hong.todayNewsTop20
+	WHERE
+	source = 'naver' and
+	created >
+	DATE_ADD(now(), INTERVAL -24 HOUR) 
+	order by id desc;
+  </select>
+  
+  <select id="getToDayDaumTop20" resultType="aaa.bbb.ccc.entity.newsTitle">
+  	SELECT 
+	* 
+	FROM 
+	hong.todayNewsTop20
+	WHERE
+	source = 'daum' and
+	created >
+	DATE_ADD(now(), INTERVAL -24 HOUR) 
+	order by id desc;
+  </select>
+  
+  <select id="getToDayNewsData" parameterType="aaa.bbb.ccc.entity.newsTitle" resultType="aaa.bbb.ccc.entity.newsTitle">
   	SELECT 
 	* 
 	FROM 
 	hong.todayNews 
 	WHERE
+	source = #{source} and
+	created >
+	DATE_ADD(now(), INTERVAL -24 HOUR) 
+	order by id desc;
+  </select>
+  
+  
+  <select id="getToDayNaverNewsData" resultType="aaa.bbb.ccc.entity.newsTitle">
+  	SELECT 
+	* 
+	FROM 
+	hong.todayNews 
+	WHERE
+	source = 'naver' and
+	created >
+	DATE_ADD(now(), INTERVAL -24 HOUR) 
+	order by id desc;
+  </select>
+  
+  <select id="getToDayDaumNewsData" resultType="aaa.bbb.ccc.entity.newsTitle">
+  	SELECT 
+	* 
+	FROM 
+	hong.todayNews 
+	WHERE
+	source = 'daum' and
 	created >
 	DATE_ADD(now(), INTERVAL -24 HOUR) 
 	order by id desc;
