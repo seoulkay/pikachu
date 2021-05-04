@@ -213,7 +213,55 @@
     (now(),#{description},#{link},#{source})
   	</insert>
 	
+	<select id="selectTodayNews" resultType="aaa.bbb.ccc.entity.PortalNews2">
+	SELECT * FROM hong.todayNews
+	WHERE created >
+	DATE_ADD(now(), INTERVAL -24 HOUR)
+	order by id desc;
+	</select>
 	
+	<select id="selectTodayNewsDaum" resultType="aaa.bbb.ccc.entity.PortalNews2">
+	SELECT * FROM hong.todayNews
+	WHERE source = 'DAUM' AND created >
+	DATE_ADD(now(), INTERVAL -24 HOUR)
+	order by id desc;
+	</select>
+	
+	<select id="selectTodayNewsNaver" resultType="aaa.bbb.ccc.entity.PortalNews2">
+	SELECT * FROM hong.todayNews
+	WHERE source = 'NAVER' AND created >
+	DATE_ADD(now(), INTERVAL -24 HOUR)
+	order by id desc;
+	</select>
+	
+	<insert id="insertTop20" parameterType="aaa.bbb.ccc.entity.PortalNews2">
+    insert into hw_utf8.todayTop20 (hw_utf8.todayTop20.created, top20, source) 
+    values 
+    (now(),#{top20},#{source})
+  	</insert>
+  	
+  	<select id="selectTop20Daum" resultType="aaa.bbb.ccc.entity.PortalNews2">
+	SELECT * FROM hw_utf8.todayTop20
+	WHERE source = 'DAUM' AND created >
+	DATE_ADD(now(), INTERVAL -24 HOUR)
+	order by id desc;
+	</select>
+  	
+  	<select id="selectTop20Naver" resultType="aaa.bbb.ccc.entity.PortalNews2">
+	SELECT * FROM hw_utf8.todayTop20
+	WHERE source = 'NAVER' AND created >
+	DATE_ADD(now(), INTERVAL -24 HOUR)
+	order by id desc;
+	</select>
+  	
+
+  	<select id="selectLast20" parameterType="aaa.bbb.ccc.entity.PortalNews2" resultType="aaa.bbb.ccc.entity.PortalNews2">
+  	SELECT top20 FROM hw_utf8.todayTop20 
+  	WHERE source = #{source} AND created >
+	DATE_ADD(now(), INTERVAL -24 HOUR)
+  	ORDER BY id DESC 
+  	LIMIT 1;
+  	</select>
 	
 </mapper>
 
