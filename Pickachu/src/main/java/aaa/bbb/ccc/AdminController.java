@@ -55,6 +55,7 @@ import aaa.bbb.ccc.entity.LoginCount;
 import aaa.bbb.ccc.entity.LoginLog;
 import aaa.bbb.ccc.entity.Top20Json;
 //import aaa.bbb.ccc.Scheduler;
+import aaa.bbb.ccc.entity.Top20X10;
 
 @Controller
 public class AdminController {
@@ -113,9 +114,7 @@ public class AdminController {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
-		
-		
+
 		return "admin/pages/tables/simple";
 	}
 
@@ -124,14 +123,11 @@ public class AdminController {
 	public String adminLogIn(Locale locale, Model model, HttpServletRequest request) {
 		
 		System.out.println(getClientIp(request));
-		
-		//scheduleTaskUsingCronExpression();
-		
+
 		return "admin/pages/examples/logIn";
 	}
 
-	
-	
+
 	private static String getClientIp(HttpServletRequest request) {
 
         String remoteAddr = "";
@@ -149,11 +145,6 @@ public class AdminController {
 	
 	@RequestMapping(value = "admin/pages/examples/loginAction", method = RequestMethod.POST)
 	public String loginAction(Locale locale, Model model, String eMailMember,	String passwordMember, HttpServletRequest ipRequest) {
-		
-		//System.out.println(getClientIp(ipRequest));
-		
-		
-		
 		
 		String resource = "aaa/bbb/ccc/mybatis_config.xml";
 		InputStream inputStream;
@@ -243,8 +234,6 @@ public class AdminController {
 				
 				return "admin/index";
 				
-				
-				
 			}else {
 				
 				System.out.println(eMailMember);
@@ -255,14 +244,11 @@ public class AdminController {
 				model.addAttribute("error", errorMessage );
 				return "admin/pages/examples/logIn";
 			}
-			
-			
+
 		}catch (IOException e){
 			e.printStackTrace();
 		}
-		
-		
-		
+
 		return "";
 	}	
 		
@@ -335,9 +321,7 @@ public class AdminController {
 		        System.out.println(time1);
 		        count = session.selectList("aaa.bbb.ccc.BaseMapper.sevenDayLoginsSubQ", time1);
 		        
-		        //count 결과를 두개로 나눠보자
-		        
-		      
+		    //count 결과를 두개로 나눠보자      
 		    for(int i=0;i<countSuccessful.size();i++) {
 		    	for(int j=0;j<count.size();j++) {
 		    		if(countSuccessful.get(i).getMonth().equals(count.get(j).getMonth()) && 
@@ -407,11 +391,8 @@ public class AdminController {
 			
 			System.out.println(" 변환된 나라코드는  "+geolocationResult.getCountryCode2().toLowerCase());
 		}    
-		
-		
+
 		return geolocation;
-		
-	
 	}
 	
 	@RequestMapping(value = "admin/countCountryCodeAjax", method = {RequestMethod.GET})
@@ -441,54 +422,10 @@ public class AdminController {
 			
 		}
 		
-		//scheduleTaskUsingCronExpression();
-		
+		//scheduleTaskUsingCronExpression();	
 			return countByCountry;
-		
 		}
-	
-	
-//	@Scheduled(cron = "*/20 * * * * * ")
-//	public void scheduleCron() {
-//		
-//		SimpleDateFormat format1 = new SimpleDateFormat ( "yyyy-MM-dd HH:mm:ss");
-//		Date time = new Date();
-//		String time1 = format1.format(time);
-//		
-//	  
-//	    System.out.println(
-//	      "어드민컨트롤러에서 20초마다 크론 실행 : " + time1);
-//	}
-	
-//	@Scheduled(cron = "*/4 * * * * * ")
-//	public void nullCountryCheck() {
-//		
-//		SimpleDateFormat format1 = new SimpleDateFormat ( "yyyy-MM-dd HH:mm:ss");
-//		Date time = new Date();
-//		String time1 = format1.format(time);
-//	  
-//	    System.out.println(
-//	      "4초마다 DB에서 국가코드 null id 찾아라 : " + time1);
-//	    
-//	    List <Integer> countryNull = new ArrayList <Integer>() ;
-//	    
-//	    String resource = "aaa/bbb/ccc/mybatis_config.xml";
-//		InputStream inputStream;
-//										
-//		try {
-//
-//			inputStream = Resources.getResourceAsStream(resource);
-//			SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
-//			SqlSession session = sqlSessionFactory.openSession();
-//			countryNull = session.selectList("aaa.bbb.ccc.BaseMapper.noCountryId");
-//			
-//			System.out.println(countryNull);
-//			
-//		}catch (IOException e) {
-//			e.printStackTrace();
-//		}
-//	
-//	}
+		
 	
 	
 	
@@ -507,20 +444,14 @@ public class AdminController {
 			updateCountryCode(idArray.get(i), noCountryIP(idArray.get(i)));		
 			System.out.println(date_now);
 		}
-		
-		//jsoupTest();
-		
-	}
-	
 
-	
-	
-	
+	}
+
+		
 	//noCountryIP(getCountryNullId().get(i)) 로 받아온 아이피들을 국가코드로 변환하고,
 	
 	public static void updateCountryCode(Integer id, String ip) {
-		
-		
+
 		LoginLog log = new LoginLog();
 		
 		IPGeolocationAPI api = new IPGeolocationAPI("b2351617dfad414eaaf53967ef6457e8");
@@ -537,9 +468,7 @@ public class AdminController {
 		System.out.println("log의 아이디: "+log.getIdLoginTry());
 		System.out.println("log의 새 국가코드: "+log.getCountryCode());
 		System.out.println(log);
-		
-		
-		
+
 		String resource = "aaa/bbb/ccc/mybatis_config.xml";
 		InputStream inputStream;
 		
@@ -558,6 +487,7 @@ public class AdminController {
 		}
 		
 	}
+	
 	
 	//디비에서 국가코드가 null인 행들을 찾기. 인티저 아이디의 배열이 리턴된다. (파라미터 없음, 리턴은 인트 배열)
 	public static List<Integer> getCountryNullId(){
@@ -585,11 +515,6 @@ public class AdminController {
 	//국가코드 없는 아이디를 가지고 아이피 알아내기.
 	public static String noCountryIP(Integer id) {	
 		
-		
-//		for(int i = 0; i<getCountryNullId().size(); i++) {
-//			noCountryIP(getCountryNullId().get(i));
-//		}
-		
 		String countryNullIp = "";
 		
 		String resource = "aaa/bbb/ccc/mybatis_config.xml";
@@ -602,12 +527,6 @@ public class AdminController {
 			
 			//디비에서 아이디를 가지고 아이피 하나 셀렉해서 스트링에 넣기.
 			countryNullIp = session.selectOne("aaa.bbb.ccc.BaseMapper.noCountryIP", id);
-			
-			//SimpleDateFormat format1 = new SimpleDateFormat ( "yyyy-MM-dd HH:mm:ss");
-			//Date time = new Date();
-			//String time1 = format1.format(time);
-			
-			//System.out.println(countryNullIp+" : "+time1);
 				
 		}catch (IOException e) {
 				e.printStackTrace();
@@ -617,14 +536,13 @@ public class AdminController {
 	}
 
 	
-
 	
 	
-
-
 	
+	
+	
+
 	//iamk.shop의 게시판의 내용을 가져와서 내 데이터 베이스에 넣는다.
-	
 	public static List<JsoupReply> jsoupTest2() {
 		//String head = "";
 		
@@ -636,14 +554,7 @@ public class AdminController {
 		try {
 			doc = Jsoup.connect("http://www.iamk.shop:8080/reply?page=0").ignoreContentType(true).get();
 			//ignoreContentType(true) --> 해당 주소에서 파싱한 데이터형태가 JSON이기 때문에 doc의 자료형인 html과 충돌한다. 그래서 그거 무시하기 위한 함수.
-			
-			//System.out.println(doc);
-						//System.out.println("웹사이트 헤더 : "+ doc.title());
-						//Elements newsHeadlines = doc.select(".masthead");
-						//Elements contacts = doc.select(".contact-section .container .row .col-md-4 .card .card-body .text-uppercase ");
-						//Elements contacts = doc.select(".contact-section .row .col-lg-8 .table #tbody tr");
-						//Elements contacts = doc.select("body");
-			
+
 			//바디 안에 있는 내용만 문자로 만들어라.
 			String tBody = doc.select("body").text();
 			//그런데 지금 스트링 상태임. 이 자료들을 어떻게 데려올 것인가...?
@@ -663,10 +574,7 @@ public class AdminController {
 			JSONArray replies= (JSONArray) jsonObj.get("replies");
 			
 			//JSON 배열 형태임			
-							
-			
-								
-			
+
 			for(int i=0;i<replies.size();i++) {
 				
 				//일단 JSON객체로 만든다.
@@ -684,31 +592,23 @@ public class AdminController {
 			}
 
 			System.out.println(reList);
-			
-		
-			
-							//			for (Element headline : newsHeadlines) {
-							//				System.out.println(headline.text());
-							//			}
-										
-							//			for (Element contact : contacts) {
-							//				System.out.println(contact.text());
-							//			}
+
 				
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		
 		return reList;
-
 	}
+	
+	
+	
 	
 	
 	
 	@Scheduled(cron = "* */10 * * * * ")
 	public void jsoupSchedular() {
-		
-		jsoupTest();
+		//jsoupTest();
 		//reListToDB(jsoupTest2());				
 		jsoupNaverHead();
 		//jsoupLastIdCheck();
@@ -717,7 +617,6 @@ public class AdminController {
 		jsoupListCopy();
 	}
 	
-	
 
 	//reList 디비에 넣기 마이바티스 함수  
 	public static void reListToDB(List<JsoupReply> reList){
@@ -725,7 +624,6 @@ public class AdminController {
 		String resource = "aaa/bbb/ccc/mybatis_config.xml";
 		InputStream inputStream;
 		try {
-
 			inputStream = Resources.getResourceAsStream(resource);
 			SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
 			SqlSession session = sqlSessionFactory.openSession();
@@ -742,6 +640,7 @@ public class AdminController {
 				e.printStackTrace();
 		}
 	}
+	
 	
 	//디비 자료 개수 세기 
 	public static Integer countDB() {
@@ -814,7 +713,6 @@ public class AdminController {
 		return lastId;
 	}
 	
-
 	
 	//자료가 없을 때까지 게시판 자료 가져와서 리스트에 넣는 함수
 	public static List<JsoupReply> jsoupUntilNull() {
@@ -887,9 +785,7 @@ public class AdminController {
 				JSONArray replies= (JSONArray) jsonObj.get("replies");
 								
 				if(replies.size()==0) {
-					break;
-				}
-				
+					break;}
 				
 				for(int j=0;j<replies.size();j++) {
 					
@@ -912,19 +808,18 @@ public class AdminController {
 
 			//System.out.println(reList);
 			
-				
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 			
 			if(outerLoop) {
 				break;
-			}
-			
+			}		
 		i++;
 		}
 		return reList;
 	}
+	
 	
 	public static void jsoupListCopy() {
 				
@@ -955,14 +850,11 @@ public class AdminController {
 					//reListToDB(두 아이디 뺀 숫자만큼의 Jsoup 배열);
 					reListToDB(jsoupMinusDB());
 				}
-
-		}
-
-		
+		}		
 	}
 	
 
-	
+	//jsoup test
 	public static List<JsoupReply> jsoupTest0() {
 		
 		Document doc0;
@@ -979,8 +871,7 @@ public class AdminController {
 			
 		} catch (Exception e) {
 			e.printStackTrace();
-		}
-						
+		}			
 		
 		Document doc;
 		//JSON배열인 replies를 반복돌려서 하나씩 JAVA 객체로 만들어야 한다. 			
@@ -1013,9 +904,7 @@ public class AdminController {
 				JSONArray replies= (JSONArray) jsonObj.get("replies");
 				
 				//JSON 배열 형태임			
-								
-	
-				
+
 				for(int j=0;j<replies.size();j++) {
 					
 					//일단 JSON객체로 만든다.
@@ -1043,8 +932,7 @@ public class AdminController {
 
 	}
 
-	
-	
+
 
 	@RequestMapping(value = "admin/jsoupTest", method = RequestMethod.GET)
 	public @ResponseBody void whyNoSchedule() {
@@ -1138,122 +1026,61 @@ public class AdminController {
 	}
 	
 	
+	
+	
+	
+	
+	//이 로직 잘 이해가 안 된다.
+	//홍성 디비에서 오늘 데이터 가져와서 내 디비에 넣기
 	@RequestMapping(value = "admin/news24", method = RequestMethod.GET)
 	public @ResponseBody void news24() {
-		//List<PortalNews2> result = getTodayData();
-		List<PortalNews2> resultNaver = getTodayDataNaver();
-		List<PortalNews2> resultDaum = getTodayDataDaum();
-		//System.out.println("가져온 데이터는 "+result);
-		//Map<String, Integer> wordsMap = splitWords(result);
-		Map<String, Integer> wordsMapNaver = splitWords(resultNaver);
-		Map<String, Integer> wordsMapDaum = splitWords(resultDaum);
-		//System.out.println("쪼개서 가져온 단어들과 등장횟수는 : "+wordsMap);
-		
-		List <String> top20Naver = top20(wordsMapNaver);
-		List <String> top20Daum = top20(wordsMapDaum);
+
+		//홍성 디비에서 데이터를 객체 어레이로 가져온다.
+		List<PortalNews2> resultNaver = selectTodayDataNaver();
+		List<PortalNews2> resultDaum = selectTodayDataDaum();
+
+		//객체의 top20 항목을 쪼개서 맵으로 넣는다.
+		Map<String, Integer> wordsMapNaver = splitWordsToMap(resultNaver);
+		Map<String, Integer> wordsMapDaum = splitWordsToMap(resultDaum);
+
+		//맵을 스트링 어레이로 바꾼다. 
+		List <String> top20Naver = sortMapTop20ToStringArray(wordsMapNaver);
+		List <String> top20Daum = sortMapTop20ToStringArray(wordsMapDaum);
 		
 		//배열을 하나의 스트링으로 바꿔준다. 
 		String stringResultNaver = String.join(" ",top20Naver);
 		String stringResultDaum = String.join(" ",top20Daum);
 		
-		insertTop20(stringResultNaver, "NAVER");
-		insertTop20(stringResultDaum, "DAUM");
-		
-		
-		//top20SplitToMap(selectLast20("naver"));
-		//top20SplitToMap(selectLast20("daum"));
-		
-		//List <PortalNews2> DbTop20Naver = getTop20Naver();
-//		System.out.println("리스트 네이버 1위: "+DbTop20Naver.get(0).getTitle());
-		//List <PortalNews2> DbTop20Daum = getTop20Daum();;
-//		System.out.println("리스트 다음 1위: "+DbTop20Daum.get(0).getTitle());
-		//System.out.println(reSplitWords(DbTop20Naver));
+		insertTop20ToMyDb(stringResultNaver, "NAVER");
+		insertTop20ToMyDb(stringResultDaum, "DAUM");		
 	}
 	
+	
+	
+	
 	//db에서 다시 가져온 리스트를 다시 쪼개서 맵에 넣는다.
-	
 
-
-	
 	//4월 14일 숙제
-	//디비에 들어간 뉴스20 최근 자료를 가져와서 다시 맥으로 출력하는 로직 시작
-	
+	//디비에 들어간 뉴스20 최근 자료를 가져와서 다시 맵으로 출력하는 로직 시작	
 	//포탈 파라미터 받아서 24시간 마지막 타이틀 한줄 가져오기	
 
-
-	
-	
-	
-	
-	
-	//일단 매핑을 두개로 나눠서 하드코딩부터 했음.
-	
-//	@RequestMapping(value = "admin/news24/naver", method = RequestMethod.GET)
-//	@ResponseBody
-//	public JSONObject news24Naver() {
-//		//List<PortalNews2> result = getTodayData();
-//		List<PortalNews2> resultNaver = getTodayDataNaver();
-//		//System.out.println("가져온 데이터는 "+result);
-//		//Map<String, Integer> wordsMap = splitWords(result);
-//		Map<String, Integer> wordsMapNaver = splitWords(resultNaver);
-//		//System.out.println("쪼개서 가져온 단어들과 등장횟수는 : "+wordsMap);
-//		List <String> top20Naver = top20(wordsMapNaver);
-//
-//		//배열을 하나의 스트링으로 바꿔준다. 
-//		String stringResultNaver = String.join(" ",top20Naver);
-//		
-//		insertTop20(stringResultNaver, "NAVER");
-//		
-//		
-//		//리턴된 JSON오브젝트를 result에 집어넣었음..
-//		JSONObject result = top20SplitToMap(selectLast20("naver"));		
-//		return result;
-//	}
-//	
-//	@RequestMapping(value = "admin/news24/daum", method = RequestMethod.GET)
-//	@ResponseBody
-//	public JSONObject news24Daum() {
-//
-//		List<PortalNews2> resultDaum = getTodayDataDaum();
-//
-//		Map<String, Integer> wordsMapDaum = splitWords(resultDaum);
-//		//System.out.println("쪼개서 가져온 단어들과 등장횟수는 : "+wordsMap);
-//
-//		List <String> top20Daum = top20(wordsMapDaum);
-//		
-//		//배열을 하나의 스트링으로 바꿔준다. 
-//
-//		String stringResultDaum = String.join(" ",top20Daum);		
-//
-//		insertTop20(stringResultDaum, "DAUM");
-//		
-//		JSONObject result = top20SplitToMap(selectLast20("daum"));		
-//		return result;
-//	}
-
-	
+	//테스트 코드 
 	@RequestMapping(value = "/get/todayTop20/{id}", method = RequestMethod.GET, produces = "application/json; charset=UTF-8")
 	@ResponseBody
 	public List<Top20Json> getFoosBySimplePathWithPathVariable(
 	  @PathVariable String id) {
 		List<Top20Json> top20Json = new ArrayList<Top20Json>();
-		
-		//ObjectMapper mapper = new ObjectMapper();
-	
-		try {
-			PortalNews2 sourceIs = new PortalNews2();
-			sourceIs.setSource(id);
-			//jsonList = mapper.writeValueAsString(orrm2(top20SplitToMap(selectLast20(sourceIs))));
-			top20Json=orrm2(top20SplitToMap(selectLast20(sourceIs)));
 
-		}catch(Exception e) {
-			e.printStackTrace();
-		}
-		
+		PortalNews2 sourceIs = new PortalNews2();
+		sourceIs.setSource(id);
+		top20Json=MapToJsonListByValueOrrm(top20SplitToMap(selectLastTop20MyDb(sourceIs)));
+
+
 		return top20Json;
 		
 	}
 	
+	//인자로 소스값 넣으면 
 	@RequestMapping(value = "admin/index5", method = RequestMethod.GET)
 	public String adminIndex5(Locale locale, Model model, String source) {
 		
@@ -1264,23 +1091,79 @@ public class AdminController {
 		
 		model.addAttribute("url", url);
 		model.addAttribute("source", result);
+		
 		return "admin/index5";
 	}
 	
-	@RequestMapping(value = "/get/news20", method = {RequestMethod.GET})
-	public @ResponseBody List<Top20Json> news20(@RequestParam("data") String data){
+	//ajax 리스폰스 바디 
+	@RequestMapping(value = "/get/news20Ajax", method = {RequestMethod.GET})
+	public @ResponseBody List<Top20Json> news20Ajax(@RequestParam("data") String data){
 	
 		//ObjectMapper mapper = new ObjectMapper();
 		List<Top20Json> jsonList = new ArrayList<Top20Json>();
-//		String jsonList="";
+		//String jsonList="";
 		
 		PortalNews2 sourceIs = new PortalNews2();
 		sourceIs.setSource(data);
-		jsonList = orrm2(top20SplitToMap(selectLast20(sourceIs)));
-//		System.out.println("news20Ajax 시작 : "+jsonList);
-	
+		jsonList = MapToJsonListByValueOrrm(top20SplitToMap(selectLastTop20MyDb(sourceIs)));
+		//System.out.println("news20Ajax 시작 : "+jsonList);
 	    return jsonList;
 	}
+
+	
+	//디비는 한번만 읽자.
+	//MapToJsonListByValueOrrm(top20SplitToMap(selectLastTop20MyDbX10(sourceIs)))
+	//selectLastTop20MyDbX10(sourceIs) -> portalNews2 리스트 형태임.
+	//
+	
+	//ajax 리스폰스 바디 
+	@RequestMapping(value = "/get/news20AjaxX10", method = {RequestMethod.GET})
+	public @ResponseBody List<Top20X10> news20AjaxX10(@RequestParam("data") String data){
+	
+		
+		List<Top20X10> top20X10List = new ArrayList<Top20X10>();
+		//String jsonList="";
+		
+		PortalNews2 sourceIs = new PortalNews2();
+		sourceIs.setSource(data);
+		
+		List<PortalNews2> top20X10Contents = selectLastTop20X10MyDb(sourceIs);
+		
+		for(int i=top20X10Contents.size()-1;i>=0 ;i--) {
+			Top20X10 top20X10Full = new Top20X10();
+			top20X10Full.setId(i+1);			
+			top20X10Full.setCreated(top20X10Contents.get(i).getCreated());			
+			top20X10Full.setTop20(MapToJsonListByValueOrrm(top20SplitToMap(top20X10Contents.get(i))));			
+			top20X10List.add(top20X10Full);	
+		}
+		
+		//System.out.println(top20X10List.get(0));
+		
+		//jsonList = MapToJsonListByValueOrrm(top20SplitToMap(selectLastTop20MyDb(sourceIs)));
+		//System.out.println("news20Ajax 시작 : "+jsonList);
+	    return top20X10List;
+	}
+	
+	
+	
+	
+//	목표 
+//
+//	키워드 클라우드를 시간대 별로 보고 싶다.
+//
+//	1. 최근 10개 보여주는 API -> 클라이언트에 보내줌
+//	SELECT * FROM hong.todayNewsTop20 where hong.todayNewsTop20.source="naver" limit 10;
+//
+//	2. Steps를 사용해서 한칸당 밸류를 설정
+//	https://getbootstrap.com/docs/5.0/forms/range/
+//
+//	3. 레인지라는 인풋에 리스너를 추가 - on change
+//	https://stackoverflow.com/questions/18544890/onchange-event-on-input-type-range-is-not-triggering-in-firefox-while-dragging
+//	- 값이 바뀌었을때
+//	- 리스너에서 레인지의 밸류를 읽는다.
+//	- 리스너 함수에서 레인지 밸류에 따라서 워드 클라우드를 생성
+	
+	
 	
 	
 	
@@ -1291,28 +1174,25 @@ public class AdminController {
 		if (source.equals(str)) {
 			result = "https://search.daum.net/search?w=tot&DA=23A&rtmaxcoll=NNS&q=";
 		}
-		
 		return result;
 	}
 	
 	
 	//맵을 제이슨으로 바꾸는 함수인데... 
 	//JSONObject json = new JSONObject(result); 이렇게 하는 것과 어떤 차이가 있는지 질문. 
-	
-	public static JSONObject convertMapToJson(Map<String, Integer> map) {
-		JSONObject json = new JSONObject();
-		
-		for (Map.Entry<String, Integer> entry : map.entrySet()) {
-			String key = entry.getKey();
-			Object value = entry.getValue();
-			json.put(key, value);
-		}
-		
-		return json;
-	}
+//	public static JSONObject convertMapToJson(Map<String, Integer> map) {
+//		JSONObject json = new JSONObject();
+//		
+//		for (Map.Entry<String, Integer> entry : map.entrySet()) {
+//			String key = entry.getKey();
+//			Object value = entry.getValue();
+//			json.put(key, value);
+//		}		
+//		return json;
+//	}
 	
 
-	public static List<Top20Json> orrm2(Map<String,Integer> p1){
+	public static List<Top20Json> MapToJsonListByValueOrrm(Map<String,Integer> p1){
 		
 		List<Top20Json> result = new ArrayList<Top20Json>();
 			
@@ -1320,8 +1200,7 @@ public class AdminController {
 		//멥을 객체로 가지고 있는 리스트
 		//키랑 벨류를 호출하면 나오게 된다.		
 		List<Entry<String, Integer>> list_entries = new ArrayList<Entry<String, Integer>>(p1.entrySet());
-		
-		
+				
 		System.out.println("정렬을 시작해볼까");
 		//자료구조의 값을 비교해서 정렬하는 기술  
 		Collections.sort(list_entries, new Comparator<Entry<String, Integer>>() {
@@ -1331,8 +1210,7 @@ public class AdminController {
 				return obj2.getValue().compareTo(obj1.getValue());
 			}
 		});
-		
-		
+				
 		//리스트 앤트리 안에 들어있는 객체의 키와 밸류를 리절트 리스트 안에 반복해서 넣어준다.
 		int i = 0;
 		for(Entry<String, Integer> entry : list_entries) {
@@ -1340,20 +1218,16 @@ public class AdminController {
 			Top20Json temp = new Top20Json();
 			temp.setText(entry.getKey());
 			temp.setSize(entry.getValue());
-			result.add(temp);
-			
+			result.add(temp);			
 			i += 1;
 			
 			System.out.println(result);
 			if(i == 20) {
 				break;
-			}
-	
-		}
-		
+			}	
+		}		
 		return result;
 	}
-	
 	
 	
 	//가져온 타이틀을 
@@ -1372,42 +1246,40 @@ public class AdminController {
 		for(int i=0;i<top20.length;i++) {
 			String temp[] =	top20[i].split(":");			
 			result.put(temp[0], Integer.parseInt(temp[1]));	
-			//System.out.println(i+"번째로 맵에 들어가는 중"+result);
-			//:로 잘라. result = temp 어레이 0번지 '남양유업' 1번지 '40' 
-			
 		}	
 		
-		  //최종 완성될 JSONObject 선언(전체)
-//        JSONObject jsonObject = new JSONObject();
-// 
-//        //top20의 JSON정보를 담을 Array 선언
-//        JSONArray top20Array = new JSONArray();
-// 
-//        //top20의 키워드 1개 정보가 들어갈 JSONObject 선언
-//        JSONObject newsInfo = new JSONObject();
-			
-          //정보 입력
-//        newsInfo.put("title", temp[0]);
-//        newsInfo.put("value",Integer.parseInt(temp[1]));
-//        //Array에 입력
-//        top20Array.add(newsInfo);
-//        
-//        //전체의 JSONObject에 사람이란 name으로 JSON의 정보로 구성된 Array의 value를 입력
-//        jsonObject.put("top20", top20Array);
-        
 		System.out.println("맵에 다시 들어간 결과는: "+result);
 		
 		//System.out.println("json array 만든 결과는: "+jsonObject);
-		        
+		            
+		return result;
+	}
+	
+	//마지막 10개 가져오기 
+	public static List <PortalNews2> selectLastTop20X10MyDb(PortalNews2 p1){
+		String resource = "aaa/bbb/ccc/mybatis_config.xml";
+		InputStream inputStream;
+		List <PortalNews2> result = new ArrayList <PortalNews2>();
+		try {
+			inputStream = Resources.getResourceAsStream(resource);
+			SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
+			SqlSession session = sqlSessionFactory.openSession();
+			result = session.selectList("aaa.bbb.ccc.BaseMapper.selectLast20X10", p1);
+			
+		}catch(IOException e) {
+			e.printStackTrace();
+		}
+		
+		for(int i=0;i<result.size();i++) {
+			System.out.println("디비에서 "+p1.getSource()+" 마지막 10개 가져왔다. "+"\n"+result.get(i).getTop20());
+		}
 
-        
 		return result;
 	}
 	
 	
 	
-	
-	public static PortalNews2 selectLast20(PortalNews2 p1){
+	public static PortalNews2 selectLastTop20MyDb(PortalNews2 p1){
 		String resource = "aaa/bbb/ccc/mybatis_config.xml";
 		InputStream inputStream;
 		PortalNews2 result = new PortalNews2();
@@ -1426,7 +1298,7 @@ public class AdminController {
 		
 	
 	
-	public static void insertTop20(String p1, String p2){
+	public static void insertTop20ToMyDb(String p1, String p2){
 		PortalNews2 top20 = new PortalNews2();
 		top20.setTop20(p1);
 		top20.setSource(p2);
@@ -1458,7 +1330,7 @@ public class AdminController {
 			// 현재시각 넣어줘야하고, 마이바티스에 sql 노테이션 찾아서 쓰기.
 			// 검증하는 것 생각하기. 갯수가 맞는지 또는...
 		// 자바 포탈 뉴스 객체 배열에 집어넣는다. - 중복이 존재하는 리스트 A
-	public static List<PortalNews2> getTodayData(){
+	public static List<PortalNews2> selectTodayData(){
 		String resource = "aaa/bbb/ccc/mybatis_config.xml";
 		InputStream inputStream;
 		List<PortalNews2> result = new ArrayList<PortalNews2>();
@@ -1475,7 +1347,7 @@ public class AdminController {
 		return result;
 	}
 	
-	public static List<PortalNews2> getTodayDataNaver(){
+	public static List<PortalNews2> selectTodayDataNaver(){
 		String resource = "aaa/bbb/ccc/mybatis_config.xml";
 		InputStream inputStream;
 		List<PortalNews2> result = new ArrayList<PortalNews2>();
@@ -1492,7 +1364,7 @@ public class AdminController {
 		return result;
 	}
 	
-	public static List<PortalNews2> getTodayDataDaum(){
+	public static List<PortalNews2> selectTodayDataDaum(){
 		String resource = "aaa/bbb/ccc/mybatis_config.xml";
 		InputStream inputStream;
 		List<PortalNews2> result = new ArrayList<PortalNews2>();
@@ -1519,7 +1391,7 @@ public class AdminController {
 //	3. 타이틀을 스페이스로 자른다.
 //	4. 자른 스트링을 맵에 넣는다. - 맵: 키값으로 불러온다, 배열:주소(순서)불러온다.
 //	5. 맵을 업데이트 한다.
-	public static Map<String, Integer> splitWords(List<PortalNews2> p1){
+	public static Map<String, Integer> splitWordsToMap(List<PortalNews2> p1){
 		Map<String, Integer> result = new HashMap<String, Integer>();
 		
 		for(int i=0; i<p1.size();i++) {
@@ -1552,7 +1424,7 @@ public class AdminController {
 	
 //	6. 맵에서 상위 20개만 정렬하여 System.out.print 한다.
 	//top20봅는 함수
-	public static List<String> top20(Map<String,Integer> p1) {
+	public static List<String> sortMapTop20ToStringArray(Map<String,Integer> p1) {
 		//리절트는 앰티에서 출발 
 		List<String> result = new ArrayList<String>();
 		
@@ -1601,61 +1473,11 @@ public class AdminController {
 				//result.addAll(list_entries);
 				
 			}
-		
-		//
-		
-		
+			
 		return result;
 	}
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 
-	public static void jsoupTest() {
-		//String head = "";
-		
-		Document doc;
-		
-		try {
-			doc = Jsoup.connect("https://en.wikipedia.org/").get();
-			System.out.println(doc.title());
-			
-			Elements newsHeadlines = doc.select("#mp-itn b a");
-			
-			for (Element headline : newsHeadlines) {
-				System.out.println("\n\t"+ headline.attr("title")+ headline.absUrl("href"));
-			}
-			
-			
-		} catch (IOException e) {
-			
-			e.printStackTrace();
-		}
-
-	}
-
-	
-	
-	
-	
-	
-	public static void jsoupTest5() {
-		Document doc0;
-		try {
-			doc0 = Jsoup.connect("https://mania.kr/g2/bbs/board.php?bo_table=loltalk&page=3").ignoreContentType(true).get();
-			System.out.println(doc0);
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
 	
 	
 	//네이버 뉴스 헤드라인 받아오기
@@ -1685,20 +1507,7 @@ public class AdminController {
 				newsList.add(news);
 				System.out.println(news.getDescription()+"\n"+news.getLink());			
 				}
-			
-			
-//			Elements navList = doc.select(".list_nav");
-//			Elements issues = doc.select(".issue_area");
-//			Elements stocks = doc.select(".card_stock");
-//			for (Element nav : navList) {
-//				System.out.println("네비게이션 헤더 : " + nav.text());
-//			}
-//			for (Element issue : issues) {
-//				System.out.println("실시간 이슈 : "+ issue.text());
-//			}
-//			for (Element stock : stocks) {
-//				System.out.println(stock.text());
-//			}
+
 			
 		} catch (IOException e) {			
 			e.printStackTrace();
@@ -1708,66 +1517,8 @@ public class AdminController {
 
 	}
 	
-	
-	
-	//https://mania.kr/g2/bbs/board.php?bo_table=loltalk&page=3
+
 	
 }	
-//	@Configuration
-//	@EnableScheduling
-//	public class SpringConfig {
-//	    
-//	}
-//	
-//	@Scheduled(cron = "1 * * * * ?")
-//	public void scheduleTaskUsingCronExpression() {
-//	 
-//	    //long now = System.currentTimeMillis() / 1000;
-//	    System.out.println(
-//	      "크론 매분 실행");
-//	}
-//	
-//	@RequestMapping(value = "admin/cronTest", method = RequestMethod.GET)
-//	public void cronTest() {
-//		
-//		scheduleTaskUsingCronExpression();
-//		
-//	}
 
 
-	
-
-//로그인 체크
-//어떤 아이디를 
-//어디에서
-//언제
-//로그인을 성공하고/실패했는지
-//쓰기 읽기만 있다. 수x 지우기 x
-	
-//디비에다가..
-//int id
-//String login id
-//String sourceIp  255.1.1.1
-//172.0.0.1 < 내 컴퓨터
-//10.0.0.0 < 내 라우터(게이트웨이)
-
-//내컴퓨터 >게이트웨이 > 인터넷프로바이더 >인터넷 
-//172.0.0.1 > 10.0.0.1 > 123.23.23.30(퍼블릭 ip) 유동 / 고정 
-
-//Date created
-//boolean successful
-	
-//logIn action
-//boolean result = false
-
-//비번 아이디 체크 (select count(*) from Member
-	
-//if(result){
-//로그인 레코드에 한줄 쓰기; insert into 어쩌구저쩌구;
-//id 자동완성, login 192.168.1.3
-	
-	//	return "home";
-//}else{
-	//로그인 레코드에 한줄 쓰기; insert into 어쩌구저쩌구;
-	//return "logIn"; 
-//

@@ -262,6 +262,14 @@
   	ORDER BY id DESC 
   	LIMIT 1;
   	</select>
+  	
+  	<select id="selectLast20X10" parameterType="aaa.bbb.ccc.entity.PortalNews2" resultType="aaa.bbb.ccc.entity.PortalNews2">
+  	SELECT * FROM hw_utf8.todayTop20 
+  	WHERE source = #{source} 
+  	ORDER BY id DESC 
+  	LIMIT 10;
+  	</select>
+  	
 	
 </mapper>
 
