@@ -72,7 +72,7 @@ public class AlarmTask {
 //			}
 //			
 //			
-//			// 포탈들 헤드라인 뉴스 긁어오기 
+			// 포탈들 헤드라인 뉴스 긁어오기 
 //			@Scheduled(cron = "0 */15 * * * *")
 //			public void getTotalNews() {
 //				getNaver_newHaedline();
@@ -80,11 +80,11 @@ public class AlarmTask {
 //			}
 			
 			
-			@Scheduled(cron = "0 */30 * * * *")
-			public void todayScheduled() {
-				todayTop20("NAVER");
-				todayTop20("Daum");
-			}
+//			@Scheduled(cron = "0 */30 * * * *")
+//			public void todayScheduled() {
+//				todayTop20("NAVER");
+//				todayTop20("Daum");
+//			}
 			
 			//헤드라인 뉴스의 하루동안 노출빈도가 가장많은단어 20을 꺼내와 보여주고 저장한다.
 			public static Map<String,Integer> todayTop20(String p1) {

@@ -208,6 +208,12 @@
 	order by id desc;
   </select>
   
+  <select id="10RangeData" parameterType="aaa.bbb.ccc.entity.newsTitle" resultType="aaa.bbb.ccc.entity.newsTitle">
+  SELECT * FROM hong.todayNewsTop20 where hong.todayNewsTop20.source = #{source} order by id desc limit 10 ;
+  </select>
+  
+  
+  
   <select id="getToDayDaumTop20" resultType="aaa.bbb.ccc.entity.newsTitle">
   	SELECT 
 	* 

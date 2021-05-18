@@ -10,6 +10,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -44,6 +45,7 @@ import aaa.bbb.ccc.entity.Reply;
 import aaa.bbb.ccc.entity.countryData;
 import aaa.bbb.ccc.entity.loginLog;
 import aaa.bbb.ccc.entity.newsTitle;
+import aaa.bbb.ccc.entity.rangeData;
 import aaa.bbb.ccc.entity.top20Json;
 import aaa.bbb.ccc.AlarmTask;
 import io.ipgeolocation.api.Geolocation;
@@ -603,11 +605,28 @@ public class adminControler {
 		sourceIs.setSource(source);
 		String result = source;
 		String url = newsSearchUrl(source);
+		System.out.println("여기야 새로만든거 : "+jsonListToString(makeData(sourceIs)));
 		
 		model.addAttribute("url", url);
 		model.addAttribute("source", result);
 		return "admin/index6";
 	}
+	
+	
+	
+	
+	public static String jsonListToString(List<rangeData> p1) {
+		String result = "";
+		ObjectMapper mapper = new ObjectMapper();
+		
+		try {
+			result = mapper.writeValueAsString(p1);
+		}catch(IOException e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
+	
 	
 	@RequestMapping(value = "/get/news20", method = {RequestMethod.GET})
 	public @ResponseBody List<top20Json> news20(@RequestParam("data") String data){
@@ -625,6 +644,18 @@ public class adminControler {
 		
 	    return jsonList;
 	}
+	// id를 넣으면 리스트를 반환한다. 
+	@RequestMapping(value = "/get/news202", method = {RequestMethod.GET})
+	public @ResponseBody List<rangeData> news202(@RequestParam("data") String data){
+
+		List<rangeData> jsonList = new ArrayList<rangeData>();
+		newsTitle sourceIs = new newsTitle();
+		sourceIs.setSource(data);
+		jsonList = makeData(sourceIs);
+
+	    return jsonList;
+	}
+	
 	
 	public static String newsSearchUrl(String source) {
 		String result = "https://search.naver.com/search.naver?where=news&sm=tab_jum&query=";
@@ -646,6 +677,57 @@ public class adminControler {
 	
 	}
 	
+	public static List<top20Json> checkNewsId(Integer id){
+		List<top20Json> result = new ArrayList<top20Json>();
+		
+		
+		return result;
+	}
+	
+	public static List<rangeData> makeData(newsTitle source) {
+		List<rangeData> result= new ArrayList<rangeData>();
+		
+		
+		String resource = "aaa/bbb/ccc/mybatis_config.xml";
+		InputStream inputStream;
+		
+		List<newsTitle> top20 = new ArrayList<newsTitle>();
+		
+		
+		try {
+			inputStream = Resources.getResourceAsStream(resource);
+			SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
+			SqlSession session = sqlSessionFactory.openSession();
+			
+			top20 = session.selectList("aaa.bbb.ccc.BaseMapper.10RangeData", source);
+			
+			for(int i=top20.size()-1; i >= 0; i-- ) {
+				rangeData temp= new rangeData();
+				System.out.println(i+"번째 반복 시작합니다.");
+				temp.setId(i+1);
+				temp.setCreated(top20.get(i).getCreated());
+				temp.setTop20(AlarmTask.orrm2(top20MaptoString(top20.get(i).getTop20())));
+				result.add(temp);
+			}
+			
+		} catch (IOException e) {
+			e.printStackTrace();	
+			
+		}
+		
+		return result;
+	}
+	
+	public static Map<String,Integer> top20MaptoString(String p1) {
+		Map<String,Integer> result = new HashMap<String,Integer>();
+			String piece[] = p1.split(",");
+			for(int i=0 ;i<piece.length ;i++) {
+				String temp[] = piece[i].split(":");
+				result.put(temp[0].trim(),Integer.parseInt(temp[1].trim()));
+			}
+	    System.out.println(result);
+		return result ;
+	}
 	
 	
 	public static JSONObject convertMapToJson(Map<String, Integer> map) {
