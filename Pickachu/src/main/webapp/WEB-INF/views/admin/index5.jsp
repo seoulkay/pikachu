@@ -18,7 +18,9 @@
     body {
         font-family:"Lucida Grande","Droid Sans",Arial,Helvetica,sans-serif;
     }
+    
     a{text-decoration:none}
+
     
     .legend {
         border: 1px solid #555555;
@@ -30,28 +32,46 @@
     .bld {
         font-weight: bold;
     }
+    
+    .svg{ 
+   		position:relative; 
+    	width:100%; 
+      	height:2000px;  	
+	} 
+    
+
+    
 </style>
 
 <body>
 
-<div class="container">
-
   <div class="row">
-    <div class="col">
-    	<a class="btn btn-primary btn-sm" href="index5?source=naver" role="button" >NAVER</a>
-    </div>
-    <div class="col">
-    	<a class="btn btn-primary btn-sm" href="index5?source=daum" role="button">DAUM</a>
+    <div class="col" align="left">
+    	<a class="btn btn-primary btn-sm" href="index5?source=toggleUrl()" role="button" >toggleName()</a>
+<!--     	<a class="btn btn-primary btn-sm" href="index5?source=daum" role="button">다음</a> -->
     </div>
   </div>
 
+<div class="container">
 
-  <div class="row">
-   	<div>
-		<p id="collectedTime"></p>
+	<div id="my_dataviz">
 	</div>
-	<label for="customRange3" class="form-label"></label>
+
+	
+
+
+  <div class="row" style="width:900px" > <!-- 	style="width:900px" -->
+   
+	
+    <div class="cloud" >
+	<label for="customRange3" class="form-label" ></label>
 	<input type="range" class="form-range" value="9" onChange="drawWordCloud(this.value)" min="0" max="9" step="1" id="customRange3">
+	</div>
+	
+	<div align="left">
+		<p id="collectedTime" style="color:red"></p>
+	</div>
+	
   </div>
   
 
@@ -65,6 +85,31 @@
 
 <script>
 
+function toggleName(){
+	var source = "${source}";
+	var daum = "다음";
+	var naver = "네이버";
+	
+	if(source=="naver"){
+		return daum;
+	}else{
+		return naver;
+	}
+}
+
+function toggleUrl(){
+	var source = "${source}";
+	var daum1 = "daum";
+	var naver1 = "naver";
+	
+	if(source=="naver"){
+		return daum1;
+	}else{
+		return naver1;
+	}
+}
+
+
 function timeStampToHuman(p1){
 	const dateObject = new Date(p1);
 	const humanDateFormat = dateObject.toLocaleString();
@@ -76,13 +121,18 @@ function timeStampToHuman(p1){
 var color = d3.scale.linear()
 //워드클라우드 크기랑 색깔 지정 
 	.domain([100,20,15,10,6,5,4,3,2,1,0])
-	.range(["#ddd", "#ccc", "#bbb", "#aaa", "#999", "#888", "#777", "#666", "#555", "#444", "#333", "#222"]);
+//	.domain([150,30,17.5,15,8,7,6,4,3,1,0])
+	.range(["#96F2FA", "#8DDAFB", "#86C6FB", "#7DB0FB", "#759AFC", "#6D84FC", "#656EFD", "#5D58FD", "#5542FE", "#4C2CFE", "#4416FF", "#3C00FF"]);
+//	.range(["#ddd", "#ccc", "#bbb", "#aaa", "#999", "#888", "#777", "#666", "#555", "#444", "#333", "#222"]);
 //한 줄 끝
 
 function draw(words) {
-    d3.select("body").append("svg")
+    d3.select("#my_dataviz").append("svg")
             .attr("width", "100%")
-            .attr("height", 700)
+            .attr("height", 500)
+            //.attr("width", d3.layout.cloud().size[0])
+     		//.attr("height", d3.layout.cloud().size[1])
+     		
             .attr("class", "wordcloud")
             .append("g")
             // without the transform, words words would get cutoff to the left and top, they would
@@ -93,6 +143,8 @@ function draw(words) {
             .enter().append("text")
             .style("font-size", function(d) { return d.size + "px"; })
             .style("fill", function(d, i) { return color(i); })
+            .style("font-family", "Impact")
+            .attr("text-anchor", "middle")
             .attr("transform", function(d) {
                 return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
             })
@@ -109,22 +161,26 @@ function draw(words) {
             })
             //타겟 _blank -> 새 탭에서 열기 
             
-            .text(function(d) { return  d.text ; });	
-            
-            
+            .text(function(d) { return  d.text ; });	                       
 }
+
+
 function drawWordCloud(p1){
 	$("#collectedTime").text(timeStampToHuman(frequency_list[p1].created));
 	
 	$( ".wordcloud" ).remove();
 	
 	//한 줄 
-	d3.layout.cloud().size([800, 300])
+	//
+	d3.layout.cloud()
 	
+ 	.size([1800, 600])
+
 	.words(frequency_list[p1].top20)
 	//원하는 자료를 p1에 넣은 상태라면 그릴 거다.  
-	
-	.rotate(0)
+	.padding(7)
+	//.rotate(0)
+	.rotate(d => ~~(Math.random() * 2) * 90)
 	.fontSize(function(d) { return d.size; })         
 	.on("end" , draw)
 	// 다 끝났을 때 -> 78행 드라우 함수 실행  
@@ -133,8 +189,19 @@ function drawWordCloud(p1){
 	//한 줄 끝..
 }
 
+
+
+
+
+
+
+
+
+
 //원하는 결과를 미리 선언. 중간 함수 안에서 선언하면 헷갈린다.   
 var frequency_list = {};
+
+
 
 //ajax 함수 
 function news20Ajax(p1){
@@ -165,9 +232,17 @@ function news20Ajax(p1){
 
 
 news20Ajax('${source}');
-
-
 	
+</script>
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-T7WCS87HSP"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-T7WCS87HSP');
 </script>
 
 
