@@ -20,7 +20,6 @@
 <style>
     body {
         font-family:"Lucida Grande","Droid Sans",Arial,Helvetica,sans-serif;
-        width: 1280px;
     }
     .legend {
         border: 1px solid #555555;
@@ -67,9 +66,7 @@
   	.inner {
   	 display: inline-block;
   	}
-  	.svg {
-  	text-align: center;
-  	}
+  	
 </style>
 <style>
 .centered { display: table; margin-left: auto; argin-right: auto;}
@@ -86,44 +83,80 @@
 	
 	<div class="inner">
 		<script>
+				console.log(window.outerWidth);
+				var frequency_list = {};
+				
 				var color = d3.scale.linear()
 				.domain([100,20,15,10,6,5,4,3,2,1,0])
 				.range(["#ddd", "#ccc", "#bbb", "#aaa", "#999", "#888", "#777", "#666", "#555", "#444", "#333", "#222"]);
 // 				.range(["#ddd", "#ccc", "#540b0e", "#9e2a2b", "#e09f3e", "#fff3b0", "#335c67", "#eaac8b", "#e56b6f", "#b56576", "#6d597a", "#355070"]);
 		
-				function draw(words) {
-			    d3.select("#my_dataviz").append("svg")
-			            .attr("width", "100%")
-			            .attr("height", 640)
-			            .attr("class", "wordcloud")
-			            .append("g")
-			            // without the transform, words words would get cutoff to the left and top, they would
-			            // appear outside of the SVG area
-			            .attr("transform", "translate(320,200)")
-			            .selectAll("text")
-			            .data(words)
-			            .enter().append("text")
-			            .style("font-size", function(d) { return d.size +"px" ; })
-			            .style("fill", function(d, i) { return color(i); })
-			            .attr("transform", function(d) {
-			                return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
-			            })
-			            .append("a")
-			            .attr("href", function(d) {
-			                return "${url}"+d.text;
-			            })
-			            .attr("target", function(d) {
-			                return "_blank";
-			            })
-			            .text(function(d) { return  d.text ; });	
-						}
+// 				function draw(words) {
+// 			    d3.select("#my_dataviz").append("svg")
+// 			            .attr("width", "100%")
+// 			            .attr("height", 640)
+// 			            .attr("class", "wordcloud")
+// 			            .append("g")
+// 			            // without the transform, words words would get cutoff to the left and top, they would
+// 			            // appear outside of the SVG area
+// 			            .attr("transform", "translate(320,200)")
+// 			            .selectAll("text")
+// 			            .data(words)
+// 			            .enter().append("text")
+// 			            .style("font-size", function(d) { return d.size +"px" ; })
+// 			            .style("fill", function(d, i) { return color(i); })
+// 			            .attr("transform", function(d) {
+// 			                return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
+// 			            })
+// 			            .append("a")
+// 			            .attr("href", function(d) {
+// 			                return "${url}"+d.text;
+// 			            })
+// 			            .attr("target", function(d) {
+// 			                return "_blank";
+// 			            })
+// 			            .text(function(d) { return  d.text ; });	
+// 						}
+
+					var fill = d3.scale.category20();
+					
+					var weight = 5,   // change me
+					    width = window.innerWidth,
+					    height = window.innerHeight - 150;
+					
+					function draw(words) {
+					          d3.select("#my_dataviz").append("svg")
+					              .attr("width", width)
+					              .attr("height", height)
+					            .append("g")
+					              .attr("transform", "translate(" + width/2 + "," + height/3 + ")")
+					              
+					            .selectAll("text")
+					              .data(words)
+					            .enter().append("text")
+					              .style("font-size", function(d) { return d.size + "px"; })
+					              .style("font-family", "Impact")
+					              .style("fill", function(d, i) { return color(i); })   
+					              .attr("text-anchor", "middle")
+					              .attr("transform", function(d) {
+					                return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
+					              })
+					              .append("a")
+						            .attr("href", function(d) {
+						                return "${url}"+d.text;
+						            })
+						            .attr("target", function(d) {
+						                return "_blank";
+						            })
+						            .text(function(d) { return  d.text ; });	
+									
+					        }
 					
 				var selectId = 1;
 		
 				
 				function news20Ajax(p1){
-		
-					var totalData = [];
+					
 					var source = p1;
 							
 					$.ajax({
@@ -132,23 +165,23 @@
 				 	     data: {'data': source }
 				 	     })
 					.done(function(data) {
-						totalData = data;
+						
 						frequency_list = data;
 						drawWordcloud(9);
 					})
 					
 				}
 				news20Ajax('${source}');
-				var frequency_list = {};	
+					
 		
 				function drawWordcloud(p1){
-						$( ".wordcloud" ).remove();
+						$( "#my_dataviz" ).empty();
 					
-						d3.layout.cloud().size([800, 300])
+						d3.layout.cloud().size([width,height])
 				        .words(frequency_list[p1].top20)
 				        .rotate(0)
-				        .padding(7)
-				        .fontSize(function(d) { return d.size; })
+				        .padding(1)
+				        .fontSize(function(d) { return d.size*weight; })
 				        .on("end" , draw)
 				//         .on("word", end)
 				        .start();
