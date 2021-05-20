@@ -73,12 +73,13 @@
 </style>
 <body>
 
+
 <div id="my_dataviz"></div>
 
 <div class="outer">
 	<div class="inner">
-	<a data-gtm-event="" data-gtm-drawer="" data-gtm-interaction="" href="index6?source=naver" title="네이버뉴스" data-button-text-desktop="네이버뉴스" data-button-text-mobile="네이버뉴스" class="tds-btn tcl-button">네이버</a>
-	<a data-gtm-event="" data-gtm-drawer="" data-gtm-interaction="" href="index6?source=daum" title="다음뉴스" data-button-text-desktop="다음뉴스" data-button-text-mobile="다음뉴스" class="tds-btn tcl-button">다음</a>
+	<a data-gtm-event="" data-gtm-drawer="" data-gtm-interaction="" href="index6?source=naver" title="네이버뉴스" data-button-text-desktop="네이버뉴스" data-button-text-mobile="네이버뉴스" class="tds-btn tcl-button" data-drupal-component-status="initialized">네이버</a>
+	<a data-gtm-event="" data-gtm-drawer="" data-gtm-interaction="" href="index6?source=daum" title="다음뉴스" data-button-text-desktop="다음뉴스" data-button-text-mobile="다음뉴스" class="tds-btn tcl-button" >다음</a>
 	</div>
 	
 	<div class="inner">
@@ -120,36 +121,34 @@
 
 					var fill = d3.scale.category20();
 					
-					var weight = 5,   // change me
+					var weight = 4, //글자크기정하기 
 					    width = window.innerWidth,
 					    height = window.innerHeight - 150;
 					
 					function draw(words) {
-					          d3.select("#my_dataviz").append("svg")
-					              .attr("width", width)
-					              .attr("height", height)
-					            .append("g")
-					              .attr("transform", "translate(" + width/2 + "," + height/3 + ")")
-					              
-					            .selectAll("text")
-					              .data(words)
-					            .enter().append("text")
-					              .style("font-size", function(d) { return d.size + "px"; })
-					              .style("font-family", "Impact")
-					              .style("fill", function(d, i) { return color(i); })   
-					              .attr("text-anchor", "middle")
-					              .attr("transform", function(d) {
-					                return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
-					              })
-					              .append("a")
-						            .attr("href", function(d) {
-						                return "${url}"+d.text;
-						            })
-						            .attr("target", function(d) {
-						                return "_blank";
-						            })
-						            .text(function(d) { return  d.text ; });	
-									
+					         d3.select("#my_dataviz").append("svg")
+					           .attr("width", width)
+					           .attr("height", height)
+					           .append("g")
+					           .attr("transform", "translate(" + width/2 + "," + height/2 + ")")   
+					           .selectAll("text")
+					           .data(words)
+					           .enter().append("text")
+					           .style("font-size", function(d) { return d.size + "px"; })
+					           .style("font-family", "Impact")
+					           .style("fill", function(d, i) { return color(i); })   
+					           .attr("text-anchor", "middle")
+					           .attr("transform", function(d) {
+					           	return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
+					            })
+					           .append("a")
+						       .attr("href", function(d) {
+						        return "${url}"+d.text;
+						        })
+						       .attr("target", function(d) {
+						        return "_blank";
+						        })
+						       .text(function(d) { return  d.text ; });									
 					        }
 					
 				var selectId = 1;

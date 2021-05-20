@@ -72,20 +72,26 @@ public class AlarmTask {
 //			}
 //			
 //			
-			// 포탈들 헤드라인 뉴스 긁어오기 
-//			@Scheduled(cron = "0 */15 * * * *")
-//			public void getTotalNews() {
+//			 포탈들 헤드라인 뉴스 긁어오기 
+//			@Scheduled(cron = "0 */5 * * * *")
+//			public void getTotalNewsN() {
 //				getNaver_newHaedline();
+//				
+//			}
+//			
+//			@Scheduled(cron = "0 */15 * * * *")
+//			public void getTotalNewsD() {
+//				
 //				getDaum_newHaedline();
 //			}
-			
-			
+//			
+//			
 //			@Scheduled(cron = "0 */30 * * * *")
 //			public void todayScheduled() {
 //				todayTop20("NAVER");
 //				todayTop20("Daum");
 //			}
-			
+//			
 			//헤드라인 뉴스의 하루동안 노출빈도가 가장많은단어 20을 꺼내와 보여주고 저장한다.
 			public static Map<String,Integer> todayTop20(String p1) {
 				newsTitle sourceIs = new newsTitle();
@@ -205,7 +211,7 @@ public class AlarmTask {
 					i += 1;
 					
 					System.out.println(result);
-					if(i == 20) {
+					if(i == 50) {
 						break;
 					}
 			
@@ -232,7 +238,7 @@ public class AlarmTask {
 //					System.out.println(i+1 + "위 : " +entry.getKey() + " : " + entry.getValue());
 					result.put(entry.getKey(),entry.getValue());
 					i += 1;
-					if(i == 20) {
+					if(i == 50) {
 						break;
 					}
 			
@@ -261,7 +267,7 @@ public class AlarmTask {
 //						System.out.println(i+1 + "위 : " +entry.getKey() + " : " + entry.getValue());
 						result.add(entry.getKey()+":"+entry.getValue());
 						i += 1;
-						if(i == 20) {
+						if(i == 50) {
 							break;
 						}else {
 							result.add(",");
