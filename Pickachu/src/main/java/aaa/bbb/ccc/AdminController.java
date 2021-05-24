@@ -1087,10 +1087,21 @@ public class AdminController {
 		PortalNews2 sourceIs = new PortalNews2();
 		sourceIs.setSource(source);
 		String result = source;
+		System.out.println(result);
+		
 		String url = newsSearchUrl(source);
+		
+		String label = "";
+		if(result.equals("naver")) {
+			label = "네이버";
+		}else {
+			label = "다음";
+		}
+
 		
 		model.addAttribute("url", url);
 		model.addAttribute("source", result);
+		model.addAttribute("label", label);
 		
 		return "admin/index5";
 	}
@@ -1222,7 +1233,7 @@ public class AdminController {
 			i += 1;
 			
 			System.out.println(result);
-			if(i == 20) {
+			if(i == 50) {
 				break;
 			}	
 		}		
@@ -1454,7 +1465,7 @@ public class AdminController {
 				System.out.println(entry.getKey() + " : " + entry.getValue());
 				
 				//한번에 1씩 증가 
-				if(i<19) {
+				if(i<49) {
 					result.add(entry.getKey() + ":" + entry.getValue()+",");				
 				}else {
 					//19번에서 일어나는 일 
@@ -1464,7 +1475,7 @@ public class AdminController {
 				//20이 되었다.
 				
 				//20번 돌면 그만 돌아라.
-				if(i == 20) {					
+				if(i == 50) {					
 					break;
 				}
 				// 리절트를 리턴하는데... 리턴값에 뭔가를 넣어준듯.
