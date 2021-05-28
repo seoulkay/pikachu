@@ -11,6 +11,8 @@
 
 <head>
  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-wEmeIV1mKuiNpC+IOBjI7aAzPcEZeedi5yW5f2yOq55WWLwNGmvvx4Um1vskeMj0" crossorigin="anonymous">
+ <link rel="canonical" href="https://getbootstrap.com/docs/4.4/examples/cover/">
+ 
  <title>NEWS_CLOUD</title>
 
 <script data-ad-client="ca-pub-1262784398485676" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
@@ -68,6 +70,45 @@
         }
       }
     
+    .slidecontainer {
+  width: 100%; /* Width of the outside container */
+}
+
+/* The slider itself */
+.slider {
+  -webkit-appearance: none;  /* Override default CSS styles */
+  appearance: none;
+  width: 100%; /* Full-width */
+  height: 70px; /* Specified height */
+  background: #ededed; /* Grey background */
+  outline: none; /* Remove outline */
+  opacity: 0.7; /* Set transparency (for mouse-over effects on hover) */
+  -webkit-transition: .2s; /* 0.2 seconds transition on hover */
+  transition: opacity .2s;
+}
+
+/* Mouse-over effects */
+.slider:hover {
+  opacity: 1; /* Fully shown on mouse-over */
+}
+
+/* The slider handle (use -webkit- (Chrome, Opera, Safari, Edge) and -moz- (Firefox) to override default look) */
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none; /* Override default look */
+  appearance: none;
+  width: 70px; /* Set a specific slider handle width */
+  height: 70px; /* Slider handle height */
+  background: #3C00FF; /* Green background */
+  cursor: pointer; /* Cursor on hover */
+}
+
+.slider::-moz-range-thumb {
+  width: 70px; /* Set a specific slider handle width */
+  height: 70px; /* Slider handle height */
+  background: #3C00FF; /* Green background */
+  cursor: pointer; /* Cursor on hover */
+}
+    
 </style>
  <!-- Custom styles for this template -->
  <link href="cover.css" rel="stylesheet">
@@ -78,13 +119,13 @@
 
 <body class="text-center">
     <div class="cover-container d-flex w-100 h-70 p-3 mx-auto flex-column">
-  <header class="masthead mb-auto">
-    <div class="inner">
-      <h1 class="masthead-brand">NEWS NOW</h1>
-      <nav class="nav nav-masthead justify-content-center">
-        <a class="nav-link active" href="#">네이버</a>
-        <a class="nav-link" href="#">다음</a>
-        <a class="nav-link" href="#">Contact</a>
+ 		 <header class="masthead mb-auto">
+   		 <div class="inner">
+   		   <h1 class="masthead-brand">NEWS NOW</h1>
+     	 <nav class="nav nav-masthead justify-content-center">
+      		<a class="nav-link active" href="index5?source=naver">네이버</a>
+     	   	<a class="nav-link" href="index5?source=daum">다음</a>
+<!--         <a class="nav-link" href="#">Contact</a> -->
       </nav>
     </div>
   </header>
@@ -97,13 +138,7 @@
 <!--     </p> -->
   </main>
 
-  <footer class="mastfoot mt-auto">
-  	
-  
-    <div class="inner">
-      <p id="collectedTime">Cover template for <a href="https://getbootstrap.com/">Bootstrap</a>, by <a href="https://twitter.com/mdo">@mdo</a>.</p>
-    </div>
-  </footer>
+
 </div>
 
 
@@ -143,20 +178,36 @@
 
 
    
-<nav class="navbar fixed-bottom navbar-light bg-light" style="text-align:right">	
+<nav class="navbar fixed-bottom navbar-light bg-none">	
 <!--   <div class="row" > 	style="width:900px" -->
 <!--     <div class="cloud"  align="center"> -->
 <!--     <div align="center"> -->
 <!-- 	<div> -->
+<!-- 	<label for="customRange3" class="form-label" ></label> -->
+<!-- 	<input type="range" class="form-range" value="9" onChange="drawWordCloud(this.value)" min="0" max="9" step="1" id="customRange3"> -->
 
-	<label for="customRange3" class="form-label" ></label>
-	<input type="range" class="form-range" value="9" onChange="drawWordCloud(this.value)" min="0" max="9" step="1" id="customRange3">
+<!-- 	<div class="slidecontainer"> -->
+	<label for="customRange3" class="slidecontainer" ></label>
+ 		<input type="range" min="1" max="9" step="1" value="9" class="slider" id="customRange3" onChange="drawWordCloud(this.value)">
+<!-- 	</div> -->
+
+
+
 <!-- 	</div> -->
 <!-- 		  </div> -->
 
 <!-- 		 <div class="row" > -->
 <!-- 	<div align="center"> -->
-		<h3 id="collectedTime" style="color:#3C00FF; text-align:right"></h3>
+<div class="cover-container d-flex w-100 h-70 p-3 mx-auto flex-column">
+  <footer class="mastfoot mt-auto">
+  	
+  
+    <div class="inner">
+      <p id="collectedTime"></p>
+    </div>
+  </footer>
+</div>
+<!-- 		<h3 id="collectedTime" style="color:#3C00FF; text-align:right"></h3> -->
 <!-- 	</div> -->
 
 </nav>	
@@ -228,7 +279,8 @@ function draw(words) {
             .append("g")
             // without the transform, words words would get cutoff to the left and top, they would
             // appear outside of the SVG area
-            .attr("transform", "translate(" + width/2 + "," + height/2 + ")")
+            .attr("transform", "translate(" + width/2 + "," + height/2.5 + ")")
+            
             //.attr("transform", "scale(2, 2)")
             
             .selectAll("text")
