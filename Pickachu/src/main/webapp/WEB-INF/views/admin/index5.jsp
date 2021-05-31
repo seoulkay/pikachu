@@ -79,7 +79,7 @@
   -webkit-appearance: none;  /* Override default CSS styles */
   appearance: none;
   width: 100%; /* Full-width */
-  height: 70px; /* Specified height */
+  height: 100px; /* Specified height */
   background: #ededed; /* Grey background */
   outline: none; /* Remove outline */
   opacity: 0.7; /* Set transparency (for mouse-over effects on hover) */
@@ -96,8 +96,8 @@
 .slider::-webkit-slider-thumb {
   -webkit-appearance: none; /* Override default look */
   appearance: none;
-  width: 70px; /* Set a specific slider handle width */
-  height: 70px; /* Slider handle height */
+  width: 100px; /* Set a specific slider handle width */
+  height: 100px; /* Slider handle height */
   background: #3C00FF; /* Green background */
   cursor: pointer; /* Cursor on hover */
 }
@@ -190,7 +190,7 @@
 	<label for="customRange3" class="slidecontainer" ></label>
  		<input type="range" min="1" max="9" step="1" value="9" class="slider" id="customRange3" onChange="drawWordCloud(this.value)">
 <!-- 	</div> -->
-
+		<p id="collectedTime"></p>
 
 
 <!-- 	</div> -->
@@ -198,15 +198,18 @@
 
 <!-- 		 <div class="row" > -->
 <!-- 	<div align="center"> -->
-<div class="cover-container d-flex w-100 h-70 p-3 mx-auto flex-column">
-  <footer class="mastfoot mt-auto">
-  	
-  
-    <div class="inner">
-      <p id="collectedTime"></p>
-    </div>
-  </footer>
-</div>
+
+
+<!-- <div class="cover-container d-flex w-100 h-70 p-3 mx-auto flex-column"> -->
+<!--   <footer class="mastfoot mt-auto"> -->
+<!--     <div class="inner"> -->
+<!--       <p id="collectedTime"></p> -->
+<!--     </div> -->
+<!--   </footer> -->
+<!-- </div> -->
+
+
+
 <!-- 		<h3 id="collectedTime" style="color:#3C00FF; text-align:right"></h3> -->
 <!-- 	</div> -->
 
