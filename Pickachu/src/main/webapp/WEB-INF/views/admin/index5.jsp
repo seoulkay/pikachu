@@ -10,7 +10,7 @@
 
 
 <head>
-<meta name="keywords" content="뉴스, 검색어, 클라우드, 순위, 뉴스클라우드, 실시간뉴스, 방탄소년단, BTS">
+<meta name="keywords" content="뉴스, 검색어, 클라우드, 순위, 뉴스클라우드, 실시간뉴스, 방탄소년단, BTS, 네이버, 다음">
 <meta name="description" content="네이버와 다음에 게시된 뉴스의 헤드라인을 분석해서 가장 많이 언급된 단어들의 클라우드를 보여줍니다.">
 <meta name="author" content="애국청년">
 <meta name="application-name" content="핫눈에 보는 핫뉴스">
@@ -18,7 +18,7 @@
  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-wEmeIV1mKuiNpC+IOBjI7aAzPcEZeedi5yW5f2yOq55WWLwNGmvvx4Um1vskeMj0" crossorigin="anonymous">
  <link rel="canonical" href="https://getbootstrap.com/docs/4.4/examples/cover/">
  
- <title>뉴스, 한눈에 보자</title>
+ <title>핫뉴스, 핫눈에 보자</title>
 
 <script data-ad-client="ca-pub-1262784398485676" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 
