@@ -50,7 +50,7 @@
     .svg{ 
    		position:relative; 
     	width:100%; 
-      	height:2000px;  	
+      	height:1500px;  	
 	} 
     .outer {
   	text-align: center;
@@ -85,7 +85,7 @@
   -webkit-appearance: none;  /* Override default CSS styles */
   appearance: none;
   width: 100%; /* Full-width */
-  height: 100px; /* Specified height */
+  height: 5em; /* Specified height */
   background: #ededed; /* Grey background */
   outline: none; /* Remove outline */
   opacity: 0.7; /* Set transparency (for mouse-over effects on hover) */
@@ -102,18 +102,20 @@
 .slider::-webkit-slider-thumb {
   -webkit-appearance: none; /* Override default look */
   appearance: none;
-  width: 100px; /* Set a specific slider handle width */
-  height: 100px; /* Slider handle height */
+  width: 5em; /* Set a specific slider handle width */
+  height: 5em; /* Slider handle height */
   background: #3C00FF; /* Green background */
   cursor: pointer; /* Cursor on hover */
 }
 
 .slider::-moz-range-thumb {
-  width: 70px; /* Set a specific slider handle width */
-  height: 70px; /* Slider handle height */
+  width: 5em; /* Set a specific slider handle width */
+  height: 5em; /* Slider handle height */
   background: #3C00FF; /* Green background */
   cursor: pointer; /* Cursor on hover */
 }
+ 
+
     
 </style>
  <!-- Custom styles for this template -->
@@ -123,103 +125,78 @@
 <link rel="preconnect" href="https://fonts.gstatic.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@700&display=swap" rel="stylesheet">
 
-<body class="text-center">
-    <div class="cover-container d-flex w-100 h-70 p-3 mx-auto flex-column">
- 		 <header class="masthead mb-auto">
-   		 <div class="inner">
-   		   <h1 class="masthead-brand">NEWS NOW</h1>
-     	 <nav class="nav nav-masthead justify-content-center">
-      		<a class="nav-link active" href="index5?source=naver">네이버</a>
-     	   	<a class="nav-link" href="index5?source=daum">다음</a>
-<!--         <a class="nav-link" href="#">Contact</a> -->
-      </nav>
-    </div>
-  </header>
+<body>
 
-  <main role="main" class="inner cover">
-<!--     <h1 class="cover-heading">Cover your page.</h1> -->
-<!--     <p class="lead">Cover is a one-page template for building simple and beautiful home pages. Download, edit the text, and add your own fullscreen background photo to make it your own.</p> -->
-<!--     <p class="lead"> -->
-<!--       <a href="#" class="btn btn-lg btn-secondary">Learn more</a> -->
-<!--     </p> -->
-  </main>
-
-
-</div>
-
-
-
-
-
-
-<!-- 	<nav class="navbar fixed-top navbar-light bg-light"> -->
-<!-- 	  <div class="container-fluid"> -->
-<!-- 	    <h2 style="color:black"> -->
-<%-- 		<a href="#" onclick='clickPortalLabel(); return false;' style="text-decoration:none; color:#3C00FF">${label}</a> 뉴스 헤드라인 중 가장 많이 언급된 50개의 단어입니다. --%>
-<!-- 		</h2> -->
-	
-<!-- 	  </div> -->
-	
-<!-- 	</nav> -->
-
-
-<!--   <div class="row"> -->
-<!--     <div class="col" align="right"> -->
-<!--     	<a class="btn btn-primary btn-sm" href="index5?source=toggleUrl()" role="button" style="text-decoration:none" >toggleName()</a> -->
-<!--     	 온클릭으로 바꿔야함. -->
-<!--     	 함수안에서  온클릭 해주는 내용, href 해주는 내용 다 집어넣야함. 
-<!--     			버튼 이름 바꾸는 건 버튼에게 아이디 줘서 그 친구 text를 바꿔라.  --> 
-    	
-<!-- <!--    <a class="btn btn-primary btn-sm" href="index5?source=daum" role="button">다음</a> --> 
-<!--     </div> -->
-<!--   </div> -->
-
-<!-- 	<div class="container"> -->
-
-	<div class="container-fluid" id="my_dataviz" align="center">
-	</div>
-
+<!--     <div class="cover-container d-flex w-100 h-70 p-3 mx-auto flex-column"> -->
+<!--  		 <header class="masthead mb-auto"> -->
+<!--    		 <div class="inner"> -->
+<!--    		   <h1 class="masthead-brand">오늘</h1><h5>어떤소식들이</h5> -->
+<!-- <!--      	 <nav class="nav nav-masthead justify-content-center"> -->
+<!--     	</div> -->
+<!--   		</header> -->
 <!-- 	</div> -->
+
+
+
+
+
+
+	<div class="container-fluid" align="center">
+		
+		
+	
+		<div class="row" align="center">
+		  <div class="col-sm-8">
+		  	<h1 class="display-1"><strong>오늘어떤소식들이?</strong></h1>
+		  </div>
+		  <div class="col-sm-4" align="right">ver1.5</div>
+		</div>
+	
+		<div class="row" id="my_dataviz" align="center" >
+		</div>
+		
+		<div class="row" align="center" >
+			<div class="col-sm-8">
+			<h2 id="collectedTime"></h2>
+			</div>
+			<div class="col-sm-2">
+			<a  href="index5?source=naver">네이버 기반</a>
+			</div>
+			<div class="col-sm-2">
+			<a  href="index5?source=daum">다음 기반</a>
+			</div>
+
+			
+		</div>
+		<nav class="navbar fixed-bottom navbar-light bg-none">	
+			<div class="slidecontainer">
+	<label for="customRange3" class="slidecontainer" ></label>
+ 		<input type="range" min="1" max="9" step="1" value="9" class="slider" id="customRange3" onChange="drawWordCloud(this.value)">
+
+	</div>
+		</nav>	
+	
+	</div>
+	
+	
+
 
 
 
    
-<nav class="navbar fixed-bottom navbar-light bg-none">	
-<!--   <div class="row" > 	style="width:900px" -->
-<!--     <div class="cloud"  align="center"> -->
-<!--     <div align="center"> -->
-<!-- 	<div> -->
-<!-- 	<label for="customRange3" class="form-label" ></label> -->
-<!-- 	<input type="range" class="form-range" value="9" onChange="drawWordCloud(this.value)" min="0" max="9" step="1" id="customRange3"> -->
+
+	
+<!-- <nav class="navbar fixed-bottom navbar-light bg-none">	 -->
+	
 
 <!-- 	<div class="slidecontainer"> -->
-	<label for="customRange3" class="slidecontainer" ></label>
- 		<input type="range" min="1" max="9" step="1" value="9" class="slider" id="customRange3" onChange="drawWordCloud(this.value)">
-<!-- 	</div> -->
-		<p id="collectedTime"></p>
-
+<!-- 	<label for="customRange3" class="slidecontainer" ></label> -->
+<!--  		<input type="range" min="1" max="9" step="1" value="9" class="slider" id="customRange3" onChange="drawWordCloud(this.value)"> -->
 
 <!-- 	</div> -->
-<!-- 		  </div> -->
-
-<!-- 		 <div class="row" > -->
-<!-- 	<div align="center"> -->
 
 
-<!-- <div class="cover-container d-flex w-100 h-70 p-3 mx-auto flex-column"> -->
-<!--   <footer class="mastfoot mt-auto"> -->
-<!--     <div class="inner"> -->
-<!--       <p id="collectedTime"></p> -->
-<!--     </div> -->
-<!--   </footer> -->
-<!-- </div> -->
-
-
-
-<!-- 		<h3 id="collectedTime" style="color:#3C00FF; text-align:right"></h3> -->
-<!-- 	</div> -->
-
-</nav>	
+<!-- </nav>	 -->
 
 
   
@@ -263,7 +240,7 @@ function timeStampToHuman(p1){
 
 var weight = 3,   // change me
 width = window.innerWidth,
-height = window.innerHeight - 150;
+height = window.innerHeight - 280;
 
 
 // draw 함수 (워드 클라우드 관련 함수)
@@ -288,7 +265,7 @@ function draw(words) {
             .append("g")
             // without the transform, words words would get cutoff to the left and top, they would
             // appear outside of the SVG area
-            .attr("transform", "translate(" + width/2 + "," + height/2.5 + ")")
+            .attr("transform", "translate(" + width/2 + "," + height/2 + ")")
             
             //.attr("transform", "scale(2, 2)")
             
