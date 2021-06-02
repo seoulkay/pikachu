@@ -63,8 +63,7 @@
 </head>
 
 <body>
-
-
+<p align="center">눈에 띄는 단어를 눌러보아요.</p>
 
 <div class="container">
 
@@ -74,12 +73,13 @@
 
 				<div class="outer">
 				<div class="inner">
-				<a data-gtm-event="" data-gtm-drawer="" data-gtm-interaction="" href="index6?source=naver" title="네이버뉴스" data-button-text-desktop="네이버뉴스" data-button-text-mobile="네이버뉴스" class="tds-btn tcl-button" data-drupal-component-status="initialized">네이버</a>
-				<a data-gtm-event="" data-gtm-drawer="" data-gtm-interaction="" href="index6?source=daum" title="다음뉴스" data-button-text-desktop="다음뉴스" data-button-text-mobile="다음뉴스" class="tds-btn tcl-button" >다음</a>
+				<a data-gtm-event="" data-gtm-drawer="" data-gtm-interaction="" href="index6?source=naver" title="네이버뉴스" data-button-text-desktop="네이버뉴스" data-button-text-mobile="네이버뉴스" class="tds-btn tcl-button" data-drupal-component-status="initialized">네이버 뉴스</a>
+				<a data-gtm-event="" data-gtm-drawer="" data-gtm-interaction="" href="index6?source=daum" title="다음뉴스" data-button-text-desktop="다음뉴스" data-button-text-mobile="다음뉴스" class="tds-btn tcl-button" >다음 뉴스</a>
 			
 				</div>
 				
 				<div class="inner">
+				<p align="center"> 30분간 가장많이 노출된 뉴스단어 Top50 - 지금뉴스</p>
 				<script>
 						console.log(window.outerWidth);
 						var frequency_list = {};
@@ -91,8 +91,8 @@
 							var fill = d3.scale.category20();
 							
 							var weight = 1, //글자크기정하기 
-							    width = window.innerWidth,
-							    height = window.innerHeight - 150;
+							    width = window.innerWidth - 50,
+							    height = window.innerHeight - 250;
 							
 							function draw(words) {
 							         d3.select("#my_dataviz").append("svg")
@@ -172,7 +172,9 @@
 		</div>
 
 		<div class="row">
-		<p id="createdTime">
+		
+		<p align="center" id="createdTime">
+		
 		</div>
      
 	</div>
