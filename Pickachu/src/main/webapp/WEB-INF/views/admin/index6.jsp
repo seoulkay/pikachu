@@ -63,23 +63,42 @@
 </head>
 
 <body>
-<p align="center">눈에 띄는 단어를 눌러보아요.</p>
-
-<div class="container">
-
-	
-		
-	<div id="my_dataviz"></div>
-
-				<div class="outer">
-				<div class="inner">
-				<a data-gtm-event="" data-gtm-drawer="" data-gtm-interaction="" href="index6?source=naver" title="네이버뉴스" data-button-text-desktop="네이버뉴스" data-button-text-mobile="네이버뉴스" class="tds-btn tcl-button" data-drupal-component-status="initialized">네이버 뉴스</a>
-				<a data-gtm-event="" data-gtm-drawer="" data-gtm-interaction="" href="index6?source=daum" title="다음뉴스" data-button-text-desktop="다음뉴스" data-button-text-mobile="다음뉴스" class="tds-btn tcl-button" >다음 뉴스</a>
-			
+				<div class="container-fluid">
+				<div class="row" >
+				<div class="col-sm-1"></div>
+				<div class="col-sm-10">
+				<h2>지금뉴스</h2>
+				</div>
+				<div class="col-sm-1"></div>
+				</div>
 				</div>
 				
-				<div class="inner">
-				<p align="center"> 30분간 가장많이 노출된 뉴스단어 Top50 - 지금뉴스</p>
+				<div class="container-fluid">
+					<div class="row" >
+						<div class="col-sm-8" id="my_dataviz"></div>
+						<div class="col-sm-4"></div>
+					</div>
+				</div>
+				
+				<div class="container-fluid" align="center">
+					<div class="row" >
+						<div class="col" align="center">
+							<p> 시간대별 가장많이 노출된 뉴스단어 Top50 </p>
+						</div>
+					</div>
+				</div>
+				
+				<div class="row" >
+				<div class="col-sm-1"></div>
+				<div class="col-sm-10" align="center">
+				<a data-gtm-event="" data-gtm-drawer="" data-gtm-interaction="" href="index6?source=naver" title="네이버뉴스" data-button-text-desktop="네이버뉴스" data-button-text-mobile="네이버뉴스" class="tds-btn tcl-button" data-drupal-component-status="initialized">네이버 뉴스</a>
+				<a data-gtm-event="" data-gtm-drawer="" data-gtm-interaction="" href="index6?source=daum" title="다음뉴스" data-button-text-desktop="다음뉴스" data-button-text-mobile="다음뉴스" class="tds-btn tcl-button" >다음 뉴스</a>
+				</div>
+				<div class="col-sm-1"></div>
+				
+				<div class="low">
+				<div class="col" >
+				
 				<script>
 						console.log(window.outerWidth);
 						var frequency_list = {};
@@ -91,8 +110,8 @@
 							var fill = d3.scale.category20();
 							
 							var weight = 1, //글자크기정하기 
-							    width = window.innerWidth - 50,
-							    height = window.innerHeight - 250;
+							    width = window.innerWidth,
+							    height = window.innerHeight - 300;
 							
 							function draw(words) {
 							         d3.select("#my_dataviz").append("svg")
@@ -163,21 +182,26 @@
 
 					</script>
 				</div>
-	
+				</div>
 			</div>	
 		
      	 <div class="row">
-		<label for="customRange3" class="form-label"></label>
-		<input type="range" class="form-range" min="0" max="9" step="1" value="9" id="customRange3" onchange="drawWordcloud(this.value)">
+     		 <div class="col-sm-1">
+     		 </div>	
+     	      	 <div class="col-sm-10">  	      	 
+				<label for="customRange3" class="form-label"></label>
+				<input type="range" class="form-range" min="0" max="9" step="1" value="9" id="customRange3" onchange="drawWordcloud(this.value)">
+				</div>
+					<div class="col-sm-1">
+					</div>
 		</div>
-
 		<div class="row">
 		
 		<p align="center" id="createdTime">
 		
 		</div>
      
-	</div>
+	
  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-p34f1UUtsS3wqzfto5wAAmdvj+osOnFyQFpp4Ua3gs/ZVWx6oOypYoCJhGGScy+8" crossorigin="anonymous"></script>
 
 </body>
