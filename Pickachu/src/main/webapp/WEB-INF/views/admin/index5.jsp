@@ -18,7 +18,7 @@
  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-wEmeIV1mKuiNpC+IOBjI7aAzPcEZeedi5yW5f2yOq55WWLwNGmvvx4Um1vskeMj0" crossorigin="anonymous">
  <link rel="canonical" href="https://getbootstrap.com/docs/4.4/examples/cover/">
  
- <title>핫뉴스, 핫눈에 보자</title>
+ <title>SOUP by All Korean News Media</title>
 
 <script data-ad-client="ca-pub-1262784398485676" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 
@@ -35,6 +35,13 @@
     a{text-decoration:none;}
 	
 	h4{text-align:center;}
+	
+	h1{
+    background: linear-gradient(to left, #FF6600, rgba(0, 0, 0, 0));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+	}
+
     
     .legend {
         border: 1px solid #555555;
@@ -86,7 +93,7 @@
   appearance: none;
   width: 100%; /* Full-width */
   height: 5em; /* Specified height */
-  background: #ededed; /* Grey background */
+  background: #FFCE85; /* Grey background */
   outline: none; /* Remove outline */
   opacity: 0.7; /* Set transparency (for mouse-over effects on hover) */
   -webkit-transition: .2s; /* 0.2 seconds transition on hover */
@@ -104,24 +111,26 @@
   appearance: none;
   width: 5em; /* Set a specific slider handle width */
   height: 5em; /* Slider handle height */
-  background: #3C00FF; /* Green background */
+  background: #FF6600; /* Green background */
   cursor: pointer; /* Cursor on hover */
 }
 
 .slider::-moz-range-thumb {
   width: 5em; /* Set a specific slider handle width */
   height: 5em; /* Slider handle height */
-  background: #3C00FF; /* Green background */
+  background: #FF6600; /* Green background */
   cursor: pointer; /* Cursor on hover */
 }
  
-
+/* div { */
+/*     background: linear-gradient(to top right, #ff3300 0%, #ff99cc 100%); */
+/* } */
     
 </style>
  <!-- Custom styles for this template -->
  <link href="cover.css" rel="stylesheet">
     
-<link href="https://fonts.googleapis.com/css?family=Playfair+Display:700,900" rel="stylesheet">
+<!-- <link href="https://fonts.googleapis.com/css?family=Playfair+Display:700,900" rel="stylesheet"> -->
 <link rel="preconnect" href="https://fonts.gstatic.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@700&display=swap" rel="stylesheet">
 
@@ -146,19 +155,29 @@
 		
 	
 		<div class="row" align="center">
-		  <div class="col-sm-8">
-		  	<h1 class="display-1"><strong>오늘어떤소식들이?</strong></h1>
+		  <div class="col-sm-6">
+		  	<h1 class="display-1"><strong>SOUP</strong></h1>
+		  	<h6><strong>news are very hot.</strong></h6>
 		  </div>
-		  <div class="col-sm-4" align="right">ver1.5</div>
+		  <div class="col-sm-4">
+		  <p class="lead">지금 가장 뜨거운 단어들을 확인하세요. 한국 뉴스 미디어를 골고루 넣어 방금 끓인 수프.</p>
+		  </div>
+		  <div class="col-sm-2" align="right">ver1.5</div>
 		</div>
 	
 		<div class="row" id="my_dataviz" align="center" >
 		</div>
 		
 		<div class="row" align="center" >
+			
+			<h1 id="collectedTime" class="display-3"></h1>
+			
+		</div>
+		
+		<div class="row" align="center">	
 			<div class="col-sm-8">
-			<h2 id="collectedTime"></h2>
-			</div>
+			<h2 id="collectedTime" class="display-3"></h2>
+			</div>	
 			<div class="col-sm-2">
 			<a  href="index5?source=naver">네이버 기반</a>
 			</div>
@@ -168,14 +187,17 @@
 
 			
 		</div>
-		<nav class="navbar fixed-bottom navbar-light bg-none">	
+		<div class="row" align="center" >
+		
+<!-- 		<nav class="navbar fixed-bottom navbar-light bg-none">	 -->
 			<div class="slidecontainer">
-	<label for="customRange3" class="slidecontainer" ></label>
- 		<input type="range" min="1" max="9" step="1" value="9" class="slider" id="customRange3" onChange="drawWordCloud(this.value)">
+			<label for="customRange3" class="slidecontainer" ></label>
+ 			<input type="range" min="1" max="9" step="1" value="9" class="slider" id="customRange3" onChange="drawWordCloud(this.value)">
 
-	</div>
-		</nav>	
-	
+			</div>
+<!-- 		</nav>	 -->
+		</div>
+		
 	</div>
 	
 	
@@ -240,7 +262,7 @@ function timeStampToHuman(p1){
 
 var weight = 3,   // change me
 width = window.innerWidth,
-height = window.innerHeight - 280;
+height = window.innerHeight - 400;
 
 
 // draw 함수 (워드 클라우드 관련 함수)
@@ -249,7 +271,10 @@ var color = d3.scale.linear()
 //워드클라우드 크기랑 색깔 지정 
 	.domain([100,20,15,10,6,5,4,3,2,1,0])
 //	.domain([150,30,17.5,15,8,7,6,4,3,1,0])
-	.range(["#96F2FA", "#8DDAFB", "#86C6FB", "#7DB0FB", "#759AFC", "#6D84FC", "#656EFD", "#5D58FD", "#5542FE", "#4C2CFE", "#4416FF", "#3C00FF"]);
+
+
+	.range(["#FFCE85","#FFC579","#FFBB6D","#FFB261","#FFA855","#FF9F49","#FF953C","#FF8C30","#FF8224","#FF7918","#FF6F0C","#FF6600"]);
+	//.range(["#96F2FA", "#8DDAFB", "#86C6FB", "#7DB0FB", "#759AFC", "#6D84FC", "#656EFD", "#5D58FD", "#5542FE", "#4C2CFE", "#4416FF", "#3C00FF"]);
 //	.range(["#ddd", "#ccc", "#bbb", "#aaa", "#999", "#888", "#777", "#666", "#555", "#444", "#333", "#222"]);
 //한 줄 끝
 
