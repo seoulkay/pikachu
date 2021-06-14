@@ -41,10 +41,10 @@
     	text-align: center;	
     }
     .button {
-  	 background-color: blue;
+  	 background-color: white;
  	 border: none;
  	 color: white;
-	 padding: 15px 30px;
+	 padding: 15px 15px;
  	 text-align: center;
    	 text-decoration: none;
  	 display: inline-block;
@@ -67,34 +67,38 @@
 				<div class="row" >
 				<div class="col-sm-1"></div>
 				<div class="col-sm-10">
-				<h2>지금뉴스</h2>
+				<h3>지금뉴스</h3>
+				<p> 시간대별 가장많이 노출된 뉴스단어 Top50 </p>
 				</div>
 				<div class="col-sm-1"></div>
 				</div>
 				</div>
 				
-				<div class="container-fluid">
+				
 					<div class="row" >
-						<div class="col-sm-8" id="my_dataviz"></div>
-						<div class="col-sm-4"></div>
+						<div class="col-md-auto" id="my_dataviz"></div>
+						
 					</div>
-				</div>
+
+				<div class="row justify-content-md-center" >
 				
-				<div class="container-fluid" align="center">
-					<div class="row" >
-						<div class="col" align="center">
-							<p> 시간대별 가장많이 노출된 뉴스단어 Top50 </p>
-						</div>
-					</div>
-				</div>
+<!-- 				<div class="col-md-auto" align="center"> -->
+<!-- 				<a data-gtm-event="" data-gtm-drawer="" data-gtm-interaction="" href="index6?source=naver" title="네이버뉴스" data-button-text-desktop="네이버뉴스" data-button-text-mobile="네이버뉴스" class="tds-btn tcl-button" >네이버 뉴스</a> -->
+<!-- 				<a data-gtm-event="" data-gtm-drawer="" data-gtm-interaction="" href="index6?source=daum" title="다음뉴스" data-button-text-desktop="다음뉴스" data-button-text-mobile="다음뉴스" class="tds-btn tcl-button" >다음 뉴스</a> -->
+<!-- 				</div> -->
 				
-				<div class="row" >
-				<div class="col-sm-1"></div>
-				<div class="col-sm-10" align="center">
-				<a data-gtm-event="" data-gtm-drawer="" data-gtm-interaction="" href="index6?source=naver" title="네이버뉴스" data-button-text-desktop="네이버뉴스" data-button-text-mobile="네이버뉴스" class="tds-btn tcl-button" data-drupal-component-status="initialized">네이버 뉴스</a>
-				<a data-gtm-event="" data-gtm-drawer="" data-gtm-interaction="" href="index6?source=daum" title="다음뉴스" data-button-text-desktop="다음뉴스" data-button-text-mobile="다음뉴스" class="tds-btn tcl-button" >다음 뉴스</a>
-				</div>
-				<div class="col-sm-1"></div>
+				
+				    <div class="btn-group" role="group">
+				    <button id="btnGroupDrop1" type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+				      분야별 
+				    </button>
+				    <ul class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+				      <li><a href="index6?source=naver" >네이버 뉴스</a></li>
+				      <li> <a href="index6?source=daum" >다음 뉴스</a></li>
+				    </ul>
+				  </div>
+				  
+				
 				
 				<div class="low">
 				<div class="col" >
@@ -168,6 +172,8 @@
 						        .on("end" , draw)
 						        .start();
 								$( "#createdTime" ).text(timestampToHumanReader(frequency_list[p1].created));	
+								
+
 							}
 						
 						
@@ -185,22 +191,41 @@
 				</div>
 			</div>	
 		
-     	 <div class="row">
-     		 <div class="col-sm-1">
-     		 </div>	
-     	      	 <div class="col-sm-10">  	      	 
-				<label for="customRange3" class="form-label"></label>
-				<input type="range" class="form-range" min="0" max="9" step="1" value="9" id="customRange3" onchange="drawWordcloud(this.value)">
-				</div>
-					<div class="col-sm-1">
-					</div>
-		</div>
+<!--      	 <div class="row"> -->
+<!--      		 <div class="col-sm-1"> -->
+<!--      		 </div>	 -->
+<!--      	      	 <div class="col-sm-10">  	      	  -->
+<!-- 				<label for="customRange3" class="form-label"></label> -->
+<!-- 				<input type="range" class="form-range" min="0" max="9" step="1" value="9" id="customRange3" onchange="drawWordcloud(this.value)"> -->
+<!-- 				</div> -->
+<!-- 					<div class="col-sm-1"> -->
+<!-- 					</div> -->
+<!-- 		</div> -->
 		<div class="row">
 		
 		<p align="center" id="createdTime">
 		
 		</div>
-     
+     	
+     	<div class="row justify-content-md-center" >
+				<div class="col-lg-2"></div>
+				<div class="col-md-auto">
+				<select class="form-control form-control-lg" onchange="drawWordcloud(this.value)">
+ 				 <option selected>시간을 선택해 주세요</option>
+				 <option value="9" >지금</option>
+				 <option value="8" >30분전 </option>
+				 <option value="7" >1시간전</option>
+				 <option value="6" >1시간30분전</option>
+				 <option value="5" >2시간전</option>
+				 <option value="4" >2시간30분전</option>
+				 <option value="3" >3시간전</option>
+				 <option value="2" >3시간30분전</option>
+				 <option value="1" >4시간전</option>
+				 <option value="0" >4시간30분전</option>
+				 </select>
+				 </div>
+				<div class="col-lg-2"></div>
+				</div>
 	
  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-p34f1UUtsS3wqzfto5wAAmdvj+osOnFyQFpp4Ua3gs/ZVWx6oOypYoCJhGGScy+8" crossorigin="anonymous"></script>
 
