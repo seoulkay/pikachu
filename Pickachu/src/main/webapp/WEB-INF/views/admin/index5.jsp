@@ -2,47 +2,42 @@
     pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
-<script src="${pageContext.request.contextPath}/resources/admin/plugins/jquery/jquery.min.js"></script>
-<script src="https://d3js.org/d3.v3.min.js"></script>
-<script src="${pageContext.request.contextPath}/resources/admin/dist/js/pages/d3.layout.cloud.js"></script>
-<!-- Bootstrap 4 -->
-<script src="${pageContext.request.contextPath}/resources/admin/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
-
-
 <head>
-<meta name="keywords" content="뉴스, 검색어, 클라우드, 순위, 뉴스클라우드, 실시간뉴스, 방탄소년단, BTS, 네이버, 다음">
-<meta name="description" content="네이버와 다음에 게시된 뉴스의 헤드라인을 분석해서 가장 많이 언급된 단어들의 클라우드를 보여줍니다.">
-<meta name="author" content="애국청년">
-<meta name="application-name" content="핫눈에 보는 핫뉴스">
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="현재 네이버와 다음의 뉴스중 핫한 단어모음 50개를 보여주는 사이트">
+    <meta name="keywords" content="newsTOP50">
+    <meta name="author" content="hw_kim">
 
- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-wEmeIV1mKuiNpC+IOBjI7aAzPcEZeedi5yW5f2yOq55WWLwNGmvvx4Um1vskeMj0" crossorigin="anonymous">
- <link rel="canonical" href="https://getbootstrap.com/docs/4.4/examples/cover/">
- 
- <title>SOUP by All Korean News Media</title>
+	<script src="${pageContext.request.contextPath}/resources/admin/plugins/jquery/jquery.min.js"></script>
+	<script src="https://d3js.org/d3.v3.min.js"></script>
+	<script src="${pageContext.request.contextPath}/resources/admin/dist/js/pages/d3.layout.cloud.js"></script>
+	<!-- Bootstrap 4 -->
+	<script src="${pageContext.request.contextPath}/resources/admin/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/locale/ko.js"></script>
 
-<script data-ad-client="ca-pub-1262784398485676" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+	<link rel="stylesheet" media="all" href="/ccc/resources/admin/plugins/s3/css_d6kOGVnCcwMwcsGUTQWatc-sqvX3bgXf4Oyc17kjjoY.css" />
+	<link rel="stylesheet" media="all" href="/ccc/resources/admin/plugins/s3/css_QflYzkzjtvPaB2ujG6aohkcyK8rb5ZqDwvxzqFBKEyo.css" />
+	<link rel="stylesheet" media="all" href="/ccc/resources/admin/plugins/s3/css_MiU_ZvzjkHKkL53HRG1eEx0iEVLOzkJYMqQpAFHfIjE.css" />
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-wEmeIV1mKuiNpC+IOBjI7aAzPcEZeedi5yW5f2yOq55WWLwNGmvvx4Um1vskeMj0" crossorigin="anonymous"> 
+
+	<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@700&display=swap" rel="stylesheet">
+	
+	<title>newsTOP50 by All Korean News Media</title>
+
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-p34f1UUtsS3wqzfto5wAAmdvj+osOnFyQFpp4Ua3gs/ZVWx6oOypYoCJhGGScy+8" crossorigin="anonymous"></script>
+	
+	<script data-ad-client="ca-pub-1262784398485676" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 
 </head>
-<!-- <meta name="theme-color" content="#7952b3"> -->
-<meta name="theme-color" content="#563d7c">
+
 
 
 <style>
-/*     body {
-/*         font-family:"Lucida Grande","Droid Sans",Arial,Helvetica,sans-serif; */
-/*     } */
-    
-    a{text-decoration:none;}
-	
-	h4{text-align:center;}
-	
-	h1{
-    background: linear-gradient(to left, #FF6600, rgba(0, 0, 0, 0));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-	}
-
-    
+	body {
+        font-family:"Lucida Grande","Droid Sans",Arial,Helvetica,sans-serif;
+		
+    }
     .legend {
         border: 1px solid #555555;
         border-radius: 5px 5px 5px 5px;
@@ -51,177 +46,90 @@
         padding: 8px;
     }
     .bld {
-        font-weight: bold;
+     font-weight: bold;
     }
-    
-    .svg{ 
-   		position:relative; 
-    	width:100%; 
-      	height:1500px;  	
-	} 
-    .outer {
+    a{text-decoration: none;
+    	text-align: center;	
+    }
+    .button {
+  	 background-color: white;
+ 	 border: none;
+ 	 color: white;
+	 padding: 15px 15px;
+ 	 text-align: center;
+   	 text-decoration: none;
+ 	 display: inline-block;
+  	 font-size: 16px;
+ 	 margin: 4px 2px;
+  	 cursor: pointer;
+	}
+	.outer {
   	text-align: center;
-  	}
-  	
+  	} 	
   	.inner {
   	 display: inline-block;
   	}
-	
-	
- 	.bd-placeholder-img {
-        font-size: 1.125rem;
-        text-anchor: middle;
-        -webkit-user-select: none;
-        -moz-user-select: none;
-        -ms-user-select: none;
-        user-select: none;
-      }
+	.centered { display: table; margin-left: auto; argin-right: auto;}
 
-      @media (min-width: 768px) {
-        .bd-placeholder-img-lg {
-          font-size: 3.5rem;
-        }
-      }
-    
-    .slidecontainer {
- 	 width: 100%; /* Width of the outside container */
-	}
-
-	/* The slider itself */
-	.slider {
-	  -webkit-appearance: none;  /* Override default CSS styles */
-	  appearance: none;
-	  width: 100%; /* Full-width */
-	  height: 5em; /* Specified height */
-	  background: #FFCE85; /* Grey background */
-	  outline: none; /* Remove outline */
-	  opacity: 0.7; /* Set transparency (for mouse-over effects on hover) */
-	  -webkit-transition: .2s; /* 0.2 seconds transition on hover */
-	  transition: opacity .2s;
-	}
-	
-	/* Mouse-over effects */
-	.slider:hover {
-	  opacity: 1; /* Fully shown on mouse-over */
-	}
-	
-	/* The slider handle (use -webkit- (Chrome, Opera, Safari, Edge) and -moz- (Firefox) to override default look) */
-	.slider::-webkit-slider-thumb {
-	  -webkit-appearance: none; /* Override default look */
-	  appearance: none;
-	  width: 5em; /* Set a specific slider handle width */
-	  height: 5em; /* Slider handle height */
-	  background: #FF6600; /* Green background */
-	  cursor: pointer; /* Cursor on hover */
-	}
-	
-	.slider::-moz-range-thumb {
-	  width: 5em; /* Set a specific slider handle width */
-	  height: 5em; /* Slider handle height */
-	  background: #FF6600; /* Green background */
-	  cursor: pointer; /* Cursor on hover */
-	}
-	 
-	/* div { */
-	/*     background: linear-gradient(to top right, #ff3300 0%, #ff99cc 100%); */
-	/* } */
     
 </style>
- <!-- Custom styles for this template -->
- <link href="cover.css" rel="stylesheet">
-    
-<!-- <link href="https://fonts.googleapis.com/css?family=Playfair+Display:700,900" rel="stylesheet"> -->
-<link rel="preconnect" href="https://fonts.gstatic.com">
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@700&display=swap" rel="stylesheet">
+
+
 
 <body>
 
-<!--     <div class="cover-container d-flex w-100 h-70 p-3 mx-auto flex-column"> -->
-<!--  		 <header class="masthead mb-auto"> -->
-<!--    		 <div class="inner"> -->
-<!--    		   <h1 class="masthead-brand">오늘</h1><h5>어떤소식들이</h5> -->
-<!-- <!--      	 <nav class="nav nav-masthead justify-content-center"> -->
-<!--     	</div> -->
-<!--   		</header> -->
-<!-- 	</div> -->
-
-
-
-
-
-
 	<div class="container-fluid" align="center">
-		
-		
 	
 		<div class="row" align="center">
-		  <div class="col-sm-6">
-		  	<h1 class="display-1"><strong>SOUP</strong></h1>
-		  	<h6><strong>news are very hot.</strong></h6>
+		  <div class="col-lg-8">
+		  	<h1 class="display-1" style="color:#0275d8"><strong>NEWS HOT 50</strong></h1>
+<!-- 		  	<h4>시간대별 가장 많이 노출된 뉴스단어 50개를 한눈에</h4> -->
 		  </div>
-		  <div class="col-sm-4">
-		  <p class="lead">지금 가장 뜨거운 단어들을 확인하세요. 한국 뉴스 미디어를 골고루 넣어 방금 끓인 수프.</p>
+		  <div class="col-lg-3">
+		  <p>시간대별 가장 많이 노출되고 있는 뉴스 토픽 50개를 한눈에 보자.</p>
 		  </div>
-		  <div class="col-sm-2" align="right">ver1.5</div>
+		  <div class="col-lg-1" align="right">ver1.6</div>
 		</div>
 	
 		<div class="row" id="my_dataviz" align="center" >
 		</div>
-		
-		<div class="row" align="center" >
-			
-			<h1 id="collectedTime" class="display-3"></h1>
-			
-		</div>
-		
-		<div class="row" align="center">	
-			<div class="col-sm-8">
-			<h2 id="collectedTime" class="display-3"></h2>
-			</div>	
-			<div class="col-sm-2">
-			<a  href="index5?source=naver">네이버 기반</a>
-			</div>
-			<div class="col-sm-2">
-			<a  href="index5?source=daum">다음 기반</a>
-			</div>
 
-			
-		</div>
-		<div class="row" align="center" >
 		
-<!-- 		<nav class="navbar fixed-bottom navbar-light bg-none">	 -->
-			<div class="slidecontainer">
-			<label for="customRange3" class="slidecontainer" ></label>
- 			<input type="range" min="1" max="9" step="1" value="9" class="slider" id="customRange3" onChange="drawWordCloud(this.value)">
-
+		<div class="row justify-content-md-center" >
+			<div class="col-lg-2"></div>
+				<div class="col-md-auto">
+				<select class="form-control form-control-lg" onchange="drawWordCloud(this.value)" id="timeSelector">
+				</select>
+				</div>
+			<div class="col-lg-2"></div>
+			
+			<div class="low">
+					<div class="col" >
+					</div>
 			</div>
-<!-- 		</nav>	 -->
 		</div>
+		
+		
+		<div class="row justify-content-md-center" >
+				
+				<div class="btn-group" role="group">
+				    <button id="btnGroupDrop1" type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+				     카테고리 
+				    </button>
+				    <ul class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+				      <li><a href="index5?source=naver" >네이버 뉴스</a></li>
+				      <li> <a href="index5?source=daum" >다음 뉴스</a></li>
+				    </ul>
+				</div>
+				
+		</div>	
+		
+
+		
+
 		
 	</div>
-	
-	
 
-
-
-
-   
-
-	
-<!-- <nav class="navbar fixed-bottom navbar-light bg-none">	 -->
-	
-
-<!-- 	<div class="slidecontainer"> -->
-<!-- 	<label for="customRange3" class="slidecontainer" ></label> -->
-<!--  		<input type="range" min="1" max="9" step="1" value="9" class="slider" id="customRange3" onChange="drawWordCloud(this.value)"> -->
-
-<!-- 	</div> -->
-
-
-<!-- </nav>	 -->
-
-
-  
 
 
 
@@ -256,13 +164,14 @@ function toggleUrl(){
 
 function timeStampToHuman(p1){
 	const dateObject = new Date(p1);
-	const humanDateFormat = dateObject.toLocaleString();
+	const humanDateFormat = moment(dateObject).format('YYYY, MMMM Do  h:mm a')
+
 	return humanDateFormat;
 }
 
-var weight = 3,   // change me
+var weight = 1,   // change me
 width = window.innerWidth,
-height = window.innerHeight - 400;
+height = window.innerHeight - 300;
 
 
 // draw 함수 (워드 클라우드 관련 함수)
@@ -282,11 +191,8 @@ function draw(words) {
     d3.select("#my_dataviz").append("svg")
             .attr("width", width)
             .attr("height", height)
-            .attr("viewbox", "0 0 100 100")
-            //.attr("width", drawWordCloud().size[0])
-     		//.attr("height", drawWordCloud().size[1])
-     		
-            //.attr("class", "wordcloud")
+            //.attr("viewbox", "0 0 100 100")
+
             .append("g")
             // without the transform, words words would get cutoff to the left and top, they would
             // appear outside of the SVG area
@@ -297,7 +203,7 @@ function draw(words) {
             .selectAll("text")
             .data(words)
             .enter().append("text")
-            .style("font-size", function(d) { return d.size + "px"; })
+            .style("font-size", function(d) { return d.size  + "px"; })
             .style("fill", function(d, i) { return color(i); })
             //.style("padding", 3 )
             .style("font-family", "Noto Sans KR")
@@ -354,6 +260,16 @@ function news20Ajax(p1){
 		
 		drawWordCloud(9);
 
+		//타임 셀렉터에 옵션을 자동으로 추가. 
+// 		$("#timeSelector").append(" <option selected>시간을 선택</option>");
+		
+		//
+		//
+		console.log(frequency_list.length);
+		//frequency_list 만큼 반복해서 append
+		for(var i=frequency_list.length-1; i>-1; i--){
+			$("#timeSelector").append(' <option value='+i+'>'+timeStampToHuman(frequency_list[i].created)+'</option>');
+		}
 		
 	})
 	}
@@ -374,12 +290,13 @@ function drawWordCloud(p1){
 	.words(frequency_list[p1].top20)
 	.rotate(0)
 	.padding(1)
-	.fontSize(function(d) { return d.size ;	})         
+	.fontSize(function(d) { return d.size * weight ;	})         
 	.on("end" , draw)
 	.start();
 
-	$("#collectedTime").text(timeStampToHuman(frequency_list[p1].created));
+// 	$("#collectedTime").text(timeStampToHuman(frequency_list[p1].created));
 }
+
 
 
 
