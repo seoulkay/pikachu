@@ -93,8 +93,8 @@
 						<div class="col-md-auto">
 							<select onchange="if(this.value) location.href=(this.value);" class="form-select form-select-lg mb-3" aria-label=".form-select-lg example">
 							 <option selected>뉴스선택</option>
-							  <option value="index6?source=naver">네이버 뉴스</option>
-							  <option value="index6?source=daum">다음 뉴스</option>
+							  <option value="index6?source=naver" id="naver_select">네이버 뉴스</option>
+							  <option value="index6?source=daum" id="daum_select">다음 뉴스</option>
 							</select>
 							<select class="form-select form-select-lg mb-3" aria-label=".form-select-lg example" onchange="drawWordcloud(this.value)" id="timeSelector">
 						</select>
@@ -204,7 +204,20 @@
 
 										return humanDateFormat
 									}
-		
+									
+									var source = "${source}";
+									
+									function toggleName(){
+
+										if(source=="naver"){
+											$("#naver_select").attr("selected", "selected");
+										}else if(source="daum"){
+											$("#daum_select").attr("selected", "selected");
+										}
+									}
+
+									toggleName();
+									
 							</script>
 </body>
 <footer>
