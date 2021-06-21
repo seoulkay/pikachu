@@ -105,9 +105,9 @@
 				
 			<div class="col-md-auto">
 				<select onchange="if(this.value) location.href=(this.value);" class="form-select form-select-md mb-3" >
-					<option selected>뉴스 선택</option>
-					<option value="index5?source=naver">네이버 뉴스</option>
-					<option value="index5?source=daum">다음 뉴스</option>
+<!-- 					<option selected>뉴스 선택</option> -->
+					<option value="index5?source=naver" id="naver_select">네이버 뉴스</option>		
+					<option value="index5?source=daum" id="daum_select">다음 뉴스</option>
 				</select>
 			</div>
 			
@@ -141,18 +141,24 @@
 
 <script>
 var source = "${source}";
+
 var frequency_list = {};
 
+
+
 function toggleName(){
-	var daum = "다음";
-	var naver = "네이버";
-	
+
 	if(source=="naver"){
-		return daum;
-	}else{
-		return naver;
+		$("#naver_select").attr("selected", "selected");
+	}else if(source="daum"){
+		$("#daum_select").attr("selected", "selected");
 	}
 }
+
+toggleName();
+
+
+
 
 function toggleUrl(){
 	var daum1 = "daum";
