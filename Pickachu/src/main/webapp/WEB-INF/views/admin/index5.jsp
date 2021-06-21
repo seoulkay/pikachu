@@ -5,8 +5,9 @@
 <head>
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content="현재 네이버와 다음의 뉴스중 핫한 단어모음 50개를 보여주는 사이트">
-    <meta name="keywords" content="newsTOP50">
+    <meta name="keywords" content="호외요!">
     <meta name="author" content="hw_kim">
+    <meta name="version" content="1.8">
 
 	<script src="${pageContext.request.contextPath}/resources/admin/plugins/jquery/jquery.min.js"></script>
 	<script src="https://d3js.org/d3.v3.min.js"></script>
@@ -21,9 +22,9 @@
 	<link rel="stylesheet" media="all" href="/ccc/resources/admin/plugins/s3/css_MiU_ZvzjkHKkL53HRG1eEx0iEVLOzkJYMqQpAFHfIjE.css" />
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-wEmeIV1mKuiNpC+IOBjI7aAzPcEZeedi5yW5f2yOq55WWLwNGmvvx4Um1vskeMj0" crossorigin="anonymous"> 
 
-	<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@700&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@500&display=swap" rel="stylesheet">
 	
-	<title>newsTOP50 by All Korean News Media</title>
+	<title>호외요! Collected From All Korean News Media</title>
 
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-p34f1UUtsS3wqzfto5wAAmdvj+osOnFyQFpp4Ua3gs/ZVWx6oOypYoCJhGGScy+8" crossorigin="anonymous"></script>
 	
@@ -35,7 +36,8 @@
 
 <style>
 	body {
-        font-family:"Lucida Grande","Droid Sans",Arial,Helvetica,sans-serif;
+        font-family:'Noto Sans KR', sans-serif;
+        font-weight: 500;
 		
     }
     .legend {
@@ -80,15 +82,15 @@
 
 	<div class="container-fluid" align="center">
 	
-		<div class="row" align="center">
-		  <div class="col-lg-8">
-		  	<h1 class="display-1" style="color:#0275d8"><strong>NEWS HOT 50</strong></h1>
+		<div class="row justify-content-md-center" >
+		  <div class="col-lg-6">
+		  	<h1 class="display-3" style="color:#0A0A0A"><strong><i>호외요!</i></strong></h1>
 <!-- 		  	<h4>시간대별 가장 많이 노출된 뉴스단어 50개를 한눈에</h4> -->
 		  </div>
-		  <div class="col-lg-3">
-		  <p>시간대별 가장 많이 노출되고 있는 뉴스 토픽 50개를 한눈에 보자.</p>
+		  <div class="col-lg-6">
+		  <p>지금 이 순간, 세상을 알 수 있는 단 하나의 화면</p>
 		  </div>
-		  <div class="col-lg-1" align="right">ver1.6</div>
+<!-- 		  <div class="col-lg-1" align="right">ver1.8</div> -->
 		</div>
 	
 		<div class="row" id="my_dataviz" align="center" >
@@ -96,33 +98,35 @@
 
 		
 		<div class="row justify-content-md-center" >
-			<div class="col-lg-2"></div>
-				<div class="col-md-auto">
-				<select class="form-control form-control-lg" onchange="drawWordCloud(this.value)" id="timeSelector">
+			<div class="col-md-auto">		
+				<select class="form-select form-select-md mb-3" onchange="drawWordCloud(this.value)" id="timeSelector">
 				</select>
-				</div>
-			<div class="col-lg-2"></div>
-			
-			<div class="low">
-					<div class="col" >
-					</div>
+			</div>	
+				
+			<div class="col-md-auto">
+				<select onchange="if(this.value) location.href=(this.value);" class="form-select form-select-md mb-3" >
+					<option selected>뉴스 선택</option>
+					<option value="index5?source=naver">네이버 뉴스</option>
+					<option value="index5?source=daum">다음 뉴스</option>
+				</select>
 			</div>
+			
 		</div>
 		
 		
-		<div class="row justify-content-md-center" >
+<!-- 		<div class="row justify-content-md-center" > -->
 				
-				<div class="btn-group" role="group">
-				    <button id="btnGroupDrop1" type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-				     카테고리 
-				    </button>
-				    <ul class="dropdown-menu" aria-labelledby="btnGroupDrop1">
-				      <li><a href="index5?source=naver" >네이버 뉴스</a></li>
-				      <li> <a href="index5?source=daum" >다음 뉴스</a></li>
-				    </ul>
-				</div>
+<!-- 				<div class="btn-group" role="group"> -->
+<!-- 				    <button id="btnGroupDrop1" type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"> -->
+<!-- 				     카테고리  -->
+<!-- 				    </button> -->
+<!-- 				    <ul class="dropdown-menu" aria-labelledby="btnGroupDrop1"> -->
+<!-- 				      <li><a href="index5?source=naver" >네이버 뉴스</a></li> -->
+<!-- 				      <li> <a href="index5?source=daum" >다음 뉴스</a></li> -->
+<!-- 				    </ul> -->
+<!-- 				</div> -->
 				
-		</div>	
+<!-- 		</div>	 -->
 		
 
 		
@@ -170,7 +174,7 @@ function timeStampToHuman(p1){
 }
 
 var weight = 1,   // change me
-width = window.innerWidth,
+width = window.innerWidth - 21,
 height = window.innerHeight - 300;
 
 
@@ -181,8 +185,9 @@ var color = d3.scale.linear()
 	.domain([100,20,15,10,6,5,4,3,2,1,0])
 //	.domain([150,30,17.5,15,8,7,6,4,3,1,0])
 
-
-	.range(["#FFCE85","#FFC579","#FFBB6D","#FFB261","#FFA855","#FF9F49","#FF953C","#FF8C30","#FF8224","#FF7918","#FF6F0C","#FF6600"]);
+	.range(["#C3B196","#B2A289","#A1937D","#918370","#807463","#6F6556","#5E564A","#4D473D","#3C3830","#2C2823","#1B1917","#0A0A0A"]);
+	//.range(["#FFD324","#E9C122","#D2AE1F","#BC9C1D","#A68A1B","#907818","#796516","#FFC800","#C29903","#856905","#473A08","#0A0A0A"]);
+	//.range(["#FFCE85","#FFC579","#FFBB6D","#FFB261","#FFA855","#FF9F49","#FF953C","#FF8C30","#FF8224","#FF7918","#FF6F0C","#FF6600"]);
 	//.range(["#96F2FA", "#8DDAFB", "#86C6FB", "#7DB0FB", "#759AFC", "#6D84FC", "#656EFD", "#5D58FD", "#5542FE", "#4C2CFE", "#4416FF", "#3C00FF"]);
 //	.range(["#ddd", "#ccc", "#bbb", "#aaa", "#999", "#888", "#777", "#666", "#555", "#444", "#333", "#222"]);
 //한 줄 끝
@@ -207,7 +212,7 @@ function draw(words) {
             .style("fill", function(d, i) { return color(i); })
             //.style("padding", 3 )
             .style("font-family", "Noto Sans KR")
-            .style("font-weight", "700")
+            .style("font-weight", "500")
             .attr("text-anchor", "middle")
             .attr("transform", function(d) {
                 return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
