@@ -17,10 +17,11 @@
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/locale/ko.js"></script>
 	<script src="https://d3js.org/d3.v3.min.js"></script>
 	<script src="${pageContext.request.contextPath}/resources/admin/dist/js/pages/d3.layout.cloud.js"></script>
+	
+	<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300&display=swap" rel="stylesheet">
+	<link rel="preconnect" href="https://fonts.gstatic.com">
+	<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500&display=swap" rel="stylesheet">
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/admin/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
-	<link rel="stylesheet" media="all" href="${pageContext.request.contextPath}/resources/admin/plugins/s3/css_d6kOGVnCcwMwcsGUTQWatc-sqvX3bgXf4Oyc17kjjoY.css" />
-	<link rel="stylesheet" media="all" href="${pageContext.request.contextPath}/resources/admin/plugins/s3/css_QflYzkzjtvPaB2ujG6aohkcyK8rb5ZqDwvxzqFBKEyo.css" />
-	<link rel="stylesheet" media="all" href="${pageContext.request.contextPath}/resources/admin/plugins/s3/css_MiU_ZvzjkHKkL53HRG1eEx0iEVLOzkJYMqQpAFHfIjE.css" />
 
  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-wEmeIV1mKuiNpC+IOBjI7aAzPcEZeedi5yW5f2yOq55WWLwNGmvvx4Um1vskeMj0" crossorigin="anonymous">
  <title>지금뉴스</title>
@@ -28,7 +29,7 @@
 	
 	<style>
     body {
-        font-family:"Lucida Grande","Droid Sans",Arial,Helvetica,sans-serif;
+        font-family:'Noto Serif KR', serif;
     }
     .legend {
         border: 1px solid #555555;
@@ -39,9 +40,6 @@
     }
     .bld {
      font-weight: bold;
-    }
-    a{text-decoration: none;
-    	text-align: center;	
     }
     .button {
   	 background-color: white;
@@ -62,6 +60,14 @@
   	 display: inline-block;
   	}
 	.centered { display: table; margin-left: auto; argin-right: auto;}
+	a:link {text-decoration: none; text-align: center;	  	
+    }
+    a:visited {color:#646464; text-decoration: none;	  	
+    }
+    a:hover { color:#646464; text-decoration: none;	  	
+    }
+    small {color:#0C90AD;
+    }
 	</style>
 </head>
 
@@ -69,13 +75,13 @@
 				<div class="container-fluid">
 					<div class="row" >
 						<div class="col-md-auto">
-						<h3>지금뉴스</h3>
-						<p> 시간대별 가장많이 노출된 뉴스단어 Top50 </p>
+						<h3><a style="font-family:'Noto Serif KR'" href="index6?source=naver">지금뉴스</a></h3>
+						<small> 시간대별 가장많이 노출된 뉴스단어 Top50 </small>
 						</div>
 					
 					</div>
 				
-				
+					<p>
 				
 					<div class="row" >
 						<div class="col" id="my_dataviz"></div>
@@ -83,40 +89,40 @@
 					</div>
 
 				<div class="row justify-content-md-center" >
+						
+						<div class="col-md-auto">
+							<select onchange="if(this.value) location.href=(this.value);" class="form-select form-select-lg mb-3" aria-label=".form-select-lg example">
+							 <option selected>뉴스선택</option>
+							  <option value="index6?source=naver">네이버 뉴스</option>
+							  <option value="index6?source=daum">다음 뉴스</option>
+							</select>
+							<select class="form-select form-select-lg mb-3" aria-label=".form-select-lg example" onchange="drawWordcloud(this.value)" id="timeSelector">
+						</select>
+						 </div>
+						
+						</div>
+				</div>
 				
-				    <div class="btn-group" role="group">
-				    <button id="btnGroupDrop1" type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-				      분야별 
-				    </button>
-				    <ul class="dropdown-menu" aria-labelledby="btnGroupDrop1">
-				      <li><a href="index6?source=naver" >네이버 뉴스</a></li>
-				      <li> <a href="index6?source=daum" >다음 뉴스</a></li>
-				    </ul>
-				  </div>
-				<div class="low">
-				<div class="col" >
-				</div>
-				</div>
-			</div>	
-
-     	<div class="row justify-content-md-center" >
-				<div class="col-lg-2"></div>
-				<div class="col-md-auto">
-				<select class="form-control form-control-lg" onchange="drawWordcloud(this.value)" id="timeSelector">
-				</select>
-				 </div>
-				<div class="col-lg-2"></div>
-				</div>
-	</div>
+			<p>
+<!-- 		     	<div class="row justify-content-md-center" > -->
+						
+<!-- 						<div class="col-md-auto"> -->
+<!-- 						<select class="form-select form-select-lg mb-3" aria-label=".form-select-lg example" onchange="drawWordcloud(this.value)" id="timeSelector"> -->
+<!-- 						</select> -->
+<!-- 						 </div> -->
+						
+<!-- 						</div> -->
+			
 		 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-p34f1UUtsS3wqzfto5wAAmdvj+osOnFyQFpp4Ua3gs/ZVWx6oOypYoCJhGGScy+8" crossorigin="anonymous"></script>
 		<script>
 								console.log(window.outerWidth);
 								var frequency_list = {};
 								
 								var color = d3.scale.linear()
-								.domain([100,20,15,10,6,5,4,3,2,1,0])
-								.range(["#ddd", "#ccc", "#bbb", "#aaa", "#999", "#888", "#777", "#666", "#555", "#444", "#333", "#222"]);
-		
+								.domain([100,70,60,50,40,30,20,10,8,5,1])
+// 								.range(["#ddd", "#ccc", "#bbb", "#aaa", "#999", "#888", "#777", "#666", "#555", "#444", "#333", "#222"]);
+								.range(["#F8F1E9", "#F8F1E9", "#DAEFF5", "#F3E4E7", "#91E0F4", "#91E0F4", "#F3E4E7", "#F3E4E7", "#B1AFCD", "#B1AFCD", "#0C90AD", "#0C90AD"]);
+								
 									var fill = d3.scale.category20();
 									
 									var weight = 1, //글자크기정하기 
@@ -133,7 +139,7 @@
 									           .data(words)
 									           .enter().append("text")
 									           .style("font-size", function(d) { return d.size + "px"; })
-									           .style("font-family", "Impact")
+									           .style("font-family", "Noto Sans KR")
 									           .style("fill", function(d, i) { return color(i); })   
 									           .attr("text-anchor", "middle")
 									           .attr("transform", function(d) {
