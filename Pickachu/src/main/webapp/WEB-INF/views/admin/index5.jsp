@@ -4,10 +4,10 @@
 <html>
 <head>
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content="현재 네이버와 다음의 뉴스중 핫한 단어모음 50개를 보여주는 사이트">
-    <meta name="keywords" content="호외요!">
+    <meta name="description" content="한국의 실시간 주요 뉴스를 단어로 한눈에 확인">
+    <meta name="keywords" content="뉴스위키">
     <meta name="author" content="hw_kim">
-    <meta name="version" content="1.8">
+    <meta name="version" content="2.0">
 
 	<script src="${pageContext.request.contextPath}/resources/admin/plugins/jquery/jquery.min.js"></script>
 	<script src="https://d3js.org/d3.v3.min.js"></script>
@@ -23,8 +23,9 @@
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-wEmeIV1mKuiNpC+IOBjI7aAzPcEZeedi5yW5f2yOq55WWLwNGmvvx4Um1vskeMj0" crossorigin="anonymous"> 
 
 	<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@500&display=swap" rel="stylesheet">
+		<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@700&display=swap" rel="stylesheet">
 	
-	<title>호외요! Collected From All Korean News Media</title>
+	<title>뉴스위키 - 한국 언론사에서 가장 많이 언급되고 있는 실시간 뉴스</title>
 
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-p34f1UUtsS3wqzfto5wAAmdvj+osOnFyQFpp4Ua3gs/ZVWx6oOypYoCJhGGScy+8" crossorigin="anonymous"></script>
 	
@@ -35,11 +36,17 @@
 
 
 <style>
-	body {
+	.title {
+        font-family:'Noto Sans KR', sans-serif;
+        font-weight: 700;
+		
+    }
+    body {
         font-family:'Noto Sans KR', sans-serif;
         font-weight: 500;
 		
     }
+    
     .legend {
         border: 1px solid #555555;
         border-radius: 5px 5px 5px 5px;
@@ -48,10 +55,15 @@
         padding: 8px;
     }
     .bld {
-     font-weight: bold;
+     	font-weight: bold;
     }
-    a{text-decoration: none;
+    a{
+    	text-decoration: none;
     	text-align: center;	
+    }
+    p{
+  	 	font-size: 0.8em;
+
     }
     .button {
   	 background-color: white;
@@ -82,13 +94,26 @@
 
 	<div class="container-fluid" align="center">
 	
-		<div class="row justify-content-md-center" >
-		  <div class="col-lg-6">
-		  	<h1 class="display-3" style="color:#0A0A0A"><strong><i>호외요!</i></strong></h1>
+		<div class="row justify-content-md-center mb-3" ></div>
+	
+		<div class="row justify-content-md-center " >
+<!-- 		  <div class="col-lg-6"> -->
+		  	<h1 id="title" >
+		  		<span style="color:#E85C90; font-size:1.2em;">뉴</span>
+		  		<span style="color:#B491B1; font-size:1.2em;"><strong><i>스</i></strong></span>
+		  		<span style="color:#8CBACB; font-size:1.2em;"><strong>위</strong></span>
+		  		<span style="color:#58EFEC;">키</span>		  		
+
+<!-- 		  		<span style="color:#E81CFF;"><strong><i>뉴</i></strong></span> -->
+<!-- 		  		<span style="color:#AB5BFF;"><strong><i>뉴</i></strong></span> -->
+<!-- 		  		<span style="color:#7D8AFF;"><strong><i>뉴</i></strong></span> -->
+<!-- 		  		<span style="color:#40C9FF;"><strong><i>뉴</i></strong></span>		  		 -->
+		  	</h1>
 <!-- 		  	<h4>시간대별 가장 많이 노출된 뉴스단어 50개를 한눈에</h4> -->
 		  </div>
-		  <div class="col-lg-6">
-		  <p>지금 이 순간, 세상을 알 수 있는 단 하나의 화면</p>
+		  <div class="row justify-content-md-center mt-1 mb-2" >
+<!-- 		  <div class="col-lg-6"> -->
+		  <p>미디어에서 가장 많이 언급되고 있는 실시간 뉴스</p>
 		  </div>
 <!-- 		  <div class="col-lg-1" align="right">ver1.8</div> -->
 		</div>
@@ -97,18 +122,29 @@
 		</div>
 
 		
-		<div class="row justify-content-md-center" >
+		<div class="row justify-content-md-center mb-4" >
 			<div class="col-md-auto">		
-				<select class="form-select form-select-md mb-3" onchange="drawWordCloud(this.value)" id="timeSelector">
+				<select class="form-select form-select-sm mb-3" onchange="drawWordCloud(this.value)" id="timeSelector">
 				</select>
 			</div>	
 				
 			<div class="col-md-auto">
-				<select onchange="if(this.value) location.href=(this.value);" class="form-select form-select-md mb-3" >
+				<select onchange="if(this.value) location.href=(this.value);" class="form-select form-select-sm mb-3" >
 <!-- 					<option selected>뉴스 선택</option> -->
 					<option value="index5?source=naver" id="naver_select">네이버 뉴스</option>		
 					<option value="index5?source=daum" id="daum_select">다음 뉴스</option>
 				</select>
+			</div>
+			
+		</div>
+		
+		<div class="row justify-content-md-center" >
+			<div class="col-md-auto"  style="font-size:0.5em">		
+				<p><small>뉴스위키 사용법</small></p>
+			</div>	
+				
+			<div class="col-md-auto" style="font-size:0.5em">
+				<p><small>Copyright 2021. 뉴스위키 All Rights Reserved.</small></p>
 			</div>
 			
 		</div>
@@ -174,7 +210,7 @@ function toggleUrl(){
 
 function timeStampToHuman(p1){
 	const dateObject = new Date(p1);
-	const humanDateFormat = moment(dateObject).format('YYYY, MMMM Do  h:mm a')
+	const humanDateFormat = moment(dateObject).format('MMMM Do  a h:mm')
 
 	return humanDateFormat;
 }
@@ -191,7 +227,9 @@ var color = d3.scale.linear()
 	.domain([100,20,15,10,6,5,4,3,2,1,0])
 //	.domain([150,30,17.5,15,8,7,6,4,3,1,0])
 
-	.range(["#C3B196","#B2A289","#A1937D","#918370","#807463","#6F6556","#5E564A","#4D473D","#3C3830","#2C2823","#1B1917","#0A0A0A"]);
+	//.range(["#40C9FF","#4FB9FF","#5FAAFF","#6E9AFF","#7D8AFF","#8C7AFF","#9C6BFF","#AB5BFF","#BA4BFF","#C93BFF","#D92CFF","#E81CFF"]);
+	.range(["#58EFEC","#65E2E4","#72D4DB","#7FC7D3","#8CBACB","#99ACC2","#A79FBA","#B491B1","#C184A9","#CE77A1","#DB6998","#E85C90"]);
+	//.range(["#C3B196","#B2A289","#A1937D","#918370","#807463","#6F6556","#5E564A","#4D473D","#3C3830","#2C2823","#1B1917","#0A0A0A"]);
 	//.range(["#FFD324","#E9C122","#D2AE1F","#BC9C1D","#A68A1B","#907818","#796516","#FFC800","#C29903","#856905","#473A08","#0A0A0A"]);
 	//.range(["#FFCE85","#FFC579","#FFBB6D","#FFB261","#FFA855","#FF9F49","#FF953C","#FF8C30","#FF8224","#FF7918","#FF6F0C","#FF6600"]);
 	//.range(["#96F2FA", "#8DDAFB", "#86C6FB", "#7DB0FB", "#759AFC", "#6D84FC", "#656EFD", "#5D58FD", "#5542FE", "#4C2CFE", "#4416FF", "#3C00FF"]);
