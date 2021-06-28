@@ -91,12 +91,11 @@
 /*   		height: 200px; */
 /* 	} */
 
-/* 	.item img { */
-/*     	position: absolute; */
-/*     	top: 0; */
-/*     	left: 0; */
-/*     	min-height: 200px; */
-/* 	} */
+/*  	.carousel-item { */
+/* 		width: auto; */
+/*      	height: 120px; */
+/*      	max-height: 120px; */
+/*  	} */
 	
 	.carousel-control-prev-icon,
 	.carousel-control-next-icon {
@@ -136,6 +135,7 @@
 	
 		<div class="row justify-content-md-center " >
 <!-- 		  <div class="col-lg-6"> -->
+		  	<a href="http://www.coldestseason.me">
 		  	<h1 id="title" >
 		  		<span style="color:#E85C90; font-size:1.2em;">뉴</span>
 		  		<span style="color:#B491B1; font-size:1.2em;"><strong><i>스</i></strong></span>
@@ -147,6 +147,7 @@
 <!-- 		  		<span style="color:#7D8AFF;"><strong><i>뉴</i></strong></span> -->
 <!-- 		  		<span style="color:#40C9FF;"><strong><i>뉴</i></strong></span>		  		 -->
 		  	</h1>
+		  	</a>
 <!-- 		  	<h4>시간대별 가장 많이 노출된 뉴스단어 50개를 한눈에</h4> -->
 		  </div>
 		  
@@ -189,17 +190,17 @@
 			  <div class="carousel-inner">
 			    <div class="carousel-item active">
 			      	<a href="http://kimsouvenir.cafe24.com/surl/O/11" target="_blank">
-			      		<img class="d-block w-100" src="https://images.pexels.com/photos/213399/pexels-photo-213399.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="광고이미지 1" height="120">
+			      		<img class="d-block w-100" src="https://images.pexels.com/photos/213399/pexels-photo-213399.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="광고이미지 1" height="110">
 			    	</a>
 			    </div>
 			    <div class="carousel-item">
 			    	<a href="http://kimsouvenir.cafe24.com/surl/O/11" target="_blank">
-			      		<img class="d-block w-100" src="https://images.pexels.com/photos/2355519/pexels-photo-2355519.jpeg?auto=compress&cs=tinysrgb&dpr=3&h=750&w=1260" alt="광고이미지 2" height="120">
+			      		<img class="d-block w-100" src="https://images.pexels.com/photos/2355519/pexels-photo-2355519.jpeg?auto=compress&cs=tinysrgb&dpr=3&h=750&w=1260" alt="광고이미지 2" height="110">
 			    	</a>
 			    </div>
 			    <div class="carousel-item">
 			    	<a href="http://kimsouvenir.cafe24.com/surl/O/11" target="_blank">
-			      		<img class="d-block w-100" src="https://images.pexels.com/photos/2544554/pexels-photo-2544554.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="광고이미지 3" height="120">
+			      		<img class="d-block w-100" src="https://images.pexels.com/photos/2544554/pexels-photo-2544554.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="광고이미지 3" height="110">
 			    	</a>
 			    </div>
 			  </div>
