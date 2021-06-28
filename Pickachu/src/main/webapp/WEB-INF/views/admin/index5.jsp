@@ -188,13 +188,19 @@
 			  
 			  <div class="carousel-inner">
 			    <div class="carousel-item active">
-			      <img class="d-block w-100" src="https://images.pexels.com/photos/213399/pexels-photo-213399.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="광고이미지 1" height="120">
+			      	<a href="http://kimsouvenir.cafe24.com/surl/O/11" target="_blank">
+			      		<img class="d-block w-100" src="https://images.pexels.com/photos/213399/pexels-photo-213399.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="광고이미지 1" height="120">
+			    	</a>
 			    </div>
 			    <div class="carousel-item">
-			      <img class="d-block w-100" src="https://images.pexels.com/photos/2355519/pexels-photo-2355519.jpeg?auto=compress&cs=tinysrgb&dpr=3&h=750&w=1260" alt="광고이미지 2" height="120">
+			    	<a href="http://kimsouvenir.cafe24.com/surl/O/11" target="_blank">
+			      		<img class="d-block w-100" src="https://images.pexels.com/photos/2355519/pexels-photo-2355519.jpeg?auto=compress&cs=tinysrgb&dpr=3&h=750&w=1260" alt="광고이미지 2" height="120">
+			    	</a>
 			    </div>
 			    <div class="carousel-item">
-			      <img class="d-block w-100" src="https://images.pexels.com/photos/2544554/pexels-photo-2544554.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="광고이미지 3" height="120">
+			    	<a href="http://kimsouvenir.cafe24.com/surl/O/11" target="_blank">
+			      		<img class="d-block w-100" src="https://images.pexels.com/photos/2544554/pexels-photo-2544554.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="광고이미지 3" height="120">
+			    	</a>
 			    </div>
 			  </div>
 			  
