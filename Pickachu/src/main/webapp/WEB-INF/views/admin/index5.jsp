@@ -7,7 +7,7 @@
     <meta name="description" content="한국의 실시간 주요 뉴스를 단어로 한눈에 확인">
     <meta name="keywords" content="뉴스위키">
     <meta name="author" content="hw_kim">
-    <meta name="version" content="2.0">
+    <meta name="version" content="2.1">
 
 	<script src="${pageContext.request.contextPath}/resources/admin/plugins/jquery/jquery.min.js"></script>
 	<script src="https://d3js.org/d3.v3.min.js"></script>
@@ -85,6 +85,44 @@
   	}
 	.centered { display: table; margin-left: auto; argin-right: auto;}
 
+
+
+/* 	.carousel { */
+/*   		height: 200px; */
+/* 	} */
+
+/* 	.item img { */
+/*     	position: absolute; */
+/*     	top: 0; */
+/*     	left: 0; */
+/*     	min-height: 200px; */
+/* 	} */
+	
+	.carousel-control-prev-icon,
+	.carousel-control-next-icon {
+	  height: 1em;
+	  width: 1em;
+	  outline: none;
+	  background-size: 100%, 100%;
+	  border-radius: 50%;
+	  background-image: none;
+	}
+
+	.carousel-control-next-icon:after {
+	  content: '>';
+	  font-size: 1em;
+	  color: red;
+	}
+
+	.carousel-control-prev-icon:after {
+	  content: '<';
+	  font-size: 1em;
+	  color: red;
+	}
+	
+	.carousel-indicators {
+		color: red;
+	}
     
 </style>
 
@@ -111,18 +149,19 @@
 		  	</h1>
 <!-- 		  	<h4>시간대별 가장 많이 노출된 뉴스단어 50개를 한눈에</h4> -->
 		  </div>
-		  <div class="row justify-content-md-center mt-1 mb-2" >
+		  
+		<div class="row justify-content-md-center mt-1 mb-2" >
 <!-- 		  <div class="col-lg-6"> -->
 		  <p>미디어에서 가장 많이 언급되고 있는 실시간 뉴스</p>
-		  </div>
-<!-- 		  <div class="col-lg-1" align="right">ver1.8</div> -->
 		</div>
+<!-- 		  <div class="col-lg-1" align="right">ver1.8</div> -->
+		
 	
 		<div class="row" id="my_dataviz" align="center" >
 		</div>
 
 		
-		<div class="row justify-content-md-center mb-4" >
+		<div class="row justify-content-md-center mb-3" >
 			<div class="col-md-auto">		
 				<select class="form-select form-select-sm mb-3" onchange="drawWordCloud(this.value)" id="timeSelector">
 				</select>
@@ -138,32 +177,55 @@
 			
 		</div>
 		
-		<div class="row justify-content-md-center" >
-			<div class="col-md-auto"  style="font-size:0.5em">		
-				<p><small>뉴스위키 사용법</small></p>
-			</div>	
-				
-			<div class="col-md-auto" style="font-size:0.5em">
-				<p><small>Copyright 2021. 뉴스위키 All Rights Reserved.</small></p>
-			</div>
-			
+<!-- 		<div class="row justify-content-md-center mb-3" > -->
+		<div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+			  
+			  <ul class="carousel-indicators">
+			    <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
+			    <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
+			    <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
+			  </ul>
+			  
+			  <div class="carousel-inner">
+			    <div class="carousel-item active">
+			      <img class="d-block w-100" src="https://images.pexels.com/photos/213399/pexels-photo-213399.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="광고이미지 1" height="120">
+			    </div>
+			    <div class="carousel-item">
+			      <img class="d-block w-100" src="https://images.pexels.com/photos/2355519/pexels-photo-2355519.jpeg?auto=compress&cs=tinysrgb&dpr=3&h=750&w=1260" alt="광고이미지 2" height="120">
+			    </div>
+			    <div class="carousel-item">
+			      <img class="d-block w-100" src="https://images.pexels.com/photos/2544554/pexels-photo-2544554.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="광고이미지 3" height="120">
+			    </div>
+			  </div>
+			  
+			  <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+			    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+<!-- 			    <span class="sr-only">Previous</span> -->
+			  </a>
+			  <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+			    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+<!-- 			    <span class="sr-only">Next</span> -->
+			  </a>
 		</div>
-		
+<!-- 		</div> -->
 		
 <!-- 		<div class="row justify-content-md-center" > -->
+<!-- 			<div class="col-md-auto"  style="font-size:0.5em">		 -->
+<!-- 				<p><small>뉴스위키 사용법</small></p> -->
+<!-- 			</div>	 -->
 				
-<!-- 				<div class="btn-group" role="group"> -->
-<!-- 				    <button id="btnGroupDrop1" type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"> -->
-<!-- 				     카테고리  -->
-<!-- 				    </button> -->
-<!-- 				    <ul class="dropdown-menu" aria-labelledby="btnGroupDrop1"> -->
-<!-- 				      <li><a href="index5?source=naver" >네이버 뉴스</a></li> -->
-<!-- 				      <li> <a href="index5?source=daum" >다음 뉴스</a></li> -->
-<!-- 				    </ul> -->
-<!-- 				</div> -->
-				
-<!-- 		</div>	 -->
+<!-- 			<div class="col-md-auto" style="font-size:0.5em"> -->
+<!-- 				<p><small>Copyright 2021. 뉴스위키 All Rights Reserved.</small></p> -->
+<!-- 			</div> -->
+			
+<!-- 		</div> -->
 		
+		
+
+		
+
+
+
 
 		
 
@@ -180,10 +242,11 @@ var source = "${source}";
 
 var frequency_list = {};
 
-
+$('.carousel').carousel({
+	  interval: 5000
+	})
 
 function toggleName(){
-
 	if(source=="naver"){
 		$("#naver_select").attr("selected", "selected");
 	}else if(source="daum"){
@@ -217,7 +280,7 @@ function timeStampToHuman(p1){
 
 var weight = 1,   // change me
 width = window.innerWidth - 21,
-height = window.innerHeight - 300;
+height = window.innerHeight - 350;
 
 
 // draw 함수 (워드 클라우드 관련 함수)
