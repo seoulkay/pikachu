@@ -31,8 +31,6 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.scheduling.annotation.EnableScheduling;
-//import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -54,8 +52,8 @@ import aaa.bbb.ccc.entity.JsoupReply;
 import aaa.bbb.ccc.entity.LoginCount;
 import aaa.bbb.ccc.entity.LoginLog;
 import aaa.bbb.ccc.entity.Top20Json;
-//import aaa.bbb.ccc.Scheduler;
 import aaa.bbb.ccc.entity.Top20X10;
+
 
 @Controller
 public class AdminController {
@@ -606,7 +604,7 @@ public class AdminController {
 	
 	
 	
-	@Scheduled(cron = "* */10 * * * * ")
+	@Scheduled(cron = "*/30 * * * * * ")
 	public void jsoupSchedular() {
 		//jsoupTest();
 		//reListToDB(jsoupTest2());				
@@ -617,7 +615,16 @@ public class AdminController {
 		jsoupListCopy();
 	}
 	
+	
+	@Scheduled(cron = "* * * * * * ")
+	public void test() {
+		System.out.println("스케줄러 작동 하고 있다.");
+	}
+	
 
+	
+	
+	
 	//reList 디비에 넣기 마이바티스 함수  
 	public static void reListToDB(List<JsoupReply> reList){
 		
