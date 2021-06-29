@@ -285,7 +285,7 @@ function timeStampToHuman(p1){
 	return humanDateFormat;
 }
 
-var weight = 1,   // change me
+var weight = 2,   // change me
 width = window.innerWidth - 21,
 height = window.innerHeight - 350;
 
