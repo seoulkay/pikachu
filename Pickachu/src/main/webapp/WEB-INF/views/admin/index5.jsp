@@ -170,8 +170,8 @@
 <!-- 					<option selected>뉴스 선택</option> -->
 					<option value="index5?source=naver" id="naver_select">네이버 뉴스</option>		
 					<option value="index5?source=daum" id="daum_select">다음 뉴스</option>					
-					<option value="index5?source=naversports" id="naverSports_select">네이버 스포츠</option>
-					<option value="index5?source=daumsports" id="daumSports_select">다음 스포츠</option>
+					<option value="index5?source=naversports" id="naversports_select">네이버 스포츠</option>
+					<option value="index5?source=daumsports" id="daumsports_select">다음 스포츠</option>
 				
 				</select>
 			</div>
@@ -245,7 +245,14 @@
 </body>
 
 <script>
-var source = "${source}";
+//var source = "${source}";
+
+var urlString = window.location.href;
+var url = new URL(urlString);
+var c = url.searchParams.get("source");
+console.log(c);
+
+var source = c;
 
 var frequency_list = {};
 
@@ -256,14 +263,14 @@ $('.carousel').carousel({
 function toggleName(){
 	if(source=="naver"){
 		$("#naver_select").attr("selected", "selected");
-	}else if(source="daum"){
+	}else if(source=="daum"){
 		$("#daum_select").attr("selected", "selected");
 		
-	}else if(source="naversports"){
-		$("#naverSports_select").attr("selected", "selected");
+	}else if(source=="naversports"){
+		$("#naversports_select").attr("selected", "selected");
 		
-	}else if(source="daumsports"){
-		$("#daumSports_select").attr("selected", "selected");
+	}else if(source=="daumsports"){
+		$("#daumsports_select").attr("selected", "selected");
 	}
 }
 

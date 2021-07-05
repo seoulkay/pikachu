@@ -33,6 +33,11 @@ import aaa.bbb.ccc.entity.PortalNews2;
 @Component
 public class ScheduleJob {
 
+	static String daumMapper = "aaa.bbb.ccc.BaseMapper.selectTodayNewsDaum";
+	static String naverMapper = "aaa.bbb.ccc.BaseMapper.selectTodayNewsNaver";			
+	static String daumSportsMapper = "aaa.bbb.ccc.BaseMapper.selectTodayNewsDaumSports";
+	static String naverSportsMapper = "aaa.bbb.ccc.BaseMapper.selectTodayNewsNaverSports";		
+	
 //	@Scheduled(cron = "1 */2 * * * *")
 //	public void getIamkay() {
 //		System.out.println("새로운 스케줄러 작동중입니다.");
@@ -52,7 +57,6 @@ public class ScheduleJob {
 //	public void topSportsNews() {
 //		getNaverSports_newsHeadline();			
 //		getDaumSports_newsHeadline();
-//		getDcinside();
 //	}
 //
 //	@Scheduled(cron = "1 */30 * * * * ")
@@ -83,8 +87,7 @@ public class ScheduleJob {
 			Document doc = Jsoup.connect("https://news.naver.com/main/home.nhn").get();
 			System.out.println(doc.title());
 			Elements newsHeadlines = doc.select("ul[class=hdline_article_list]").select("li");
-			PortalNews toDay = new PortalNews();
-					
+			PortalNews toDay = new PortalNews();					
 					
 			for(Element elem : newsHeadlines) {
 				toDay.setDescription(elem.select("li").text());
@@ -95,7 +98,6 @@ public class ScheduleJob {
 		}catch(IOException e) {
 			e.printStackTrace();
 		}
-		
 	}
 	
 	//다음헤드라인 뉴스 가져오는 함수 : 5개만 가져오기 
@@ -105,11 +107,11 @@ public class ScheduleJob {
 		System.out.println("다음 뉴스 긁어올게 " +dateFormat.format(calendar.getTime())+" 기다려  ");
 		
 		try {
-		Document doc = Jsoup.connect("https://www.daum.net/").get();
-		System.out.println(doc.title());
-		Elements newsHeadlines = doc.select("ul[class=list_txt]").select("li");
-		PortalNews toDay = new PortalNews();
-		int i = 0;
+			Document doc = Jsoup.connect("https://www.daum.net/").get();
+			System.out.println(doc.title());
+			Elements newsHeadlines = doc.select("ul[class=list_txt]").select("li");
+			PortalNews toDay = new PortalNews();
+			int i = 0;
 		
 			for(Element elem : newsHeadlines) {
 				toDay.setDescription(elem.select("li").text());
@@ -134,8 +136,7 @@ public class ScheduleJob {
 	
 //뉴스를 디비에 넣기.	공통 사용 함수 
 	//뉴스를 하나씩 디비에 넣는 함수. 뉴스를 가져오는 네이버, 다음 함수 안에서 쓰여진다.
-	public static void insertNews(PortalNews p1){
-		
+	public static void insertNews(PortalNews p1){	
 		String resource = "aaa/bbb/ccc/mybatis_config.xml";
 		InputStream inputStream;
 		try {
@@ -190,11 +191,11 @@ public class ScheduleJob {
 		System.out.println("다음 스포츠뉴스 긁어올게 " +dateFormat.format(calendar.getTime())+" 기다려  ");
 		
 		try {
-		Document doc = Jsoup.connect("https://sports.daum.net/").get();
-		System.out.println(doc.title());
-		Elements newsHeadlines = doc.select("ul[class=list_thumbs headline_type2]").select("li");
-		PortalNews toDay = new PortalNews();
-		int i = 0;
+			Document doc = Jsoup.connect("https://sports.daum.net/").get();
+			System.out.println(doc.title());
+			Elements newsHeadlines = doc.select("ul[class=list_thumbs headline_type2]").select("li");
+			PortalNews toDay = new PortalNews();
+			int i = 0;
 		
 			for(Element elem : newsHeadlines) {
 				toDay.setDescription(elem.select("li a div[class=cont_thumb] strong[class=tit_thumb]").text());
@@ -252,9 +253,10 @@ public class ScheduleJob {
 
 	//뉴스 헤드라인 단어로 잘라서 디비에 넣기 
 	public static void news20() {
+		
 		//홍성 디비에서 데이터를 객체 어레이로 가져온다.
-		List<PortalNews2> resultNaver = selectTodayDataNaver();
-		List<PortalNews2> resultDaum = selectTodayDataDaum();
+		List<PortalNews2> resultNaver = selectTodayData(naverMapper);
+		List<PortalNews2> resultDaum = selectTodayData(daumMapper);
 
 		//객체의 top20 항목을 쪼개서 맵으로 넣는다.
 		Map<String, Integer> wordsMapNaver = splitWordsToMap(resultNaver);
@@ -272,14 +274,12 @@ public class ScheduleJob {
 		insertTop20ToMyDb(stringResultDaum, "DAUM");		
 	}
 	
-	
 	public static void sportsNews20() {
 		//내 디비에서 스포츠뉴스 데이터를 객체 어레이로 가져온다.
-		List<PortalNews2> resultNaverSports = selectTodayDataNaverSports();
-		List<PortalNews2> resultDaumSports = selectTodayDataDaumSports();
-		System.out.println("네이버 스포츠 리스트"+resultNaverSports);
-		System.out.println("다음 스포츠 리스트"+resultNaverSports);
-		System.out.println("네이버 스포츠 1번 타이틀: "+resultNaverSports.get(0).getTitle());
+		List<PortalNews2> resultNaverSports = selectTodayData(naverSportsMapper);
+		System.out.println(resultNaverSports.get(0).getTitle());
+		List<PortalNews2> resultDaumSports = selectTodayData(daumSportsMapper);
+		System.out.println(resultDaumSports.get(0).getTitle());
 		
 		//객체의 top20 항목을 쪼개서 맵으로 넣는다.
 		Map<String, Integer> wordsMapNaver = splitWordsToMap(resultNaverSports);
@@ -300,8 +300,7 @@ public class ScheduleJob {
 	}	
 	
 	
-	
-	public static List<PortalNews2> selectTodayDataNaverSports(){
+	public static List<PortalNews2> selectTodayData(String a){
 		String resource = "aaa/bbb/ccc/mybatis_config.xml";
 		InputStream inputStream;
 		List<PortalNews2> result = new ArrayList<PortalNews2>();
@@ -309,69 +308,15 @@ public class ScheduleJob {
 			inputStream = Resources.getResourceAsStream(resource);
 			SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
 			SqlSession session = sqlSessionFactory.openSession();
-			result = session.selectList("aaa.bbb.ccc.BaseMapper.selectNaverSports");
+			result = session.selectList(a);
 			//System.out.println("디비에서 긁어온24 뉴스 : "+result);
 		}catch(IOException e) {
 			e.printStackTrace();
 		}
-		
 		return result;
 	}
 	
-	
-	public static List<PortalNews2> selectTodayDataDaumSports(){
-		String resource = "aaa/bbb/ccc/mybatis_config.xml";
-		InputStream inputStream;
-		List<PortalNews2> result = new ArrayList<PortalNews2>();
-		try {
-			inputStream = Resources.getResourceAsStream(resource);
-			SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
-			SqlSession session = sqlSessionFactory.openSession();
-			result = session.selectList("aaa.bbb.ccc.BaseMapper.selectDaumSports");
-			//System.out.println("디비에서 긁어온24 뉴스 : "+result);
-		}catch(IOException e) {
-			e.printStackTrace();
-		}
-		
-		return result;
-	}
-	
-	
-	public static List<PortalNews2> selectTodayDataNaver(){
-		String resource = "aaa/bbb/ccc/mybatis_config.xml";
-		InputStream inputStream;
-		List<PortalNews2> result = new ArrayList<PortalNews2>();
-		try {
-			inputStream = Resources.getResourceAsStream(resource);
-			SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
-			SqlSession session = sqlSessionFactory.openSession();
-			result = session.selectList("aaa.bbb.ccc.BaseMapper.selectTodayNewsNaver");
-			//System.out.println("디비에서 긁어온24 뉴스 : "+result);
-		}catch(IOException e) {
-			e.printStackTrace();
-		}
-		
-		return result;
-	}
-	
-	
-	public static List<PortalNews2> selectTodayDataDaum(){
-		String resource = "aaa/bbb/ccc/mybatis_config.xml";
-		InputStream inputStream;
-		List<PortalNews2> result = new ArrayList<PortalNews2>();
-		try {
-			inputStream = Resources.getResourceAsStream(resource);
-			SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
-			SqlSession session = sqlSessionFactory.openSession();
-			result = session.selectList("aaa.bbb.ccc.BaseMapper.selectTodayNewsDaum");
-			//System.out.println("디비에서 긁어온24 뉴스 : "+result);
-		}catch(IOException e) {
-			e.printStackTrace();
-		}
-		
-		return result;
-	}
-	
+
 	
 	public static Map<String, Integer> splitWordsToMap(List<PortalNews2> p1){
 		Map<String, Integer> result = new HashMap<String, Integer>();
