@@ -234,8 +234,6 @@
 	order by id desc;
 	</select>
 	
-	
-	
 	<select id="selectDaumSports" resultType="aaa.bbb.ccc.entity.PortalNews2">
 	SELECT * FROM hw_utf8.PortalNews
 	WHERE source = 'DAUMSPORTS' AND created >

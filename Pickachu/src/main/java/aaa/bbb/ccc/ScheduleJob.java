@@ -35,39 +35,41 @@ public class ScheduleJob {
 
 	static String daumMapper = "aaa.bbb.ccc.BaseMapper.selectTodayNewsDaum";
 	static String naverMapper = "aaa.bbb.ccc.BaseMapper.selectTodayNewsNaver";			
-	static String daumSportsMapper = "aaa.bbb.ccc.BaseMapper.selectTodayNewsDaumSports";
-	static String naverSportsMapper = "aaa.bbb.ccc.BaseMapper.selectTodayNewsNaverSports";		
+	static String daumSportsMapper = "aaa.bbb.ccc.BaseMapper.selectDaumSports";
+	static String naverSportsMapper = "aaa.bbb.ccc.BaseMapper.selectNaverSports";		
 	
 //	@Scheduled(cron = "1 */2 * * * *")
 //	public void getIamkay() {
 //		System.out.println("새로운 스케줄러 작동중입니다.");
 //	}
 	
-//	@Scheduled(cron = "1 */10 * * * * ")
-//	public void naverTopNews() {
-//		getNaver_newsHeadline();
-//	}
-//
-//	@Scheduled(cron = "1 */15 * * * * ")
-//	public void daumTopNews() {
-//		getDaum_newsHeadline();			
-//	}
-//	
-//	@Scheduled(cron = "1 */30 * * * * ")
-//	public void topSportsNews() {
-//		getNaverSports_newsHeadline();			
-//		getDaumSports_newsHeadline();
-//	}
-//
-//	@Scheduled(cron = "1 */30 * * * * ")
-//	public void top20News() {
-//		news20();
-//	}
-//
-//	@Scheduled(cron = "1 */20 * * * * ")
-//	public void top20SportsNews() {
-//		sportsNews20();
-//	}	
+	@Scheduled(cron = "1 */10 * * * * ")
+	public void naverTopNews() {
+		getNaver_newsHeadline();
+	}
+
+	@Scheduled(cron = "1 */15 * * * * ")
+	public void daumTopNews() {
+		getDaum_newsHeadline();			
+	}
+	
+	@Scheduled(cron = "1 */30 * * * * ")
+	public void topSportsNews() {
+		getNaverSports_newsHeadline();			
+		getDaumSports_newsHeadline();
+	}
+
+	@Scheduled(cron = "1 */30 * * * * ")
+	public void per30min() {
+		news20_cool(naverMapper, "NAVER");
+		news20_cool(daumMapper, "DAUM");
+	}
+
+	@Scheduled(cron = "1 */20 * * * * ")
+	public void per20min() {
+		news20_cool(naverSportsMapper, "NAVERSPORTS");
+		news20_cool(daumSportsMapper, "DAUMSPORTS");
+	}	
 	
 //	@Scheduled(cron = "30 * * * * * ")
 //	public void dc() {
@@ -251,55 +253,27 @@ public class ScheduleJob {
 //	}
 	
 
-	//뉴스 헤드라인 단어로 잘라서 디비에 넣기 
-	public static void news20() {
+	
+	//mapper name, catregory name을 주면 서머리 해주는 함수 
+	public static void news20_cool(String mapper, String dbCategory) {
 		
 		//홍성 디비에서 데이터를 객체 어레이로 가져온다.
-		List<PortalNews2> resultNaver = selectTodayData(naverMapper);
-		List<PortalNews2> resultDaum = selectTodayData(daumMapper);
+		List<PortalNews2> result = selectTodayData(mapper);
 
 		//객체의 top20 항목을 쪼개서 맵으로 넣는다.
-		Map<String, Integer> wordsMapNaver = splitWordsToMap(resultNaver);
-		Map<String, Integer> wordsMapDaum = splitWordsToMap(resultDaum);
+		Map<String, Integer> wordsMap = splitWordsToMap(result);
 
 		//맵을 스트링 어레이로 바꾼다. 
-		List <String> top20Naver = sortMapTop20ToStringArray(wordsMapNaver);
-		List <String> top20Daum = sortMapTop20ToStringArray(wordsMapDaum);
+		List <String> top20 = sortMapTop20ToStringArray(wordsMap);
 		
 		//배열을 하나의 스트링으로 바꿔준다. 
-		String stringResultNaver = String.join(" ",top20Naver);
-		String stringResultDaum = String.join(" ",top20Daum);
+		String stringResult = String.join(" ",top20);
 		
-		insertTop20ToMyDb(stringResultNaver, "NAVER");
-		insertTop20ToMyDb(stringResultDaum, "DAUM");		
+		insertTop20ToMyDb(stringResult, dbCategory);
 	}
 	
-	public static void sportsNews20() {
-		//내 디비에서 스포츠뉴스 데이터를 객체 어레이로 가져온다.
-		List<PortalNews2> resultNaverSports = selectTodayData(naverSportsMapper);
-		System.out.println(resultNaverSports.get(0).getTitle());
-		List<PortalNews2> resultDaumSports = selectTodayData(daumSportsMapper);
-		System.out.println(resultDaumSports.get(0).getTitle());
-		
-		//객체의 top20 항목을 쪼개서 맵으로 넣는다.
-		Map<String, Integer> wordsMapNaver = splitWordsToMap(resultNaverSports);
-		Map<String, Integer> wordsMapDaum = splitWordsToMap(resultDaumSports);
-		
-		
-		
-		//맵을 스트링 어레이로 바꾼다. 
-		List <String> top20NaverSports = sortMapTop20ToStringArray(wordsMapNaver);
-		List <String> top20DaumSports = sortMapTop20ToStringArray(wordsMapDaum);
-		
-		//배열을 하나의 스트링으로 바꿔준다. 
-		String stringResultNaver = String.join(" ",top20NaverSports);
-		String stringResultDaum = String.join(" ",top20DaumSports);
-		
-		insertTop20ToMyDb(stringResultNaver, "NAVERSPORTS");
-		insertTop20ToMyDb(stringResultDaum, "DAUMSPORTS");		
-	}	
-	
-	
+
+	//인자로 매퍼 넣어줘서 
 	public static List<PortalNews2> selectTodayData(String a){
 		String resource = "aaa/bbb/ccc/mybatis_config.xml";
 		InputStream inputStream;
