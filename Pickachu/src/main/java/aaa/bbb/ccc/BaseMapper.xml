@@ -200,7 +200,7 @@
 	
 	<insert id="insertNews" parameterType="java.util.List">
     INSERT INTO hw_utf8.PortalNews
-    (newsDescription, newsLink, PortalNews.created)
+    (title, link, PortalNews.created)
     VALUES
     	<foreach collection="list" item="item" separator=" , " >
         	(#{item.description}, #{item.link}, now())
@@ -208,7 +208,7 @@
 	</insert>
 	
 	<insert id="insertNewsByOne" parameterType="aaa.bbb.ccc.entity.PortalNews">
-    insert into hw_utf8.PortalNews (hw_utf8.PortalNews.created,newsDescription,newsLink,sourcePortal) 
+    insert into hw_utf8.PortalNews (hw_utf8.PortalNews.created,title,link,source) 
     values 
     (now(),#{description},#{link},#{source})
   	</insert>
@@ -233,6 +233,25 @@
 	DATE_ADD(now(), INTERVAL -24 HOUR)
 	order by id desc;
 	</select>
+	
+	
+	
+	<select id="selectDaumSports" resultType="aaa.bbb.ccc.entity.PortalNews2">
+	SELECT * FROM hw_utf8.PortalNews
+	WHERE source = 'DAUMSPORTS' AND created >
+	DATE_ADD(now(), INTERVAL -24 HOUR)
+	order by id desc;
+	</select>
+	
+	<select id="selectNaverSports" resultType="aaa.bbb.ccc.entity.PortalNews2">
+	SELECT * FROM hw_utf8.PortalNews
+	WHERE source = 'NAVERSPORTS' AND created >
+	DATE_ADD(now(), INTERVAL -24 HOUR)
+	order by id desc;
+	</select>
+		
+
+	
 	
 	<insert id="insertTop20" parameterType="aaa.bbb.ccc.entity.PortalNews2">
     insert into hw_utf8.todayTop20 (hw_utf8.todayTop20.created, top20, source) 

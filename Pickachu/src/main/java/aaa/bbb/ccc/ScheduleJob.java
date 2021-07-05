@@ -37,7 +37,7 @@ public class ScheduleJob {
 //	public void getIamkay() {
 //		System.out.println("새로운 스케줄러 작동중입니다.");
 //	}
-//	
+	
 //	@Scheduled(cron = "1 */10 * * * * ")
 //	public void naverTopNews() {
 //		getNaver_newsHeadline();
@@ -52,13 +52,27 @@ public class ScheduleJob {
 //	public void topSportsNews() {
 //		getNaverSports_newsHeadline();			
 //		getDaumSports_newsHeadline();
+//		getDcinside();
 //	}
 //
 //	@Scheduled(cron = "1 */30 * * * * ")
 //	public void top20News() {
 //		news20();
 //	}
+//
+//	@Scheduled(cron = "1 */20 * * * * ")
+//	public void top20SportsNews() {
+//		sportsNews20();
+//	}	
 	
+//	@Scheduled(cron = "30 * * * * * ")
+//	public void dc() {
+//		getDcinside();
+//
+//	}	
+		
+
+//뉴스 채취 
 	// 네이버 뉴스 가져오는 함수 
 	public static  void getNaver_newsHeadline() {
 		Calendar calendar = Calendar.getInstance();
@@ -118,6 +132,7 @@ public class ScheduleJob {
 
 	}
 	
+//뉴스를 디비에 넣기.	공통 사용 함수 
 	//뉴스를 하나씩 디비에 넣는 함수. 뉴스를 가져오는 네이버, 다음 함수 안에서 쓰여진다.
 	public static void insertNews(PortalNews p1){
 		
@@ -142,6 +157,7 @@ public class ScheduleJob {
 	}
 
 	
+//스포츠 뉴스 채취 
 	// 네이버 스포츠 뉴스 가져오는 함수 
 	public static  void getNaverSports_newsHeadline() {
 		Calendar calendar = Calendar.getInstance();
@@ -153,8 +169,7 @@ public class ScheduleJob {
 			System.out.println(doc.title());
 			Elements newsHeadlines = doc.select("ul[class=today_list]").select("li");
 			PortalNews toDay = new PortalNews();
-					
-					
+								
 			for(Element elem : newsHeadlines) {
 				//toDay.setDescription(elem.select("li[class=title]").text());
 				toDay.setDescription(elem.select("li[class=today_item] a").attr("title"));
@@ -164,12 +179,10 @@ public class ScheduleJob {
 			}
 		}catch(IOException e) {
 			e.printStackTrace();
-		}
-		
+		}	
 	}
 	
 	
-	//하는 중....
 	//다음헤드라인 스포츠 뉴스 가져오는 함수 : 5개만 가져오기 
 	public static void getDaumSports_newsHeadline() {
 		Calendar calendar = Calendar.getInstance();
@@ -197,14 +210,47 @@ public class ScheduleJob {
 					break;
 				}
 			}
-
 		}catch(IOException e) {
 			e.printStackTrace();
 		}
-
 	}
 
 	
+	//디시인사이드 실시간베스트 가져오는 함수 : 5개만 가져오기 
+//	public static void getDcinside() {
+//		Calendar calendar = Calendar.getInstance();
+//		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//		System.out.println("디시인사이드 실시간베스트 긁어올게 " +dateFormat.format(calendar.getTime())+" 기다려  ");
+//		
+//		try {
+//		Document doc = Jsoup.connect("https://dcinside.com/").get();
+//		System.out.println(doc.title());
+//		Elements newsHeadlines = doc.select("article div[class=time_best] ul[class=typet_list p_1").select("li");
+//		PortalNews toDay = new PortalNews();
+//		int i = 0;
+//		
+//			for(Element elem : newsHeadlines) {
+//				toDay.setDescription(elem.select("li a[class=main_log] div[class=box besttxt] p").text());
+//				toDay.setLink(elem.select("li a[class=main_log]").attr("href"));
+//				toDay.setSource("DCNOWBEST");
+//				i += 1 ;
+//				System.out.println(toDay.getDescription());
+//				System.out.println(toDay.getLink());
+//				
+//				insertNews(toDay);
+//				System.out.println(i+"번째 뉴스 기록중");
+//				if(i == 5) {
+//					System.out.println("멈출게 5라서");
+//					break;
+//				}
+//			}
+//		}catch(IOException e) {
+//			e.printStackTrace();
+//		}
+//	}
+	
+
+	//뉴스 헤드라인 단어로 잘라서 디비에 넣기 
 	public static void news20() {
 		//홍성 디비에서 데이터를 객체 어레이로 가져온다.
 		List<PortalNews2> resultNaver = selectTodayDataNaver();
@@ -224,6 +270,70 @@ public class ScheduleJob {
 		
 		insertTop20ToMyDb(stringResultNaver, "NAVER");
 		insertTop20ToMyDb(stringResultDaum, "DAUM");		
+	}
+	
+	
+	public static void sportsNews20() {
+		//내 디비에서 스포츠뉴스 데이터를 객체 어레이로 가져온다.
+		List<PortalNews2> resultNaverSports = selectTodayDataNaverSports();
+		List<PortalNews2> resultDaumSports = selectTodayDataDaumSports();
+		System.out.println("네이버 스포츠 리스트"+resultNaverSports);
+		System.out.println("다음 스포츠 리스트"+resultNaverSports);
+		System.out.println("네이버 스포츠 1번 타이틀: "+resultNaverSports.get(0).getTitle());
+		
+		//객체의 top20 항목을 쪼개서 맵으로 넣는다.
+		Map<String, Integer> wordsMapNaver = splitWordsToMap(resultNaverSports);
+		Map<String, Integer> wordsMapDaum = splitWordsToMap(resultDaumSports);
+		
+		
+		
+		//맵을 스트링 어레이로 바꾼다. 
+		List <String> top20NaverSports = sortMapTop20ToStringArray(wordsMapNaver);
+		List <String> top20DaumSports = sortMapTop20ToStringArray(wordsMapDaum);
+		
+		//배열을 하나의 스트링으로 바꿔준다. 
+		String stringResultNaver = String.join(" ",top20NaverSports);
+		String stringResultDaum = String.join(" ",top20DaumSports);
+		
+		insertTop20ToMyDb(stringResultNaver, "NAVERSPORTS");
+		insertTop20ToMyDb(stringResultDaum, "DAUMSPORTS");		
+	}	
+	
+	
+	
+	public static List<PortalNews2> selectTodayDataNaverSports(){
+		String resource = "aaa/bbb/ccc/mybatis_config.xml";
+		InputStream inputStream;
+		List<PortalNews2> result = new ArrayList<PortalNews2>();
+		try {
+			inputStream = Resources.getResourceAsStream(resource);
+			SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
+			SqlSession session = sqlSessionFactory.openSession();
+			result = session.selectList("aaa.bbb.ccc.BaseMapper.selectNaverSports");
+			//System.out.println("디비에서 긁어온24 뉴스 : "+result);
+		}catch(IOException e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
+	
+	public static List<PortalNews2> selectTodayDataDaumSports(){
+		String resource = "aaa/bbb/ccc/mybatis_config.xml";
+		InputStream inputStream;
+		List<PortalNews2> result = new ArrayList<PortalNews2>();
+		try {
+			inputStream = Resources.getResourceAsStream(resource);
+			SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
+			SqlSession session = sqlSessionFactory.openSession();
+			result = session.selectList("aaa.bbb.ccc.BaseMapper.selectDaumSports");
+			//System.out.println("디비에서 긁어온24 뉴스 : "+result);
+		}catch(IOException e) {
+			e.printStackTrace();
+		}
+		
+		return result;
 	}
 	
 	

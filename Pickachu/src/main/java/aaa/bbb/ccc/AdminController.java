@@ -1101,10 +1101,13 @@ public class AdminController {
 		String label = "";
 		if(result.equals("naver")) {
 			label = "네이버";
-		}else {
+		}else if(result.equals("daum")){
 			label = "다음";
+		}else if(result.equals("naversports")){
+			label = "네이버스포츠";
+		}else if(result.equals("daumsports")){
+				label = "다음스포츠";
 		}
-
 		
 		model.addAttribute("url", url);
 		model.addAttribute("source", result);
@@ -1188,8 +1191,9 @@ public class AdminController {
 	public static String newsSearchUrl(String source) {
 		String result = "https://search.naver.com/search.naver?where=news&sm=tab_jum&query=";
 		String str = "daum";
+		String strSports = "daumsports";
 		
-		if (source.equals(str)) {
+		if (source.equals(str)||source.equals(strSports)) {
 			result = "https://search.daum.net/search?w=tot&DA=23A&rtmaxcoll=NNS&q=";
 		}
 		return result;
