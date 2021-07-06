@@ -542,6 +542,12 @@ public class adminControler {
 		return "admin/index3";
 	}
 	
+	@RequestMapping(value = "admin/index8", method = RequestMethod.GET)
+	public String adminIndex8(Locale locale, Model model) {
+	
+		return "admin/index8";
+	}
+	
 	@RequestMapping(value = "admin/index4", method = RequestMethod.GET)
 	public String adminIndex4(Locale locale, Model model, String source) {
 		
@@ -609,6 +615,7 @@ public class adminControler {
 		
 		model.addAttribute("url", url);
 		model.addAttribute("source", result);
+		
 		return "admin/index6";
 	}
 	
@@ -660,8 +667,11 @@ public class adminControler {
 	public static String newsSearchUrl(String source) {
 		String result = "https://search.naver.com/search.naver?where=news&sm=tab_jum&query=";
 		String str = "daum";
+		String strent = "daument";
 		
 		if (source.equals(str)) {
+			result = "https://search.daum.net/search?w=tot&DA=23A&rtmaxcoll=NNS&q=";
+		}else if (source.contentEquals(strent)) {
 			result = "https://search.daum.net/search?w=tot&DA=23A&rtmaxcoll=NNS&q=";
 		}
 		

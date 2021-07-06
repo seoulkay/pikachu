@@ -23,6 +23,10 @@
 	<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500&display=swap" rel="stylesheet">
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/admin/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
 
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+ 	 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+ 	 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-wEmeIV1mKuiNpC+IOBjI7aAzPcEZeedi5yW5f2yOq55WWLwNGmvvx4Um1vskeMj0" crossorigin="anonymous">
  <title>지금뉴스</title>
 	<script data-ad-client="ca-pub-2029088903535235" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
@@ -92,18 +96,68 @@
 						
 						<div class="col-md-auto">
 							<select onchange="if(this.value) location.href=(this.value);" class="form-select form-select-lg mb-3" aria-label=".form-select-lg example">
-							 <option selected>뉴스선택</option>
+							 
 							  <option value="index6?source=naver" id="naver_select">네이버 뉴스</option>
 							  <option value="index6?source=daum" id="daum_select">다음 뉴스</option>
+							  <option value="index6?source=naverent" id="naverent_select">네이버연예 뉴스</option>
+							  <option value="index6?source=daument" id="daument_select">다음연예 뉴스</option>
+							  <option value="index6?source=navercar" id="navercar_select">네이버 자동차 뉴스</option>
 							</select>
 							<select class="form-select form-select-lg mb-3" aria-label=".form-select-lg example" onchange="drawWordcloud(this.value)" id="timeSelector">
 						</select>
 						 </div>
 						
 						</div>
+						
+	<!-- 			Carousel -->
+			 
+				  <div id="myCarousel" class="carousel slide" data-ride="carousel">
+				    <!-- Indicators -->
+				    <ol class="carousel-indicators">
+				      <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+				      <li data-target="#myCarousel" data-slide-to="1"></li>
+				      <li data-target="#myCarousel" data-slide-to="2"></li>
+				    </ol>
+
+    <!-- Wrapper for slides -->
+			    <div class="carousel-inner">
+			      <div class="item active">
+			      <a href="http://kimsouvenir.cafe24.com">
+			        <img src="http://kimsouvenir.cafe24.com/web/upload/dnd_image/skin1/index/1132/2021/06/24/grid_id_1575522766878_7_5fca98.jpeg" alt="Los Angeles" style="width:100%;">
+			     	</a>
+			      </div>
+			
+			      <div class="item">
+			      <a href="http://tellmebabyshop.cafe24.com/">
+			        <img src="http://tellmebabyshop.cafe24.com/web/product/big/202106/230c9576d26e48a5a80ec48b42e9d54a.png" alt="Chicago" style="width:100%;">
+			      </a>
+			      </div>
+			    
+			      <div class="item">
+			      <a href="https://www.balenciaga.com/en-kr">
+			        <img src="https://balenciaga.dam.kering.com/m/656009906b92f9f1/Thumbnail-661720TAV041000_D.jpg?v=1" alt="New york" style="width:100%; ">
+			      </a>
+			      </div>
+			    </div>
+			
+			    <!-- Left and right controls -->
+			    <a class="left carousel-control" href="#myCarousel" data-slide="prev">
+			      <span class="glyphicon glyphicon-chevron-left"></span>
+			      <span class="sr-only">Previous</span>
+			    </a>
+			    <a class="right carousel-control" href="#myCarousel" data-slide="next">
+			      <span class="glyphicon glyphicon-chevron-right"></span>
+			      <span class="sr-only">Next</span>
+			    </a>
+			  </div>
+			
+						
+						
 				</div>
 				
 			<p>
+			
+
 <!-- 		     	<div class="row justify-content-md-center" > -->
 						
 <!-- 						<div class="col-md-auto"> -->
@@ -205,19 +259,36 @@
 										return humanDateFormat
 									}
 									
-									var source = "${source}";
+									var url_string = window.location.href; //window.location.href
+									var url = new URL(url_string);
+									
+									
+									var source = url.searchParams.get("source");;
 									
 									function toggleName(){
 
 										if(source=="naver"){
 											$("#naver_select").attr("selected", "selected");
-										}else if(source="daum"){
+										}else if(source=="daum"){
 											$("#daum_select").attr("selected", "selected");
+										}else if(source=="naverent"){
+											$("#naverent_select").attr("selected", "selected");
+										}else if(source=="daument"){
+											$("#daument_select").attr("selected", "selected");
+										}else if(source=="navercar"){
+											$("#navercar_select").attr("selected", "selected");
 										}
 									}
 
 									toggleName();
 									
+									function carousel(){
+										$('.carousel').carousel({
+											  interval: 2000
+											})
+									}
+									
+									carosusel();
 							</script>
 </body>
 <footer>

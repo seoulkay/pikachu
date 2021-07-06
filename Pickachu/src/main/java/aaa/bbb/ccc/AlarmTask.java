@@ -72,25 +72,38 @@ public class AlarmTask {
 //			}
 //			
 //			
-//			 포탈들 헤드라인 뉴스 긁어오기 
-//			@Scheduled(cron = "0 */5 * * * *")
-//			public void getTotalNewsN() {
-//				getNaver_newHaedline();
-//				
-//			}
-//			
-//			@Scheduled(cron = "0 */15 * * * *")
-//			public void getTotalNewsD() {
-//				
-//				getDaum_newHaedline();
-//			}
-//			
-//			
-//			@Scheduled(cron = "0 */30 * * * *")
-//			public void todayScheduled() {
-//				todayTop20("NAVER");
-//				todayTop20("Daum");
-//			}
+			// 포탈들 헤드라인 뉴스 긁어오기 
+			@Scheduled(cron = "0 */10 * * * *")
+			public void getTotalNews10() {
+				getNaver_newHaedline();
+				
+			}
+			
+			@Scheduled(cron = "0 */15 * * * *")
+			public void getTotalNews15() {
+				
+				getDaum_newHaedline();
+			}
+			
+			@Scheduled(cron = "0 */29 * * * *")
+			public void getTotalNews29() {
+				
+				getKhan_newsHaedline();
+				getDaumEnt_newsHaedline();
+				getNaverEnt_newsHaedline();
+				getNaverCar_newsHaedline();
+				
+			}
+			
+			@Scheduled(cron = "0 */30 * * * *")
+			public void todayScheduled() {
+				todayTop20("NAVER");
+				todayTop20("Daum");
+				todayTop20("KHAN");
+				todayTop20("NAVERENT");
+				todayTop20("DAUMENT");
+				todayTop20("NAVERCAR");
+			}
 //			
 			//헤드라인 뉴스의 하루동안 노출빈도가 가장많은단어 20을 꺼내와 보여주고 저장한다.
 			public static Map<String,Integer> todayTop20(String p1) {
@@ -390,6 +403,148 @@ public class AlarmTask {
 			}
 			
 			
+			//경향신문 헤드라인 뉴스 가져오는 함수 5개만 
+			public static void getKhan_newsHaedline() {
+				Calendar calendar = Calendar.getInstance();
+				SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+				System.out.println("경향 뉴스 긁어올게 " +dateFormat.format(calendar.getTime())+" 기다려  ");
+				
+				try {
+				Document doc = Jsoup.connect("https://www.khan.co.kr/").get();
+				System.out.println(doc.title());
+				Elements newsHeadlines = doc.select("dl[class=sub-news-mj related]").select("dt");
+				newsTitle toDay = new newsTitle();
+				int i = 0;
+				
+				for(Element elem : newsHeadlines) {
+					toDay.setTitle(elem.select("dt").text());
+					toDay.setLink(elem.select("a").attr("href"));
+					toDay.setSource("KHAN");
+					i += 1 ;
+					System.out.println(toDay.getLink());
+					insertNews(toDay);
+					System.out.println(i+"번째 뉴스 기록중");
+					if(i == 5) {
+						System.out.println("멈출게 5라서");
+						break;
+						
+					}
+				}
+
+				}catch(IOException e) {
+					e.printStackTrace();
+				}
+	
+			}
+			
+			// 다음 연예 뉴스 가져오는 함수 5개만 
+			public static void getDaumEnt_newsHaedline() {
+				Calendar calendar = Calendar.getInstance();
+				SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+				System.out.println("다음 연예뉴스 긁어올게 " +dateFormat.format(calendar.getTime())+" 기다려  ");
+				
+				try {
+				Document doc = Jsoup.connect("https://entertain.daum.net/").get();
+				System.out.println(doc.title());
+				Elements newsHeadlines = doc.select("ul[class=list_news]").select("a[class=link_txt]");
+				newsTitle toDay = new newsTitle();
+				int i = 0;
+				
+				for(Element elem : newsHeadlines) {
+					toDay.setTitle(elem.select("a[class=link_txt]").text());
+					toDay.setLink(elem.select("a").attr("href"));
+					toDay.setSource("DAUMENT");
+					i += 1 ;
+					System.out.println(toDay.getLink());
+					System.out.println(toDay.getTitle());
+					insertNews(toDay);
+					System.out.println(i+"번째 뉴스 기록중");
+					if(i == 5) {
+						System.out.println("멈출게 5라서");
+						break;
+						
+					}
+				}
+
+				}catch(IOException e) {
+					e.printStackTrace();
+				}
+	
+			}
+			
+			
+			// 네이버 연예 뉴스 가져오는 함수 5개만 
+						public static void getNaverEnt_newsHaedline() {
+							Calendar calendar = Calendar.getInstance();
+							SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+							System.out.println("네이버 연예뉴스 긁어올게 " +dateFormat.format(calendar.getTime())+" 기다려  ");
+							
+							try {
+							Document doc = Jsoup.connect("https://entertain.naver.com/home").get();
+							System.out.println(doc.title());
+							Elements newsHeadlines = doc.select("div[class=title_area]").select("a[class=title]");
+							newsTitle toDay = new newsTitle();
+							int i = 0;
+							
+							for(Element elem : newsHeadlines) {
+								toDay.setTitle(elem.select("a[class=title]").text());
+								toDay.setLink(elem.select("a").attr("href"));
+								toDay.setSource("NAVERENT");
+								i += 1 ;
+								System.out.println(toDay.getLink());
+								System.out.println(toDay.getTitle());
+								insertNews(toDay);
+								System.out.println(i+"번째 뉴스 기록중");
+								if(i == 5) {
+									System.out.println("멈출게 5라서");
+									break;
+									
+								}
+							}
+
+							}catch(IOException e) {
+								e.printStackTrace();
+							}
+				
+						}
+			
+						// 네이버 자동차 뉴스 가져오는 함수 5개만 
+						public static void getNaverCar_newsHaedline() {
+							Calendar calendar = Calendar.getInstance();
+							SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+							System.out.println("네이버 자동차뉴스 긁어올게 " +dateFormat.format(calendar.getTime())+" 기다려  ");
+							
+							try {
+							Document doc = Jsoup.connect("https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=103&sid2=239").get();
+							System.out.println(doc.title());
+							Elements newsHeadlines = doc.select("div[class=list_body newsflash_body]").select("li");
+							newsTitle toDay = new newsTitle();
+							int i = 0;
+							
+							for(Element elem : newsHeadlines) {
+								toDay.setTitle(elem.select("a").text());
+								toDay.setLink(elem.select("a").attr("href"));
+								toDay.setSource("NAVERCAR");
+								i += 1 ;
+								System.out.println(toDay.getLink());
+								System.out.println(toDay.getTitle());
+								insertNews(toDay);
+								System.out.println(i+"번째 뉴스 기록중");
+								if(i == 5) {
+									System.out.println("멈출게 5라서");
+									break;
+									
+								}
+							}
+
+							}catch(IOException e) {
+								e.printStackTrace();
+							}
+				
+						}
+								
+						
+						
 			// 가져온 뉴스 타이틀과 url을 DB에 기록해줌
 			public static void insertNews(newsTitle  p1){
 			
