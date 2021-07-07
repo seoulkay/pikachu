@@ -102,6 +102,7 @@
 							  <option value="index6?source=naverent" id="naverent_select">네이버연예 뉴스</option>
 							  <option value="index6?source=daument" id="daument_select">다음연예 뉴스</option>
 							  <option value="index6?source=navercar" id="navercar_select">네이버 자동차 뉴스</option>
+							  <option value="index6?source=daumcar" id="daumcar_select">다음 자동차 뉴스</option>
 							</select>
 							<select class="form-select form-select-lg mb-3" aria-label=".form-select-lg example" onchange="drawWordcloud(this.value)" id="timeSelector">
 						</select>
@@ -277,6 +278,8 @@
 											$("#daument_select").attr("selected", "selected");
 										}else if(source=="navercar"){
 											$("#navercar_select").attr("selected", "selected");
+										}else if(source=="daumcar"){
+											$("#daumcar_select").attr("selected", "selected");
 										}
 									}
 
