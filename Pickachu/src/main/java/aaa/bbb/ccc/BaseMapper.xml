@@ -220,35 +220,61 @@
 	order by id desc;
 	</select>
 	
+<!-- 	<select id="selectTodayNewsDaum" resultType="aaa.bbb.ccc.entity.PortalNews2"> -->
+<!-- 	SELECT * FROM hong.todayNews -->
+<!-- 	WHERE source = 'DAUM' AND created > -->
+<!-- 	DATE_ADD(now(), INTERVAL -24 HOUR) -->
+<!-- 	order by id desc; -->
+<!-- 	</select> -->
+	
+<!-- 	<select id="selectTodayNewsNaver" resultType="aaa.bbb.ccc.entity.PortalNews2"> -->
+<!-- 	SELECT * FROM hong.todayNews -->
+<!-- 	WHERE source = 'NAVER' AND created > -->
+<!-- 	DATE_ADD(now(), INTERVAL -24 HOUR) -->
+<!-- 	order by id desc; -->
+<!-- 	</select> -->
+	
 	<select id="selectTodayNewsDaum" resultType="aaa.bbb.ccc.entity.PortalNews2">
-	SELECT * FROM hong.todayNews
+	SELECT * FROM hw_utf8.PortalNews
 	WHERE source = 'DAUM' AND created >
-	DATE_ADD(now(), INTERVAL -24 HOUR)
+	DATE_ADD(now(), INTERVAL -12 HOUR)
 	order by id desc;
 	</select>
 	
 	<select id="selectTodayNewsNaver" resultType="aaa.bbb.ccc.entity.PortalNews2">
-	SELECT * FROM hong.todayNews
+	SELECT * FROM hw_utf8.PortalNews
 	WHERE source = 'NAVER' AND created >
-	DATE_ADD(now(), INTERVAL -24 HOUR)
+	DATE_ADD(now(), INTERVAL -12 HOUR)
 	order by id desc;
-	</select>
+	</select>	
 	
 	<select id="selectDaumSports" resultType="aaa.bbb.ccc.entity.PortalNews2">
 	SELECT * FROM hw_utf8.PortalNews
 	WHERE source = 'DAUMSPORTS' AND created >
-	DATE_ADD(now(), INTERVAL -24 HOUR)
+	DATE_ADD(now(), INTERVAL -12 HOUR)
 	order by id desc;
 	</select>
 	
 	<select id="selectNaverSports" resultType="aaa.bbb.ccc.entity.PortalNews2">
 	SELECT * FROM hw_utf8.PortalNews
 	WHERE source = 'NAVERSPORTS' AND created >
-	DATE_ADD(now(), INTERVAL -24 HOUR)
+	DATE_ADD(now(), INTERVAL -12 HOUR)
 	order by id desc;
 	</select>
 		
-
+	<select id="selectNaverLand" resultType="aaa.bbb.ccc.entity.PortalNews2">
+	SELECT * FROM hw_utf8.PortalNews
+	WHERE source = 'NAVERLAND' AND created >
+	DATE_ADD(now(), INTERVAL -12 HOUR)
+	order by id desc;
+	</select>
+	
+	<select id="selectDaumLand" resultType="aaa.bbb.ccc.entity.PortalNews2">
+	SELECT * FROM hw_utf8.PortalNews
+	WHERE source = 'DAUMLAND' AND created >
+	DATE_ADD(now(), INTERVAL -12 HOUR)
+	order by id desc;
+	</select>	
 	
 	
 	<insert id="insertTop20" parameterType="aaa.bbb.ccc.entity.PortalNews2">

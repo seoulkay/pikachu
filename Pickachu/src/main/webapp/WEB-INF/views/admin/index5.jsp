@@ -160,10 +160,7 @@
 
 		
 		<div class="row justify-content-md-center mb-3" >
-			<div class="col-md-auto">		
-				<select class="form-select form-select-sm mb-3" onchange="drawWordCloud(this.value)" id="timeSelector">
-				</select>
-			</div>	
+
 				
 			<div class="col-md-auto">
 				<select onchange="if(this.value) location.href=(this.value);" class="form-select form-select-sm mb-3" >
@@ -172,9 +169,15 @@
 					<option value="index5?source=daum" id="daum_select">다음 뉴스</option>					
 					<option value="index5?source=naversports" id="naversports_select">네이버 스포츠</option>
 					<option value="index5?source=daumsports" id="daumsports_select">다음 스포츠</option>
+					<option value="index5?source=naverland" id="naverland_select">네이버 부동산뉴스</option>
 				
 				</select>
 			</div>
+			
+			<div class="col-md-auto">		
+				<select class="form-select form-select-sm mb-3" onchange="drawWordCloud(this.value)" id="timeSelector">
+				</select>
+			</div>	
 			
 		</div>
 		
@@ -271,7 +274,11 @@ function toggleName(){
 		
 	}else if(source=="daumsports"){
 		$("#daumsports_select").attr("selected", "selected");
+		
+	}else if(source=="naverland"){
+		$("#naverland_select").attr("selected", "selected");
 	}
+	
 }
 
 toggleName();
@@ -298,7 +305,7 @@ function timeStampToHuman(p1){
 	return humanDateFormat;
 }
 
-var weight = 2,   // change me
+var weight = 2.5,   // change me
 width = window.innerWidth - 21,
 height = window.innerHeight - 350;
 
@@ -381,7 +388,7 @@ function news20Ajax(p1){
 		//받아온 데이터를 프리퀀시 리스트에 집어넣는다. 
 		frequency_list = data;
 		//받아온 데이터를 스트링으로 찍어본다. 
-		//console.log(JSON.stringify(frequency_list));
+		console.log(JSON.stringify(frequency_list));
 		
 // 		for(int i=0; i<frequency_list.length; i++){
 			

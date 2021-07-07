@@ -1107,6 +1107,8 @@ public class AdminController {
 			label = "네이버스포츠";
 		}else if(result.equals("daumsports")){
 				label = "다음스포츠";
+		}else if(result.equals("naverland")){
+			label = "네이버부동산";
 		}
 		
 		model.addAttribute("url", url);
@@ -1192,6 +1194,7 @@ public class AdminController {
 		String result = "https://search.naver.com/search.naver?where=news&sm=tab_jum&query=";
 		String str = "daum";
 		String strSports = "daumsports";
+
 		
 		if (source.equals(str)||source.equals(strSports)) {
 			result = "https://search.daum.net/search?w=tot&DA=23A&rtmaxcoll=NNS&q=";

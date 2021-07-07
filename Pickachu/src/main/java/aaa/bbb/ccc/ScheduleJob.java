@@ -36,47 +36,67 @@ public class ScheduleJob {
 	static String daumMapper = "aaa.bbb.ccc.BaseMapper.selectTodayNewsDaum";
 	static String naverMapper = "aaa.bbb.ccc.BaseMapper.selectTodayNewsNaver";			
 	static String daumSportsMapper = "aaa.bbb.ccc.BaseMapper.selectDaumSports";
-	static String naverSportsMapper = "aaa.bbb.ccc.BaseMapper.selectNaverSports";		
+	static String naverSportsMapper = "aaa.bbb.ccc.BaseMapper.selectNaverSports";	
+	static String naverLandMapper = "aaa.bbb.ccc.BaseMapper.selectNaverLand";	
+	static String daumLandMapper = "aaa.bbb.ccc.BaseMapper.selectDaumLand";	
 	
 //	@Scheduled(cron = "1 */2 * * * *")
 //	public void getIamkay() {
 //		System.out.println("새로운 스케줄러 작동중입니다.");
 //	}
 	
-	@Scheduled(cron = "1 */10 * * * * ")
+	@Scheduled(cron = "1 */20 * * * * ")
 	public void naverTopNews() {
 		getNaver_newsHeadline();
 	}
 
-	@Scheduled(cron = "1 */15 * * * * ")
+	@Scheduled(cron = "1 */20 * * * * ")
 	public void daumTopNews() {
 		getDaum_newsHeadline();			
 	}
 	
-	@Scheduled(cron = "1 */30 * * * * ")
-	public void topSportsNews() {
+	@Scheduled(cron = "1 */10 * * * * ")
+	public void topNaverSportsNews() {
 		getNaverSports_newsHeadline();			
+	}
+	
+	@Scheduled(cron = "1 */20 * * * * ")
+	public void topDaumSportsNews() {
 		getDaumSports_newsHeadline();
 	}
-
+	
+	@Scheduled(cron = "1 */50 * * * * ")
+	public void getNaverLandNews() {
+		getNaverLand();
+	}	
+	
 	@Scheduled(cron = "1 */30 * * * * ")
 	public void per30min() {
 		news20_cool(naverMapper, "NAVER");
-		news20_cool(daumMapper, "DAUM");
-	}
+		news20_cool(daumMapper, "DAUM");	
 
+	}
+	
+	@Scheduled(cron = "1 */60 * * * * ")
+	public void per40min() {
+		news20_cool(naverLandMapper, "NAVERLAND");	
+	}
+		
+	
 	@Scheduled(cron = "1 */20 * * * * ")
 	public void per20min() {
 		news20_cool(naverSportsMapper, "NAVERSPORTS");
-		news20_cool(daumSportsMapper, "DAUMSPORTS");
+		news20_cool(daumSportsMapper, "DAUMSPORTS");		
 	}	
 	
-//	@Scheduled(cron = "30 * * * * * ")
-//	public void dc() {
-//		getDcinside();
-//
-//	}	
-		
+
+	
+//	@Scheduled(cron = "1 */2 * * * * ")
+//	public void getDaumLandNews() {
+//		getDaumLand();	
+//		news20_cool(daumLandMapper, "DAUMLAND");
+//	}
+
 
 //뉴스 채취 
 	// 네이버 뉴스 가져오는 함수 
@@ -93,7 +113,7 @@ public class ScheduleJob {
 					
 			for(Element elem : newsHeadlines) {
 				toDay.setDescription(elem.select("li").text());
-				toDay.setLink("https://news.naver.com/"+elem.select("div[class=hdline_article_tit] a").attr("href"));
+				toDay.setLink("https://news.naver.com"+elem.select("div[class=hdline_article_tit] a").attr("href"));
 				toDay.setSource("NAVER");				
 				insertNews(toDay);						
 			}
@@ -219,6 +239,40 @@ public class ScheduleJob {
 	}
 
 	
+	//호갱노노 실시간 아파트 순위 가져오는 함수 
+//	public static void getHogangNo() {
+//		Calendar calendar = Calendar.getInstance();
+//		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//		System.out.println("호갱노노 긁어올게 " +dateFormat.format(calendar.getTime())+" 기다려  ");
+//		
+//		try {
+//			Document doc = Jsoup.connect("https://hogangnono.com/").get();
+//			System.out.println(doc.title());
+//			Elements newsHeadlines = doc.select("div[id=react-root] div[class=iso-root] div[id=wrap] div div div[id=container] div[class=scene-home] fieldset[class=search-group] div[class=keyword-group] div[class=realtime-top-visitors] div[class=list-mode] div[class=scroll-container] div[class=tiny-scroll] ul[class=list]").select("li");
+//			System.out.println(newsHeadlines);
+//			
+//			PortalNews toDay = new PortalNews();
+//			int i = 0;
+//		
+//			for(Element elem : newsHeadlines) {
+//				toDay.setDescription(elem.select("li a span[class=name]").text());
+//				toDay.setLink("https://hogangnono.com"+elem.select("a").attr("href"));
+//				toDay.setSource("HOGANGNONO");
+//				i += 1 ;
+//				System.out.println(toDay.getLink());
+//				
+//				insertNews(toDay);
+//				System.out.println(i+"번째 뉴스 기록중");
+//				if(i == 5) {
+//					System.out.println("멈출게 5라서");
+//					break;
+//				}
+//			}
+//		}catch(IOException e) {
+//			e.printStackTrace();
+//		}
+//	}
+	
 	//디시인사이드 실시간베스트 가져오는 함수 : 5개만 가져오기 
 //	public static void getDcinside() {
 //		Calendar calendar = Calendar.getInstance();
@@ -253,6 +307,111 @@ public class ScheduleJob {
 //	}
 	
 
+	//네이버 부동산 뉴스 가져오는 함수 : 5개만 가져오기 
+	public static void getNaverLand() {
+		Calendar calendar = Calendar.getInstance();
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		System.out.println("네이버 부동산 긁어올게 " +dateFormat.format(calendar.getTime())+" 기다려  ");
+		
+		try {
+			Document doc = Jsoup.connect("https://land.naver.com/news/headline.naver").get();
+			System.out.println(doc.title());
+			Elements newsHeadlines = doc.select("ul[class=headline_list]").select("li");
+			PortalNews toDay = new PortalNews();
+			int i = 0;
+		
+			for(Element elem : newsHeadlines) {
+				toDay.setDescription(elem.select("li dl dt a").text());
+				toDay.setLink("https://land.naver.com"+elem.select("a").attr("href"));
+				toDay.setSource("NAVERLAND");
+				i += 1 ;
+				System.out.println(toDay.getLink());
+				
+				insertNews(toDay);
+				System.out.println(i+"번째 뉴스 기록중");
+				if(i == 10) {
+					System.out.println("멈출게 10이라서");
+					break;
+				}
+			}
+		}catch(IOException e) {
+			e.printStackTrace();
+		}
+		
+		try {
+			Document doc = Jsoup.connect("https://land.naver.com/news/headline.naver").get();
+			System.out.println(doc.title());
+			Elements newsHeadlines = doc.select("div[class=section_news]").select("div[class=bg_news]");
+			PortalNews toDay = new PortalNews();
+
+				toDay.setDescription(newsHeadlines.select("div[class=group ] dl dt a").text());
+				toDay.setLink("https://land.naver.com"+newsHeadlines.select("a").attr("href"));
+				toDay.setSource("NAVERLAND");
+				System.out.println(toDay.getLink());
+				
+				insertNews(toDay);
+
+		}catch(IOException e) {
+			e.printStackTrace();
+		}
+		
+		try {
+			Document doc = Jsoup.connect("https://land.naver.com/news/headline.naver").get();
+			System.out.println(doc.title());
+			Elements newsHeadlines = doc.select("div[class=section_news]").select("div[class=bg_news]");
+			PortalNews toDay = new PortalNews();
+
+				toDay.setDescription(newsHeadlines.select("div[class=group line] dl dt a").text());
+				toDay.setLink("https://land.naver.com"+newsHeadlines.select("a").attr("href"));
+				toDay.setSource("NAVERLAND");
+				System.out.println(toDay.getLink());
+	
+				
+				insertNews(toDay);
+
+		}catch(IOException e) {
+			e.printStackTrace();
+		}
+		
+	}
+	
+	
+	//다음부동산 뉴스 가져오는 함수 : 5개만 가져오기 
+	public static void getDaumLand() {
+		Calendar calendar = Calendar.getInstance();
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		System.out.println("다음 뉴스 긁어올게 " +dateFormat.format(calendar.getTime())+" 기다려  ");
+		
+		try {
+			Document doc = Jsoup.connect("https://realestate.daum.net/news").get();
+			System.out.println(doc.title());
+			Elements newsHeadlines = doc.select("div[class=tabBody] ul[class=boardList]").select("li");
+			System.out.println(newsHeadlines);
+			PortalNews toDay = new PortalNews();
+			int i = 0;
+		
+			for(Element elem : newsHeadlines) {
+				toDay.setDescription(elem.select("li a").text());
+				toDay.setLink(elem.select("a").attr("href"));
+				toDay.setSource("DAUMLAND");
+				i += 1 ;
+				System.out.println(toDay.getLink());
+				
+				insertNews(toDay);
+				System.out.println(i+"번째 뉴스 기록중");
+				if(i == 10) {
+					System.out.println("멈출게 10라서");
+					break;
+				}
+			}
+
+		}catch(IOException e) {
+			e.printStackTrace();
+		}
+
+	}
+	
+	
 	
 	//mapper name, catregory name을 주면 서머리 해주는 함수 
 	public static void news20_cool(String mapper, String dbCategory) {
