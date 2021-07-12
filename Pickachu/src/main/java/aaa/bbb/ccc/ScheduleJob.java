@@ -39,36 +39,58 @@ public class ScheduleJob {
 	static String naverSportsMapper = "aaa.bbb.ccc.BaseMapper.selectNaverSports";	
 	static String naverLandMapper = "aaa.bbb.ccc.BaseMapper.selectNaverLand";	
 	static String daumLandMapper = "aaa.bbb.ccc.BaseMapper.selectDaumLand";	
+	static String naverITMapper = "aaa.bbb.ccc.BaseMapper.selectNaverIT";	
+	static String naverPoliticMapper = "aaa.bbb.ccc.BaseMapper.selectNaverPolitic";	
+
+	static String naverEntMapper = "aaa.bbb.ccc.BaseMapper.selectEntNaver";	
+	static String daumEntMapper = "aaa.bbb.ccc.BaseMapper.selectEntDaum";	
+
 	
 //	@Scheduled(cron = "1 */2 * * * *")
 //	public void getIamkay() {
 //		System.out.println("새로운 스케줄러 작동중입니다.");
 //	}
 	
-	@Scheduled(cron = "1 */20 * * * * ")
+	@Scheduled(cron = "1 */5 * * * * ")
 	public void naverTopNews() {
 		getNaver_newsHeadline();
 	}
 
-	@Scheduled(cron = "1 */20 * * * * ")
+	@Scheduled(cron = "1 */9 * * * * ")
 	public void daumTopNews() {
 		getDaum_newsHeadline();			
 	}
 	
-	@Scheduled(cron = "1 */10 * * * * ")
+	@Scheduled(cron = "1 */14 * * * * ")
 	public void topNaverSportsNews() {
 		getNaverSports_newsHeadline();			
 	}
 	
-	@Scheduled(cron = "1 */20 * * * * ")
+	@Scheduled(cron = "1 */12 * * * * ")
 	public void topDaumSportsNews() {
 		getDaumSports_newsHeadline();
 	}
 	
-	@Scheduled(cron = "1 */50 * * * * ")
+	@Scheduled(cron = "1 */31 * * * * ")
 	public void getNaverLandNews() {
 		getNaverLand();
-	}	
+	}
+
+	@Scheduled(cron = "1 */30 * * * * ")
+	public void getDaumLandNews() {
+		getDaumLand();	
+	}
+	
+	@Scheduled(cron = "1 */10 * * * * ")
+	public void getNaverITNews() {
+		getNaverIT_newsHeadline();	
+	}
+	@Scheduled(cron = "1 */3 * * * * ")
+	public void getNaverPoliticNews() {
+		getNaverPolitic_newsHeadline();
+	}
+
+	
 	
 	@Scheduled(cron = "1 */30 * * * * ")
 	public void per30min() {
@@ -80,22 +102,28 @@ public class ScheduleJob {
 	@Scheduled(cron = "1 */60 * * * * ")
 	public void per40min() {
 		news20_cool(naverLandMapper, "NAVERLAND");	
+		news20_cool(daumLandMapper, "DAUMLAND");
 	}
 		
 	
-	@Scheduled(cron = "1 */20 * * * * ")
+	@Scheduled(cron = "1 */30 * * * * ")
 	public void per20min() {
 		news20_cool(naverSportsMapper, "NAVERSPORTS");
-		news20_cool(daumSportsMapper, "DAUMSPORTS");		
+		news20_cool(daumSportsMapper, "DAUMSPORTS");
+
 	}	
 	
+	@Scheduled(cron = "1 */5 * * * * ")
+	public void per3min() {
+		news20_cool(naverITMapper, "NAVERIT");
+		news20_cool(naverPoliticMapper, "NAVERPolitic");
+		news20_cool(naverEntMapper, "NAVERENT");
+		news20_cool(daumEntMapper, "DAUMENT");
+		
+	}
 
 	
-//	@Scheduled(cron = "1 */2 * * * * ")
-//	public void getDaumLandNews() {
-//		getDaumLand();	
-//		news20_cool(daumLandMapper, "DAUMLAND");
-//	}
+
 
 
 //뉴스 채취 
@@ -385,7 +413,7 @@ public class ScheduleJob {
 		try {
 			Document doc = Jsoup.connect("https://realestate.daum.net/news").get();
 			System.out.println(doc.title());
-			Elements newsHeadlines = doc.select("div[class=tabBody] ul[class=boardList]").select("li");
+			Elements newsHeadlines = doc.select("ul[class=list_allnews]").select("li");
 			System.out.println(newsHeadlines);
 			PortalNews toDay = new PortalNews();
 			int i = 0;
@@ -399,7 +427,7 @@ public class ScheduleJob {
 				
 				insertNews(toDay);
 				System.out.println(i+"번째 뉴스 기록중");
-				if(i == 10) {
+				if(i == 12) {
 					System.out.println("멈출게 10라서");
 					break;
 				}
@@ -409,7 +437,98 @@ public class ScheduleJob {
 			e.printStackTrace();
 		}
 
+		try {
+			Document doc = Jsoup.connect("https://realestate.daum.net/news").get();
+			System.out.println(doc.title());
+			Elements newsHeadlines = doc.select("div[class=cont]").select("strong[class=tit]");
+			PortalNews toDay = new PortalNews();
+
+				toDay.setDescription(newsHeadlines.select("strong[class=tit] a").text());
+				toDay.setLink(newsHeadlines.select("a").attr("href"));
+				toDay.setSource("DAUMLAND");
+				System.out.println(toDay.getLink());
+				
+				insertNews(toDay);
+
+		}catch(IOException e) {
+			e.printStackTrace();
+		}
+		
+//		try {
+//			Document doc = Jsoup.connect("https://realestate.daum.net/news").get();
+//			System.out.println(doc.title());
+//			Elements newsHeadlines = doc.select("div[class=divBox top noLine] div[class=tabBody] ul[class=boardList]").select("li");
+//			System.out.println(newsHeadlines);
+//			PortalNews toDay = new PortalNews();
+//			int i = 0;
+//		
+//			for(Element elem : newsHeadlines) {
+//				toDay.setDescription(elem.select("li a").text());
+//				toDay.setLink(elem.select("a").attr("href"));
+//				toDay.setSource("DAUMLAND");
+//				i += 1 ;
+//				System.out.println(toDay.getLink());
+//				
+//				insertNews(toDay);
+//				System.out.println(i+"번째 뉴스 기록중");
+//				if(i == 10) {
+//					System.out.println("멈출게 10라서");
+//					break;
+//				}
+//			}
+//
+//		}catch(IOException e) {
+//			e.printStackTrace();
+//		}
 	}
+	
+	public static  void getNaverIT_newsHeadline() {
+		Calendar calendar = Calendar.getInstance();
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		System.out.println("네이버 IT뉴스 긁어올게 " +dateFormat.format(calendar.getTime())+" 기다려  ");
+					
+		try {
+			Document doc = Jsoup.connect("https://news.naver.com/main/main.naver?mode=LSD&mid=shm&sid1=105").get();
+			System.out.println(doc.title());
+			Elements newsHeadlines = doc.select("div[class=cluster_body] ul[class=cluster_list]").select("li");
+			PortalNews toDay = new PortalNews();
+								
+			for(Element elem : newsHeadlines) {
+				//toDay.setDescription(elem.select("li[class=title]").text());
+				toDay.setDescription(elem.select("li div[class=cluster_text] a").text());
+				toDay.setLink(elem.select("li div[class=cluster_text] a").attr("href"));
+				toDay.setSource("NAVERIT");				
+				insertNews(toDay);						
+			}
+		}catch(IOException e) {
+			e.printStackTrace();
+		}	
+	}
+	
+	
+	public static  void getNaverPolitic_newsHeadline() {
+		Calendar calendar = Calendar.getInstance();
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		System.out.println("네이버 정치뉴스 긁어올게 " +dateFormat.format(calendar.getTime())+" 기다려  ");
+					
+		try {
+			Document doc = Jsoup.connect("https://news.naver.com/main/main.naver?mode=LSD&mid=shm&sid1=100").get();
+			System.out.println(doc.title());
+			Elements newsHeadlines = doc.select("div[class=cluster_body] ul[class=cluster_list]").select("li");
+			PortalNews toDay = new PortalNews();
+								
+			for(Element elem : newsHeadlines) {
+				//toDay.setDescription(elem.select("li[class=title]").text());
+				toDay.setDescription(elem.select("li div[class=cluster_text] a").text());
+				toDay.setLink(elem.select("li div[class=cluster_text] a").attr("href"));
+				toDay.setSource("NAVERPOLITIC");				
+				insertNews(toDay);						
+			}
+		}catch(IOException e) {
+			e.printStackTrace();
+		}	
+	}
+	
 	
 	
 	

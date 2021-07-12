@@ -166,10 +166,19 @@
 				<select onchange="if(this.value) location.href=(this.value);" class="form-select form-select-sm mb-3" >
 <!-- 					<option selected>뉴스 선택</option> -->
 					<option value="index5?source=naver" id="naver_select">네이버 뉴스</option>		
-					<option value="index5?source=daum" id="daum_select">다음 뉴스</option>					
+					<option value="index5?source=daum" id="daum_select">다음 뉴스</option>		
+					<option value="index5?source=naverpolitic" id="naverpolitic_select">네이버 정치뉴스</option>	
+					<option value="index5?source=naverit" id="naverit_select">네이버 IT/과학뉴스</option>		
 					<option value="index5?source=naversports" id="naversports_select">네이버 스포츠</option>
 					<option value="index5?source=daumsports" id="daumsports_select">다음 스포츠</option>
+					
+					<option value="index5?source=naverent" id="naverent_select">네이버 연예뉴스</option>
+					<option value="index5?source=daument" id="daument_select">다음 연예뉴스</option>
+					
 					<option value="index5?source=naverland" id="naverland_select">네이버 부동산뉴스</option>
+					<option value="index5?source=daumland" id="daumland_select">다음 부동산뉴스</option>
+					
+					
 				
 				</select>
 			</div>
@@ -277,6 +286,20 @@ function toggleName(){
 		
 	}else if(source=="naverland"){
 		$("#naverland_select").attr("selected", "selected");
+		
+	}else if(source=="daumland"){
+		$("#daumland_select").attr("selected", "selected");
+		
+	}else if(source=="naverit"){
+		$("#naverit_select").attr("selected", "selected");
+		
+	}else if(source=="naverpolitic"){
+		$("#naverpolitic_select").attr("selected", "selected");
+	
+	}else if(source=="naverent"){
+		$("#naverent_select").attr("selected", "selected");
+	}else if(source=="daument"){
+		$("#daument_select").attr("selected", "selected");
 	}
 	
 }
@@ -305,7 +328,7 @@ function timeStampToHuman(p1){
 	return humanDateFormat;
 }
 
-var weight = 2.5,   // change me
+var weight = 1,   // change me
 width = window.innerWidth - 21,
 height = window.innerHeight - 350;
 
@@ -355,6 +378,7 @@ function draw(words) {
             //a태그를 붙임
             
             .attr("href", function(d) {
+            	
                 return "${url}"+d.text;
             })
             //href 속성 집어넣고 주소 붙인다. 링크 생성 

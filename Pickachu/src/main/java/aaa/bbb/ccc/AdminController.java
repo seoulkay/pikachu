@@ -1109,6 +1109,12 @@ public class AdminController {
 				label = "다음스포츠";
 		}else if(result.equals("naverland")){
 			label = "네이버부동산";
+		}else if(result.equals("daumland")){
+			label = "다음부동산";
+		}else if(result.equals("naverit")){
+			label = "네이버IT";
+		}else if(result.equals("naverpolitic")){
+			label = "네이버정치";
 		}
 		
 		model.addAttribute("url", url);

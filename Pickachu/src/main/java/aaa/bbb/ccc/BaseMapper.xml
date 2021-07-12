@@ -276,6 +276,34 @@
 	order by id desc;
 	</select>	
 	
+	<select id="selectNaverIT" resultType="aaa.bbb.ccc.entity.PortalNews2">
+	SELECT * FROM hw_utf8.PortalNews
+	WHERE source = 'NAVERIT' AND created >
+	DATE_ADD(now(), INTERVAL -12 HOUR)
+	order by id desc;
+	</select>	
+	
+	<select id="selectNaverPolitic" resultType="aaa.bbb.ccc.entity.PortalNews2">
+	SELECT * FROM hw_utf8.PortalNews
+	WHERE source = 'NAVERPOLITIC' AND created >
+	DATE_ADD(now(), INTERVAL -12 HOUR)
+	order by id desc;
+	</select>
+	
+	<select id="selectEntNaver" resultType="aaa.bbb.ccc.entity.PortalNews2">
+	SELECT * FROM hong.todayNews
+	WHERE source = 'NAVERENT' AND created >
+	DATE_ADD(now(), INTERVAL -12 HOUR)
+	order by id desc;
+	</select>
+	
+	<select id="selectEntDaum" resultType="aaa.bbb.ccc.entity.PortalNews2">
+	SELECT * FROM hong.todayNews
+	WHERE source = 'DAUMENT' AND created >
+	DATE_ADD(now(), INTERVAL -12 HOUR)
+	order by id desc;
+	</select>
+	
 	
 	<insert id="insertTop20" parameterType="aaa.bbb.ccc.entity.PortalNews2">
     insert into hw_utf8.todayTop20 (hw_utf8.todayTop20.created, top20, source) 
