@@ -238,6 +238,17 @@
 	order by id desc;
   </select>
   
+  <select id="getToDayHWData" parameterType="aaa.bbb.ccc.entity.newsTitle" resultType="aaa.bbb.ccc.entity.newsTitle">
+  	SELECT 
+	* 
+	FROM 
+	hw_utf8.PortalNews 
+	WHERE
+	source = #{source} and
+	created >
+	DATE_ADD(now(), INTERVAL -24 HOUR) 
+	order by id desc;
+  </select>
   
   <select id="getToDayNaverNewsData" resultType="aaa.bbb.ccc.entity.newsTitle">
   	SELECT 

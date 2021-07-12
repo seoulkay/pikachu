@@ -93,6 +93,11 @@ public class AlarmTask {
 				getNaverEnt_newsHaedline();
 				getNaverCar_newsHaedline();
 				getDaumCar_newsHaedline();
+				getNaverEco_newsHaedline();
+				getNaverWor_newsHaedline();
+				getNaverNav_newsHaedline();
+				getDaumEco_newsHaedline();
+				getDaumWor_newsHaedline();
 				
 			}
 			
@@ -105,8 +110,24 @@ public class AlarmTask {
 				todayTop20("DAUMENT");
 				todayTop20("NAVERCAR");
 				todayTop20("DAUMCAR");
+				todayTop20("DAUMECO");
+				todayTop20("DAUMWOR");
+				todayTop20("NAVERECO");
+				todayTop20("NAVERWOR");
+				todayTop20("NAVERNAV");
+				todayTop20HW("NAVERSPORTS");
+				todayTop20HW("DAUMSPORTS");
+				todayTop20HW("NAVERIT");
+				todayTop20HW("DAUMLAND");
+				todayTop20HW("NAVERLAND");
+				todayTop20HW("NAVERSPORTS");
+				todayTop20HW("DAUMSPORTS");
+				todayTop20HW("NAVERIT");
+				todayTop20HW("DAUMLAND");
+				todayTop20HW("NAVERLAND");
 			}
-//			
+			
+			
 			
 			//헤드라인 뉴스의 하루동안 노출빈도가 가장많은단어 20을 꺼내와 보여주고 저장한다.
 			public static Map<String,Integer> todayTop20(String p1) {
@@ -124,7 +145,23 @@ public class AlarmTask {
 				
 				return result ;
 			}
-	
+			
+			//헤드라인 뉴스의 하루동안 노출빈도가 가장많은단어 20을 꺼내와 보여주고 저장한다.
+			public static Map<String,Integer> todayTop20HW(String p1) {
+				newsTitle sourceIs = new newsTitle();
+				sourceIs.setSource(p1);
+				System.out.println("시작합니다 "+ sourceIs.getSource() +" 스케쥴 ");
+				//받아놓은 헤드라인 뉴스들중 지난 하루동안의 Top20의 키워드를 찾아 Db에 저장
+				insertTop20(String.join(" ",top20(pieceWord(getToDayHWData(sourceIs)))),p1);
+				//저장한 Top20의 뉴스중 지정한 소스의 최근 Top20을 꺼내 다시 맵에 키워드별 노출횟수로 넣어 보여줌
+				System.out.println(top20MaptoString(getLastTop20(sourceIs)));
+				Map<String,Integer> result = new HashMap<String,Integer>();
+				result = top20MaptoString(getLastTop20(sourceIs));
+				
+				
+				
+				return result ;
+			}
 			// 키와 밸류로 나눠줘서 각각넣어줘야 한다.
 			public static Map<String,Integer> top20MaptoString(newsTitle p1) {
 				Map<String,Integer> result = new HashMap<String,Integer>();
@@ -342,7 +379,26 @@ public class AlarmTask {
 				
 				return result ;
 			}
+			
+			//소스별로 오늘의 데이터 긁어오는 함수
+			public static List<newsTitle> getToDayHWData(newsTitle p1) {
+				String resource = "aaa/bbb/ccc/mybatis_config.xml";
+				InputStream inputStream;
+				
+				List<newsTitle> result = new ArrayList<newsTitle>();
+				try {
+					inputStream = Resources.getResourceAsStream(resource);
+					SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
+					SqlSession session = sqlSessionFactory.openSession();
+					result = session.selectList("aaa.bbb.ccc.BaseMapper.getToDayHWData", p1);
 
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				
+				return result ;
+			}
+			
 			// 네이버 뉴스 가져오는 함수 
 			public static  void getNaver_newHaedline() {
 				Calendar calendar = Calendar.getInstance();
@@ -474,8 +530,76 @@ public class AlarmTask {
 				}
 	
 			}
-			
-			
+			// 다음 경제 뉴스 가져오는 함수 5개만 
+						public static void getDaumEco_newsHaedline() {
+							Calendar calendar = Calendar.getInstance();
+							SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+							System.out.println("다음 경제뉴스 긁어올게 " +dateFormat.format(calendar.getTime())+" 기다려  ");
+							
+							try {
+							Document doc = Jsoup.connect("https://news.daum.net/economic#1").get();
+							System.out.println(doc.title());
+							Elements newsHeadlines = doc.select("div[class=section_cate section_headline]").select("div[class=cont_thumb]");
+							newsTitle toDay = new newsTitle();
+							int i = 0;
+							
+							for(Element elem : newsHeadlines) {
+								toDay.setTitle(elem.select("a").text());
+								toDay.setLink(elem.select("a").attr("href"));
+								toDay.setSource("DAUMECO");
+								i += 1 ;
+								System.out.println(toDay.getLink());
+								System.out.println(toDay.getTitle());
+								insertNews(toDay);
+								System.out.println(i+"번째 뉴스 기록중");
+								if(i == 5) {
+									System.out.println("멈출게 5라서");
+									break;
+									
+								}
+							}
+
+							}catch(IOException e) {
+								e.printStackTrace();
+							}
+				
+						}
+						// 다음 국제 뉴스 가져오는 함수 5개만 
+						public static void getDaumWor_newsHaedline() {
+							Calendar calendar = Calendar.getInstance();
+							SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+							System.out.println("다음 국제뉴스 긁어올게 " +dateFormat.format(calendar.getTime())+" 기다려  ");
+							
+							try {
+							Document doc = Jsoup.connect("https://news.daum.net/foreign#1").get();
+							System.out.println(doc.title());
+							Elements newsHeadlines = doc.select("div[class=section_cate section_headline]").select("div[class=cont_thumb]");
+							newsTitle toDay = new newsTitle();
+							int i = 0;
+							
+							for(Element elem : newsHeadlines) {
+								toDay.setTitle(elem.select("a").text());
+								toDay.setLink(elem.select("a").attr("href"));
+								toDay.setSource("DAUMWOR");
+								i += 1 ;
+								System.out.println(toDay.getLink());
+								System.out.println(toDay.getTitle());
+								insertNews(toDay);
+								System.out.println(i+"번째 뉴스 기록중");
+								if(i == 5) {
+									System.out.println("멈출게 5라서");
+									break;
+									
+								}
+							}
+
+							}catch(IOException e) {
+								e.printStackTrace();
+							}
+				
+						}
+						
+						
 			// 네이버 연예 뉴스 가져오는 함수 5개만 
 			public static void getNaverEnt_newsHaedline() {
 			Calendar calendar = Calendar.getInstance();
@@ -579,8 +703,113 @@ public class AlarmTask {
 						e.printStackTrace();
 					}
 						
-				}						
-						
+				}			
+				
+				
+				// 네이버 경제 뉴스 가져오는 함수 5개만 
+				public static void getNaverEco_newsHaedline() {
+				Calendar calendar = Calendar.getInstance();
+				SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+				System.out.println("네이버 경제뉴스 긁어올게 " +dateFormat.format(calendar.getTime())+" 기다려  ");
+								
+				try {
+				Document doc = Jsoup.connect("https://news.naver.com/main/main.naver?mode=LSD&mid=shm&sid1=101").get();
+				System.out.println(doc.title());
+				Elements newsHeadlines = doc.select("div[class=_persist]").select("a[class=nclicks(cls_eco.clstitle)]");
+				newsTitle toDay = new newsTitle();
+				int i = 0;
+								
+					for(Element elem : newsHeadlines) {
+					toDay.setTitle(elem.select("span[class=cluster_head_sub_topic]").text());
+					toDay.setLink(elem.select("a").attr("href"));
+					toDay.setSource("NAVERECO");
+					i += 1 ;
+					System.out.println(toDay.getLink());
+					System.out.println(toDay.getTitle());
+					insertNews(toDay);
+					System.out.println(i+"번째 뉴스 기록중");
+					if(i == 5) {
+								System.out.println("멈출게 5라서");
+								break;
+										
+								}
+					}
+
+					}catch(IOException e) {
+					e.printStackTrace();
+					}
+					
+				}
+				
+				// 네이버 세계 뉴스 가져오는 함수 5개만 
+				public static void getNaverWor_newsHaedline() {
+				Calendar calendar = Calendar.getInstance();
+				SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+				System.out.println("네이버 세계뉴스 긁어올게 " +dateFormat.format(calendar.getTime())+" 기다려  ");
+								
+				try {
+				Document doc = Jsoup.connect("https://news.naver.com/main/main.naver?mode=LSD&mid=shm&sid1=104").get();
+				System.out.println(doc.title());
+				Elements newsHeadlines = doc.select("div[class=_persist]").select("a[class=nclicks(cls_wor.clstitle)]");
+				newsTitle toDay = new newsTitle();
+				int i = 0;
+								
+					for(Element elem : newsHeadlines) {
+					toDay.setTitle(elem.select("span[class=cluster_head_sub_topic]").text());
+					toDay.setLink(elem.select("a").attr("href"));
+					toDay.setSource("NAVERWOR");
+					i += 1 ;
+					System.out.println(toDay.getLink());
+					System.out.println(toDay.getTitle());
+					insertNews(toDay);
+					System.out.println(i+"번째 뉴스 기록중");
+					if(i == 5) {
+								System.out.println("멈출게 5라서");
+								break;
+										
+								}
+					}
+
+					}catch(IOException e) {
+					e.printStackTrace();
+					}
+					
+				}
+					
+				// 네이버 사회 뉴스 가져오는 함수 5개만 
+				public static void getNaverNav_newsHaedline() {
+				Calendar calendar = Calendar.getInstance();
+				SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+				System.out.println("네이버 사회뉴스 긁어올게 " +dateFormat.format(calendar.getTime())+" 기다려  ");
+								
+				try {
+				Document doc = Jsoup.connect("https://news.naver.com/main/main.naver?mode=LSD&mid=shm&sid1=102").get();
+				System.out.println(doc.title());
+				Elements newsHeadlines = doc.select("div[class=_persist]").select("a[class=nclicks(cls_nav.clstitle)]");
+				newsTitle toDay = new newsTitle();
+				int i = 0;
+								
+					for(Element elem : newsHeadlines) {
+					toDay.setTitle(elem.select("span[class=cluster_head_sub_topic]").text());
+					toDay.setLink(elem.select("a").attr("href"));
+					toDay.setSource("NAVERNAV");
+					i += 1 ;
+					System.out.println(toDay.getLink());
+					System.out.println(toDay.getTitle());
+					insertNews(toDay);
+					System.out.println(i+"번째 뉴스 기록중");
+					if(i == 5) {
+								System.out.println("멈출게 5라서");
+								break;
+										
+								}
+					}
+
+					}catch(IOException e) {
+					e.printStackTrace();
+					}
+					
+				}
 			// 가져온 뉴스 타이틀과 url을 DB에 기록해줌
 			public static void insertNews(newsTitle  p1){
 			

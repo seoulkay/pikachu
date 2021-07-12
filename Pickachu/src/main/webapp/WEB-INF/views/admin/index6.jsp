@@ -78,14 +78,19 @@
 <body>
 				<div class="container-fluid">
 					<div class="row" >
-						<div class="col-md-auto">
-						<h3><a style="font-family:'Noto Serif KR'" href="index6?source=naver">지금뉴스</a></h3>
-						<small> 시간대별 가장많이 노출된 뉴스단어 Top50 </small>
-						</div>
-					
+<!-- 						<div class="col-md-auto"> -->
+<!-- 						<h3></h3> -->
+<!-- 						<small> 시간대별 가장많이 노출된 뉴스단어 Top50 </small> -->
+<!-- 						</div> -->
+					<figure class="text-center">
+  
+    <h1 class="display-4"><a href="index6?source=naver">지금뉴스</a></h1>
+    <h1 class="display-6"><a href="index6?source=naver">TOP50</a></h1>
+  
+</figure>
 					</div>
 				
-					<p>
+					
 				
 					<div class="row" >
 						<div class="col" id="my_dataviz"></div>
@@ -103,6 +108,16 @@
 							  <option value="index6?source=daument" id="daument_select">다음연예 뉴스</option>
 							  <option value="index6?source=navercar" id="navercar_select">네이버 자동차 뉴스</option>
 							  <option value="index6?source=daumcar" id="daumcar_select">다음 자동차 뉴스</option>
+							  <option value="index6?source=daumeco" id="daumeco_select">다음 경제 뉴스</option>
+							  <option value="index6?source=navereco" id="navereco_select">네이버 경제 뉴스</option>
+							  <option value="index6?source=daumwor" id="daumwor_select">다음 국제 뉴스</option>
+							  <option value="index6?source=navernav" id="navernav_select">네이버 사회 뉴스</option>
+							  <option value="index6?source=naverwor" id="naverwor_select">네이버 세계 뉴스</option>
+							  <option value="index6?source=naversports" id="naversports_select">네이버 스포츠 뉴스</option>
+							  <option value="index6?source=daumsports" id="daumsports_select">다음 스포츠 뉴스</option>
+							  <option value="index6?source=naverland" id="naverland_select">네이버 부동산 뉴스</option>
+							  <option value="index6?source=daumland" id="daumland_select">다음 부동산 뉴스</option>
+							  <option value="index6?source=naverit" id="naverit_select">네이버 IT 뉴스</option>
 							</select>
 							<select class="form-select form-select-lg mb-3" aria-label=".form-select-lg example" onchange="drawWordcloud(this.value)" id="timeSelector">
 						</select>
@@ -121,20 +136,20 @@
 				    </ol>
 
     <!-- Wrapper for slides -->
-			    <div class="carousel-inner">
+			    <div style="height:100px" class="carousel-inner">
 			      <div class="item active">
 			      <a href="http://kimsouvenir.cafe24.com">
 			        <img src="http://kimsouvenir.cafe24.com/web/upload/dnd_image/skin1/index/1132/2021/06/24/grid_id_1575522766878_7_5fca98.jpeg" alt="Los Angeles" style="width:100%;">
 			     	</a>
 			      </div>
 			
-			      <div class="item">
+			      <div style="height:100px" class="item">
 			      <a href="http://tellmebabyshop.cafe24.com/">
 			        <img src="http://tellmebabyshop.cafe24.com/web/product/big/202106/230c9576d26e48a5a80ec48b42e9d54a.png" alt="Chicago" style="width:100%;">
 			      </a>
 			      </div>
 			    
-			      <div class="item">
+			      <div style="height:100px" class="item">
 			      <a href="https://www.balenciaga.com/en-kr">
 			        <img src="https://balenciaga.dam.kering.com/m/656009906b92f9f1/Thumbnail-661720TAV041000_D.jpg?v=1" alt="New york" style="width:100%; ">
 			      </a>
@@ -171,6 +186,7 @@
 		 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-p34f1UUtsS3wqzfto5wAAmdvj+osOnFyQFpp4Ua3gs/ZVWx6oOypYoCJhGGScy+8" crossorigin="anonymous"></script>
 		<script>
 								console.log(window.outerWidth);
+								
 								var frequency_list = {};
 								
 								var color = d3.scale.linear()
@@ -211,7 +227,8 @@
 									        }
 		
 									var selectId = 1;
-						
+									var alpha = 1;
+									
 									function news20Ajax(p1){
 									
 									var source = p1;
@@ -224,6 +241,9 @@
 										.done(function(data) {
 										
 										frequency_list = data;
+										console.log(frequency_list[0].top20[0].size);
+										alpha = 65/frequency_list[0].top20[0].size;
+										console.log(alpha);
 										drawWordcloud(9);
 										//타임 셀렉터에 옵션을 자동으로 추가. 
 										// 반복으로 frequency_list만큼 append 
@@ -241,13 +261,13 @@
 								        .words(frequency_list[p1].top20)
 								        .rotate(0)
 								        .padding(1)
-								        .fontSize(function(d) { return d.size * weight; })
+								        .fontSize(function(d) { return d.size * weight * alpha; })
 								        .on("end" , draw)
 								        .start();
 							
 									}
 								
-								
+									
 									function timestampToHumanReader(p1){
 						
 										const dateObject = new Date(p1)
@@ -280,6 +300,26 @@
 											$("#navercar_select").attr("selected", "selected");
 										}else if(source=="daumcar"){
 											$("#daumcar_select").attr("selected", "selected");
+										}else if(source=="daumeco"){
+											$("#daumeco_select").attr("selected", "selected");
+										}else if(source=="daumwor"){
+											$("#daumwor_select").attr("selected", "selected");
+										}else if(source=="navereco"){
+											$("#navereco_select").attr("selected", "selected");
+										}else if(source=="naverwor"){
+											$("#naverwor_select").attr("selected", "selected");
+										}else if(source=="navernav"){
+											$("#navernav_select").attr("selected", "selected");
+										}else if(source=="naverland"){
+											$("#naverland_select").attr("selected", "selected");
+										}else if(source=="naversports"){
+											$("#naversports_select").attr("selected", "selected");
+										}else if(source=="naverit"){
+											$("#naverit_select").attr("selected", "selected");
+										}else if(source=="daumland"){
+											$("#daumland_select").attr("selected", "selected");
+										}else if(source=="daumsports"){
+											$("#daumsports_select").attr("selected", "selected");
 										}
 									}
 
@@ -290,7 +330,6 @@
 											  interval: 2000
 											})
 									}
-									
 									carosusel();
 							</script>
 </body>
