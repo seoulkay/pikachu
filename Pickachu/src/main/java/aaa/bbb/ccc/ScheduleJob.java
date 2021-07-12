@@ -51,76 +51,76 @@ public class ScheduleJob {
 //		System.out.println("새로운 스케줄러 작동중입니다.");
 //	}
 	
-	@Scheduled(cron = "1 */5 * * * * ")
-	public void naverTopNews() {
-		getNaver_newsHeadline();
-	}
-
-	@Scheduled(cron = "1 */9 * * * * ")
-	public void daumTopNews() {
-		getDaum_newsHeadline();			
-	}
-	
-	@Scheduled(cron = "1 */14 * * * * ")
-	public void topNaverSportsNews() {
-		getNaverSports_newsHeadline();			
-	}
-	
-	@Scheduled(cron = "1 */12 * * * * ")
-	public void topDaumSportsNews() {
-		getDaumSports_newsHeadline();
-	}
-	
-	@Scheduled(cron = "1 */31 * * * * ")
-	public void getNaverLandNews() {
-		getNaverLand();
-	}
-
-	@Scheduled(cron = "1 */30 * * * * ")
-	public void getDaumLandNews() {
-		getDaumLand();	
-	}
-	
-	@Scheduled(cron = "1 */10 * * * * ")
-	public void getNaverITNews() {
-		getNaverIT_newsHeadline();	
-	}
-	@Scheduled(cron = "1 */3 * * * * ")
-	public void getNaverPoliticNews() {
-		getNaverPolitic_newsHeadline();
-	}
-
-	
-	
-	@Scheduled(cron = "1 */30 * * * * ")
-	public void per30min() {
-		news20_cool(naverMapper, "NAVER");
-		news20_cool(daumMapper, "DAUM");	
-
-	}
-	
-	@Scheduled(cron = "1 */60 * * * * ")
-	public void per40min() {
-		news20_cool(naverLandMapper, "NAVERLAND");	
-		news20_cool(daumLandMapper, "DAUMLAND");
-	}
-		
-	
-	@Scheduled(cron = "1 */30 * * * * ")
-	public void per20min() {
-		news20_cool(naverSportsMapper, "NAVERSPORTS");
-		news20_cool(daumSportsMapper, "DAUMSPORTS");
-
-	}	
-	
-	@Scheduled(cron = "1 */5 * * * * ")
-	public void per3min() {
-		news20_cool(naverITMapper, "NAVERIT");
-		news20_cool(naverPoliticMapper, "NAVERPolitic");
-		news20_cool(naverEntMapper, "NAVERENT");
-		news20_cool(daumEntMapper, "DAUMENT");
-		
-	}
+//	@Scheduled(cron = "1 */5 * * * * ")
+//	public void naverTopNews() {
+//		getNaver_newsHeadline();
+//	}
+//
+//	@Scheduled(cron = "1 */9 * * * * ")
+//	public void daumTopNews() {
+//		getDaum_newsHeadline();			
+//	}
+//	
+//	@Scheduled(cron = "1 */14 * * * * ")
+//	public void topNaverSportsNews() {
+//		getNaverSports_newsHeadline();			
+//	}
+//	
+//	@Scheduled(cron = "1 */12 * * * * ")
+//	public void topDaumSportsNews() {
+//		getDaumSports_newsHeadline();
+//	}
+//	
+//	@Scheduled(cron = "1 */31 * * * * ")
+//	public void getNaverLandNews() {
+//		getNaverLand();
+//	}
+//
+//	@Scheduled(cron = "1 */30 * * * * ")
+//	public void getDaumLandNews() {
+//		getDaumLand();	
+//	}
+//	
+//	@Scheduled(cron = "1 */10 * * * * ")
+//	public void getNaverITNews() {
+//		getNaverIT_newsHeadline();	
+//	}
+//	@Scheduled(cron = "1 */3 * * * * ")
+//	public void getNaverPoliticNews() {
+//		getNaverPolitic_newsHeadline();
+//	}
+//
+//	
+//	
+//	@Scheduled(cron = "1 */30 * * * * ")
+//	public void per30min() {
+//		news20_cool(naverMapper, "NAVER");
+//		news20_cool(daumMapper, "DAUM");	
+//
+//	}
+//	
+//	@Scheduled(cron = "1 */60 * * * * ")
+//	public void per40min() {
+//		news20_cool(naverLandMapper, "NAVERLAND");	
+//		news20_cool(daumLandMapper, "DAUMLAND");
+//	}
+//		
+//	
+//	@Scheduled(cron = "1 */30 * * * * ")
+//	public void per20min() {
+//		news20_cool(naverSportsMapper, "NAVERSPORTS");
+//		news20_cool(daumSportsMapper, "DAUMSPORTS");
+//
+//	}	
+//	
+//	@Scheduled(cron = "1 */5 * * * * ")
+//	public void per3min() {
+//		news20_cool(naverITMapper, "NAVERIT");
+//		news20_cool(naverPoliticMapper, "NAVERPolitic");
+//		news20_cool(naverEntMapper, "NAVERENT");
+//		news20_cool(daumEntMapper, "DAUMENT");
+//		
+//	}
 
 	
 

@@ -328,10 +328,10 @@ function timeStampToHuman(p1){
 	return humanDateFormat;
 }
 
-var weight = 1,   // change me
-width = window.innerWidth - 21,
-height = window.innerHeight - 350;
-
+var weight = 1;   // change me
+var alpha = 1 ;// 곱할 배율 
+var width = window.innerWidth - 21;
+var height = window.innerHeight - 350;
 
 // draw 함수 (워드 클라우드 관련 함수)
 //한 줄
@@ -365,7 +365,7 @@ function draw(words) {
             .selectAll("text")
             .data(words)
             .enter().append("text")
-            .style("font-size", function(d) { return d.size  + "px"; })
+            .style("font-size", function(d) { return d.sizes  + "px"; })
             .style("fill", function(d, i) { return color(i); })
             //.style("padding", 3 )
             .style("font-family", "Noto Sans KR")
@@ -413,13 +413,12 @@ function news20Ajax(p1){
 		frequency_list = data;
 		//받아온 데이터를 스트링으로 찍어본다. 
 		console.log(JSON.stringify(frequency_list));
-		
-// 		for(int i=0; i<frequency_list.length; i++){
-			
-// 			for(int j=0;j<frequency_list[j].top20.length;j++){
-				
-// 			}
-// 		}
+	
+		console.log("drawCloud 찍기 전에 확인: "+frequency_list[0].top20[0].size);
+		console.log("이상적인 최대값 50을 "+frequency_list[0].top20[0].size+"로 나누면: "+ 50/frequency_list[0].top20[0].size);
+	
+		alpha = 50/frequency_list[0].top20[0].size;
+		console.log('alpha값 :'+ alpha);
 		
 		drawWordCloud(9);
 
@@ -446,14 +445,14 @@ function drawWordCloud(p1){
 
 	$( "#my_dataviz" ).empty();
 	
-	console.log(frequency_list[p1].top20[0].size);
+	//console.log(frequency_list[p1].top20[0].size);
 	
 	d3.layout.cloud()
  	.size([width, height])
 	.words(frequency_list[p1].top20)
 	.rotate(0)
 	.padding(1)
-	.fontSize(function(d) { return d.size * weight ;	})         
+	.fontSize(function(d) { return d.size * weight * alpha ;})        
 	.on("end" , draw)
 	.start();
 
