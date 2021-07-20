@@ -158,13 +158,11 @@
 		  		<span style="color:#E85C90; font-size:1.2em;">뉴</span>
 		  		<span style="color:#B491B1; font-size:1.2em;"><strong><i>스</i></strong></span>
 		  		<span style="color:#8CBACB; font-size:1.2em;"><strong>위</strong></span>
-		  		<span style="color:#58EFEC;">키</span>		  		
-
-<!-- 		  		<span style="color:#E81CFF;"><strong><i>뉴</i></strong></span> -->
-<!-- 		  		<span style="color:#AB5BFF;"><strong><i>뉴</i></strong></span> -->
-<!-- 		  		<span style="color:#7D8AFF;"><strong><i>뉴</i></strong></span> -->
-<!-- 		  		<span style="color:#40C9FF;"><strong><i>뉴</i></strong></span>		  		 -->
+		  		<span style="color:#58EFEC;">키</span>	
+				<span style="font-size:1.2em;">&#129299;</span>	  			  		
 		  	</h1>
+<%-- 		  	<img src="${pageContext.request.contextPath}/resources/fav01.ico/fav01big.png" alt="뉴스위키" width="30" height="30" > --%>
+		  	
 		  	</a>
 <!-- 		  	<h4>시간대별 가장 많이 노출된 뉴스단어 50개를 한눈에</h4> -->
 		  </div>
