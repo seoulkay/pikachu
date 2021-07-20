@@ -28,6 +28,27 @@
 	
 	<script data-ad-client="ca-pub-1262784398485676" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 
+
+<!-- 	파비콘 -->
+	<link rel="apple-touch-icon" sizes="57x57" href="${pageContext.request.contextPath}/resources/fav01.ico/apple-icon-57x57.png">
+	<link rel="apple-touch-icon" sizes="60x60" href="${pageContext.request.contextPath}/resources/fav01.ico/apple-icon-60x60.png">
+	<link rel="apple-touch-icon" sizes="72x72" href="${pageContext.request.contextPath}/resources/fav01.ico/apple-icon-72x72.png">
+	<link rel="apple-touch-icon" sizes="76x76" href="${pageContext.request.contextPath}/resources/fav01.ico/apple-icon-76x76.png">
+	<link rel="apple-touch-icon" sizes="114x114" href="${pageContext.request.contextPath}/resources/fav01.ico/apple-icon-114x114.png">
+	<link rel="apple-touch-icon" sizes="120x120" href="${pageContext.request.contextPath}/resources/fav01.ico/apple-icon-120x120.png">
+	<link rel="apple-touch-icon" sizes="144x144" href="${pageContext.request.contextPath}/resources/fav01.ico/apple-icon-144x144.png">
+	<link rel="apple-touch-icon" sizes="152x152" href="${pageContext.request.contextPath}/resources/fav01.ico/apple-icon-152x152.png">
+	<link rel="apple-touch-icon" sizes="180x180" href="${pageContext.request.contextPath}/resources/fav01.ico/apple-icon-180x180.png">
+	<link rel="icon" type="image/png" sizes="192x192"  href="${pageContext.request.contextPath}/resources/fav01.ico/android-icon-192x192.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="${pageContext.request.contextPath}/resources/fav01.ico/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="96x96" href="${pageContext.request.contextPath}/resources/fav01.ico/favicon-96x96.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="${pageContext.request.contextPath}/resources/fav01.ico/favicon-16x16.png">
+	<link rel="manifest" href="/manifest.json">
+	<meta name="msapplication-TileColor" content="#ffffff">
+	<meta name="msapplication-TileImage" content="${pageContext.request.contextPath}/resources/fav01.ico/ms-icon-144x144.png">
+	<meta name="theme-color" content="#ffffff">
+
+
 </head>
 
 
@@ -163,8 +184,8 @@
 
 				
 			<div class="col-md-auto">
-				<select onchange="if(this.value) location.href=(this.value);" class="form-select form-select-sm mb-3" >
-<!-- 					<option selected>뉴스 선택</option> -->
+				<select onchange="if(this.value) location.href=(this.value);" class="form-select form-select-sm mb-3" id="select">
+					
 					<option value="index5?source=naver" id="naver_select">네이버 뉴스</option>		
 					<option value="index5?source=daum" id="daum_select">다음 뉴스</option>		
 					<option value="index5?source=naverpolitic" id="naverpolitic_select">네이버 정치뉴스</option>	
@@ -257,6 +278,11 @@
 </body>
 
 <script>
+
+$("#select").click(function(e){
+	e.preventDefault();
+});
+
 //var source = "${source}";
 
 var urlString = window.location.href;
@@ -272,6 +298,7 @@ $('.carousel').carousel({
 	  interval: 5000
 	})
 
+	
 function toggleName(){
 	if(source=="naver"){
 		$("#naver_select").attr("selected", "selected");
@@ -306,21 +333,6 @@ function toggleName(){
 
 toggleName();
 
-
-
-
-function toggleUrl(){
-	var daum1 = "daum";
-	var naver1 = "naver";
-	
-	if(source=="naver"){
-		return daum1;
-	}else{
-		return naver1;
-	}
-}
-
-
 function timeStampToHuman(p1){
 	const dateObject = new Date(p1);
 	const humanDateFormat = moment(dateObject).format('MMMM Do  a h:mm')
@@ -328,27 +340,28 @@ function timeStampToHuman(p1){
 	return humanDateFormat;
 }
 
+
+
 var weight = 1;   // change me
-var alpha = 1 ;// 곱할 배율 
 var width = window.innerWidth - 21;
 var height = window.innerHeight - 350;
+var alpha = 1 ;// 곱할 배율 
 
-// draw 함수 (워드 클라우드 관련 함수)
+
 //한 줄
 var color = d3.scale.linear()
 //워드클라우드 크기랑 색깔 지정 
 	.domain([100,20,15,10,6,5,4,3,2,1,0])
-//	.domain([150,30,17.5,15,8,7,6,4,3,1,0])
 
-	//.range(["#40C9FF","#4FB9FF","#5FAAFF","#6E9AFF","#7D8AFF","#8C7AFF","#9C6BFF","#AB5BFF","#BA4BFF","#C93BFF","#D92CFF","#E81CFF"]);
 	.range(["#58EFEC","#65E2E4","#72D4DB","#7FC7D3","#8CBACB","#99ACC2","#A79FBA","#B491B1","#C184A9","#CE77A1","#DB6998","#E85C90"]);
 	//.range(["#C3B196","#B2A289","#A1937D","#918370","#807463","#6F6556","#5E564A","#4D473D","#3C3830","#2C2823","#1B1917","#0A0A0A"]);
 	//.range(["#FFD324","#E9C122","#D2AE1F","#BC9C1D","#A68A1B","#907818","#796516","#FFC800","#C29903","#856905","#473A08","#0A0A0A"]);
 	//.range(["#FFCE85","#FFC579","#FFBB6D","#FFB261","#FFA855","#FF9F49","#FF953C","#FF8C30","#FF8224","#FF7918","#FF6F0C","#FF6600"]);
 	//.range(["#96F2FA", "#8DDAFB", "#86C6FB", "#7DB0FB", "#759AFC", "#6D84FC", "#656EFD", "#5D58FD", "#5542FE", "#4C2CFE", "#4416FF", "#3C00FF"]);
-//	.range(["#ddd", "#ccc", "#bbb", "#aaa", "#999", "#888", "#777", "#666", "#555", "#444", "#333", "#222"]);
-//한 줄 끝
 
+	//한 줄 끝
+	
+// draw 함수 (워드 클라우드 관련 함수)
 function draw(words) {
     d3.select("#my_dataviz").append("svg")
             .attr("width", width)
@@ -365,7 +378,7 @@ function draw(words) {
             .selectAll("text")
             .data(words)
             .enter().append("text")
-            .style("font-size", function(d) { return d.sizes  + "px"; })
+            .style("font-size", function(d) { return d.size  + "px"; })
             .style("fill", function(d, i) { return color(i); })
             //.style("padding", 3 )
             .style("font-family", "Noto Sans KR")
@@ -392,6 +405,7 @@ function draw(words) {
 }
 
 
+
 //ajax 함수 
 function news20Ajax(p1){
 
@@ -412,22 +426,20 @@ function news20Ajax(p1){
 		//받아온 데이터를 프리퀀시 리스트에 집어넣는다. 
 		frequency_list = data;
 		//받아온 데이터를 스트링으로 찍어본다. 
-		console.log(JSON.stringify(frequency_list));
+ 		console.log(JSON.stringify(frequency_list));
 	
-		console.log("drawCloud 찍기 전에 확인: "+frequency_list[0].top20[0].size);
-		console.log("이상적인 최대값 50을 "+frequency_list[0].top20[0].size+"로 나누면: "+ 50/frequency_list[0].top20[0].size);
+		console.log("drawCloud 찍기 전에 최대값 확인: "+frequency_list[0].top20[0].size);
+		console.log("이상적인 최대값 65를 "+frequency_list[0].top20[0].size+"로 나누면: "+ 65/frequency_list[0].top20[0].size);
 	
-		alpha = 50/frequency_list[0].top20[0].size;
+// 		console.log(frequency_list[0].top20[0].size);
+		alpha = 65/frequency_list[0].top20[0].size;	
 		console.log('alpha값 :'+ alpha);
 		
 		drawWordCloud(9);
 
-		//타임 셀렉터에 옵션을 자동으로 추가. 
-// 		$("#timeSelector").append(" <option selected>시간을 선택</option>");
 		
-		//
-		//
-		console.log(frequency_list.length);
+		//console.log(frequency_list.length);
+		
 		//frequency_list 만큼 반복해서 append
 		for(var i=frequency_list.length-1; i>-1; i--){
 			$("#timeSelector").append(' <option value='+i+'>'+timeStampToHuman(frequency_list[i].created)+'</option>');
@@ -445,7 +457,12 @@ function drawWordCloud(p1){
 
 	$( "#my_dataviz" ).empty();
 	
-	//console.log(frequency_list[p1].top20[0].size);
+	console.log("drawcloud 함수에서 최대값:" + frequency_list[p1].top20[0].size);
+	
+// 	console.log(frequency_list[0].top20[0].size);
+// 	console.log(frequency_list[0].top20[1].size);
+// 	console.log(frequency_list[0].top20[3].size);
+
 	
 	d3.layout.cloud()
  	.size([width, height])
