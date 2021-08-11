@@ -334,13 +334,19 @@
   	LIMIT 1;
   	</select>
   	
-  	<select id="selectLast20X10" parameterType="aaa.bbb.ccc.entity.PortalNews2" resultType="aaa.bbb.ccc.entity.PortalNews2">
+  	<select id="selectLast20X10ex" parameterType="aaa.bbb.ccc.entity.PortalNews2" resultType="aaa.bbb.ccc.entity.PortalNews2">
   	SELECT * FROM hw_utf8.todayTop20 
   	WHERE source = #{source} 
   	ORDER BY id DESC 
   	LIMIT 10;
   	</select>
   	
+	<select id="selectLast20X10" parameterType="aaa.bbb.ccc.entity.PortalNews2" resultType="aaa.bbb.ccc.entity.PortalNews2">
+	SELECT * FROM hw_utf8.todayTop20 
+	WHERE source = #{source} AND created like CONCAT('%', (select date_format(now(),'%H:')),IF(minute(now())&lt;30,'00','30'), ':%') 
+	ORDER BY id DESC 
+	LIMIT 10;
+	</select>
 	
 </mapper>
 

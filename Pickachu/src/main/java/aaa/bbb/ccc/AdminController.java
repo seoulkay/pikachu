@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -1261,6 +1262,18 @@ public class AdminController {
 	}
 	
 	
+	//스트링이 숫자로 되어있으면 던지는 함수 만들기 
+	
+	private static Pattern pattern = Pattern.compile("-?\\d+(\\.\\d+)?");
+
+	public static boolean isNumeric(String strNum) {
+	    if (strNum == null) {
+	        return false; 
+	    }
+	    return pattern.matcher(strNum).matches();
+	} 
+	
+	
 	//가져온 타이틀을 
 	//콤마로 자르고
 	//:를 기준으로 키값, 벨류값으로 나눠서 맵에 넣기
@@ -1273,11 +1286,20 @@ public class AdminController {
 		String top20[] = p1.getTop20().trim().split(",");
 		//trim으로 앞뒤여백 제거..
 		//어레이 top20는 0번지 '남양유업:40' 1번지 '대통령:28' ...
-		
-		for(int i=0;i<top20.length;i++) {
-			String temp[] =	top20[i].split(":");			
-			result.put(temp[0], Integer.parseInt(temp[1]));	
-		}	
+		try {
+			for(int i=0;i<top20.length;i++) {
+				String temp[] =	top20[i].split(":");	
+				if(isNumeric(temp[0].trim())) {
+					//아무것도 하지마.
+					System.out.println(temp[0]+"이 숫자여서 뺐어.");
+				}else {
+					result.put(temp[0].trim(), Integer.parseInt(temp[1]));	
+				}
+
+			}
+		}catch(Exception e) {
+			System.out.println("이벤트를 자르다가 오류가 났어요.");
+		}
 		
 		System.out.println("맵에 다시 들어간 결과는: "+result);
 		

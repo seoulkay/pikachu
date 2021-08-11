@@ -99,7 +99,8 @@ public class ScheduleJob {
 
 	}
 	
-	@Scheduled(cron = "1 */60 * * * * ")
+	//@Scheduled(cron = "1 */60 * * * * ")
+	@Scheduled(cron = "1 */30 * * * * ")
 	public void per40min() {
 		news20_cool(naverLandMapper, "NAVERLAND");	
 		news20_cool(daumLandMapper, "DAUMLAND");
@@ -113,7 +114,8 @@ public class ScheduleJob {
 
 	}	
 	
-	@Scheduled(cron = "1 */25 * * * * ")
+	//@Scheduled(cron = "1 */25 * * * * ")
+	@Scheduled(cron = "1 */30 * * * * ")
 	public void per3min() {
 		news20_cool(naverITMapper, "NAVERIT");
 		news20_cool(naverPoliticMapper, "NAVERPolitic");

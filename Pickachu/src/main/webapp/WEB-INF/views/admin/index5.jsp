@@ -153,7 +153,7 @@
 	
 		<div class="row justify-content-md-center " >
 <!-- 		  <div class="col-lg-6"> -->
-		  	<a href="http://www.coldestseason.me">
+		  	<a href="http://www.newswiki.co.kr">
 		  	<h1 id="title" >
 		  		<span style="color:#E85C90; font-size:1.2em;">뉴</span>
 		  		<span style="color:#B491B1; font-size:1.2em;"><strong><i>스</i></strong></span>
@@ -426,12 +426,7 @@ function news20Ajax(p1){
 		//받아온 데이터를 스트링으로 찍어본다. 
  		console.log(JSON.stringify(frequency_list));
 	
-		console.log("drawCloud 찍기 전에 최대값 확인: "+frequency_list[0].top20[0].size);
-		console.log("이상적인 최대값 65를 "+frequency_list[0].top20[0].size+"로 나누면: "+ 65/frequency_list[0].top20[0].size);
-	
-// 		console.log(frequency_list[0].top20[0].size);
-		alpha = 65/frequency_list[0].top20[0].size;	
-		console.log('alpha값 :'+ alpha);
+
 		
 		drawWordCloud(9);
 
@@ -460,6 +455,13 @@ function drawWordCloud(p1){
 // 	console.log(frequency_list[0].top20[0].size);
 // 	console.log(frequency_list[0].top20[1].size);
 // 	console.log(frequency_list[0].top20[3].size);
+
+	console.log("drawCloud 찍기 전에 최대값 확인: "+frequency_list[p1].top20[p1].size);
+	console.log("이상적인 최대값 65를 "+frequency_list[p1].top20[p1].size+"로 나누면: "+ 55/frequency_list[p1].top20[p1].size);
+	
+// 		console.log(frequency_list[0].top20[0].size);
+	alpha = 55/frequency_list[p1].top20[p1].size;	
+	console.log('alpha값 :'+ alpha);
 
 	
 	d3.layout.cloud()
